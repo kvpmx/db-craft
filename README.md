@@ -1,7 +1,7 @@
 # DB Craft
 
 DB Craft is a web application designed to simplify the creation of database diagrams. Built using
-Next.js and TypeScript, DB Craft offers an intuitive interface for developers and database
+Nuxt.js and TypeScript, DB Craft offers an intuitive interface for developers and database
 architects to visualize and design their database schemas.
 
 ## Features
