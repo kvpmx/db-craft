@@ -7,6 +7,7 @@ export default withNuxt({
   plugins: { prettier },
   rules: {
     'vue/require-default-prop': 'off',
+    'vue/html-self-closing': 'off',
     'import/consistent-type-specifier-style': 'warn',
   },
 });
