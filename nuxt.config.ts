@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
     '@vee-validate/nuxt',
+    '@nuxtjs/supabase',
   ],
   shadcn: {
     prefix: '',
@@ -21,5 +22,14 @@ export default defineNuxtConfig({
         subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
       },
     ],
+  },
+  veeValidate: {
+    autoImports: true,
+    componentNames: {
+      Form: 'VeeForm',
+      Field: 'VeeField',
+      FieldArray: 'VeeFieldArray',
+      ErrorMessage: 'VeeErrorMessage',
+    },
   },
 });
