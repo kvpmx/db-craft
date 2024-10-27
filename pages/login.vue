@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+  import z from 'zod';
+  import { toTypedSchema } from '@vee-validate/zod';
+
+  const validationSchema = toTypedSchema(
+    z.object({
+      email: z
+        .string({ required_error: 'Email is required' })
+        .email({ message: 'The email is invalid' }),
+
+      password: z
+        .string({ required_error: 'Password is required' })
+        .min(8, { message: 'Password must be at least 8 characters' }),
+    })
+  );
+
+  const { handleSubmit } = useForm({ validationSchema });
+
+  const submit = handleSubmit((values) => {
+    console.log(values);
+  });
+</script>
+
 <template>
   <main class="flex justify-center items-center min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-auth">
     <Card class="w-full mx-auto max-w-md rounded-xl">
@@ -7,18 +30,39 @@
       </CardHeader>
 
       <CardContent>
-        <div class="grid gap-4">
-          <div class="grid gap-2">
-            <Label for="email">Email</Label>
-            <Input id="email" type="email" placeholder="user@example.com" required />
+        <form @submit="submit">
+          <div class="space-y-4">
+            <FormField v-slot="{ componentField }" name="email">
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="user@example.com"
+                    v-bind="componentField"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="password">
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input id="password" type="password" v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
-          <div class="grid gap-2">
-            <Label for="password">Password</Label>
-            <Input id="password" type="password" required />
+
+          <div class="grid gap-4 mt-6">
+            <Button type="submit" class="w-full">Login</Button>
+            <Button variant="outline" class="w-full">Login with Google</Button>
           </div>
-          <Button type="submit" class="w-full">Login</Button>
-          <Button variant="outline" class="w-full">Login with Google</Button>
-        </div>
+        </form>
 
         <div class="mt-4 text-center text-sm">
           Don't have an account?

@@ -1,7 +1,13 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-10-25',
   devtools: { enabled: false },
-  modules: ['@nuxt/fonts', '@nuxt/eslint', '@nuxtjs/tailwindcss', 'shadcn-nuxt'],
+  modules: [
+    '@nuxt/fonts',
+    '@nuxt/eslint',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
+    '@vee-validate/nuxt',
+  ],
   shadcn: {
     prefix: '',
     componentDir: './components/ui',
