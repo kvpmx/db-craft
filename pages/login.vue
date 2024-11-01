@@ -2,6 +2,8 @@
   import z from 'zod';
   import { toTypedSchema } from '@vee-validate/zod';
 
+  const supabase = useSupabaseClient();
+
   const validationSchema = toTypedSchema(
     z.object({
       email: z
@@ -14,10 +16,27 @@
     })
   );
 
+  const loading = ref(false);
+
   const { handleSubmit } = useForm({ validationSchema });
 
-  const submit = handleSubmit((values) => {
-    console.log(values);
+  const submit = handleSubmit(async ({ email, password }) => {
+    loading.value = true;
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    loading.value = false;
+
+    if (error) {
+      // TODO: show toast
+      console.error(error);
+      return;
+    }
+
+    navigateTo('/');
   });
 </script>
 
@@ -37,10 +56,10 @@
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
-                    id="email"
                     type="email"
                     placeholder="user@example.com"
                     v-bind="componentField"
+                    autocomplete="email"
                   />
                 </FormControl>
                 <FormMessage />
@@ -51,7 +70,7 @@
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input id="password" type="password" v-bind="componentField" />
+                  <Input type="password" v-bind="componentField" autocomplete="current-password" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -59,8 +78,18 @@
           </div>
 
           <div class="grid gap-4 mt-6">
-            <Button type="submit" class="w-full">Login</Button>
-            <Button variant="outline" class="w-full">Login with Google</Button>
+            <Button type="submit" class="w-full" :disabled="loading.valueOf()">
+              <Icon
+                v-if="loading.valueOf()"
+                name="lucide:loader-circle"
+                size="1rem"
+                class="mr-2 text-white animate-spin"
+              />
+              Login
+            </Button>
+            <Button type="button" variant="outline" class="w-full" :disabled="loading.valueOf()">
+              Login with Google
+            </Button>
           </div>
         </form>
 
