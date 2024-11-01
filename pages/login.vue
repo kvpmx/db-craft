@@ -33,7 +33,7 @@
 
     loading.value = false;
 
-    if (success) navigateTo('/');
+    if (success) navigateTo(routes.home());
   });
 
   const loginWithGoogle = async () => {
