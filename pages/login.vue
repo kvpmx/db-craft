@@ -3,6 +3,7 @@
   import { toTypedSchema } from '@vee-validate/zod';
 
   const supabase = useSupabaseClient();
+  const { withAuthError } = useAuthErrorHandler();
 
   const validationSchema = toTypedSchema(
     z.object({
@@ -20,24 +21,28 @@
 
   const { handleSubmit } = useForm({ validationSchema });
 
-  const submit = handleSubmit(async ({ email, password }) => {
+  const submitLoginForm = handleSubmit(async ({ email, password }) => {
     loading.value = true;
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const success = await withAuthError(
+      supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+    );
 
     loading.value = false;
 
-    if (error) {
-      // TODO: show toast
-      console.error(error);
-      return;
-    }
-
-    navigateTo('/');
+    if (success) navigateTo('/');
   });
+
+  const loginWithGoogle = async () => {
+    await withAuthError(
+      supabase.auth.signInWithOAuth({
+        provider: 'google',
+      })
+    );
+  };
 </script>
 
 <template>
@@ -49,7 +54,7 @@
       </CardHeader>
 
       <CardContent>
-        <form @submit="submit">
+        <form @submit="submitLoginForm">
           <div class="space-y-4">
             <FormField v-slot="{ componentField }" name="email">
               <FormItem>
@@ -87,7 +92,13 @@
               />
               Login
             </Button>
-            <Button type="button" variant="outline" class="w-full" :disabled="loading.valueOf()">
+            <Button
+              type="button"
+              variant="outline"
+              class="w-full"
+              :disabled="loading.valueOf()"
+              @click="loginWithGoogle"
+            >
               Login with Google
             </Button>
           </div>
@@ -99,5 +110,7 @@
         </div>
       </CardContent>
     </Card>
+
+    <Toaster />
   </main>
 </template>
