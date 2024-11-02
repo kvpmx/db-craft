@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-10-25',
-  devtools: { enabled: false },
+  devtools: { enabled: process.env.NODE_ENV === 'development' },
   modules: [
     '@nuxt/fonts',
     '@nuxt/eslint',
@@ -9,7 +9,9 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@vee-validate/nuxt',
     '@nuxtjs/supabase',
+    'nuxt-og-image',
   ],
+  components: [{ path: '@/components/features', pathPrefix: false }],
   shadcn: {
     prefix: '',
     componentDir: './components/ui',
