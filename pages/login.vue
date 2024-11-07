@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import z from 'zod';
   import { toTypedSchema } from '@vee-validate/zod';
+  import { routes } from '@/lib/routes';
 
   const supabase = useSupabaseClient();
   const { withAuthError } = useAuthErrorHandler();
@@ -46,6 +47,8 @@
 </script>
 
 <template>
+  <PageMeta title="Login | DB Craft" description="Login to your account" />
+
   <main class="flex justify-center items-center min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-auth">
     <Card class="w-full mx-auto max-w-md rounded-xl">
       <CardHeader>

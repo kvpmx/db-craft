@@ -1,10 +1,10 @@
 import { useToast } from '@/components/ui/toast/use-toast';
-import type { AuthTokenResponse } from '@supabase/auth-js';
+import type { AuthError } from '@supabase/auth-js';
 
 export const useAuthErrorHandler = () => {
   const { toast } = useToast();
 
-  const withAuthError = async (promise: Promise<AuthTokenResponse>) => {
+  const withAuthError = async (promise: Promise<{ error: AuthError | null }>) => {
     const { error } = await promise;
 
     if (!error) return true;
