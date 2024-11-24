@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { Label } from '@/components/ui/label';
+  import { Label } from '@/components/label';
   import { cn } from '@/lib/utils';
   import { useFormField } from './use-form-fields';
 

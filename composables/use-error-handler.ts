@@ -1,4 +1,4 @@
-import { useToast } from '@/components/ui/toast/use-toast';
+import { useToast } from '@/components/toast/use-toast';
 import type { AuthError } from '@supabase/auth-js';
 
 export const useAuthErrorHandler = () => {

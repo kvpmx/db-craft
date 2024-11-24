@@ -11,10 +11,10 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     'nuxt-og-image',
   ],
-  components: [{ path: '@/components/features', pathPrefix: false }],
+  components: [{ path: '@/features', pathPrefix: false }],
   shadcn: {
     prefix: '',
-    componentDir: './components/ui',
+    componentDir: './components',
   },
   fonts: {
     families: [
