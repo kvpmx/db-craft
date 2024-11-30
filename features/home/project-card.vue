@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { format } from 'date-fns';
+  import { formatInTimeZone } from 'date-fns-tz';
   import type { Tables } from '@/types/database.types';
 
   const props = defineProps<{
@@ -11,8 +12,17 @@
     (e: 'duplicate', project: Tables<'projects'>): void;
   }>();
 
+  // TODO: move to utils
   const formatDate = (date: string) => {
     return format(date, 'MMM d, yyyy');
+  };
+
+  const formatDateAndTime = (date: string) => {
+    return formatInTimeZone(
+      date,
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      'dd.MM.yyyy, HH:mm:ss'
+    );
   };
 </script>
 
@@ -51,7 +61,10 @@
       />
     </CardContent>
     <CardFooter class="flex justify-between items-center">
-      <span class="text-sm text-gray-500">
+      <span
+        class="text-sm text-gray-500"
+        :title="formatDateAndTime(props.project.last_modified_at)"
+      >
         Last modified: {{ formatDate(props.project.last_modified_at) }}
       </span>
       <Button variant="outline">
