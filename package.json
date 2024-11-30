@@ -24,11 +24,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@hebilicious/vue-query-nuxt": "^0.3.0",
     "@nuxt/fonts": "^0.10.2",
     "@nuxt/icon": "^1.6.1",
     "@nuxt/image": "^1.8.1",
     "@nuxtjs/supabase": "^1.4.1",
     "@supabase/supabase-js": "^2.45.6",
+    "@tanstack/vue-query": "^5.62.0",
     "@vee-validate/nuxt": "^4.14.6",
     "@vee-validate/zod": "^4.14.6",
     "@vueuse/core": "^11.1.0",

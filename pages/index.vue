@@ -4,12 +4,19 @@
   const supabase = useSupabaseClient<Database>();
   const user = useSupabaseUser();
 
-  const { data: projects } = await useAsyncData('projects', async () => {
-    if (!user) return;
-    const { data } = await supabase.from('projects').select('*').eq('author', user.value.id);
-    return data;
+  const queryClient = useQueryClient();
+
+  // Get all projects
+  const { data: projects } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      if (!user) return;
+      const { data } = await supabase.from('projects').select('*').eq('author', user.value.id);
+      return data;
+    },
   });
 
+  // Search projects
   const searchQuery = ref('');
 
   const filteredProjects = computed(() => {
@@ -18,20 +25,33 @@
     });
   });
 
-  const handleDelete = async (id: number) => {
-    // await supabase.from('projects').delete().eq('id', id);
-  };
+  // Delete project
+  const { mutateAsync: deleteProject } = useMutation({
+    mutationKey: ['deleteProject'],
+    mutationFn: async (id: number) => {
+      await supabase.from('projects').delete().eq('id', id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
 
-  const handleDuplicate = async (project: TablesInsert<'projects'>) => {
-    // delete project.id;
-    // delete project.created_at;
-    // delete project.last_modified_at;
-    //
-    // await supabase.from('projects').insert({
-    //   ...project,
-    //   name: `${project.name} (Copy)`,
-    // });
-  };
+  // Duplicate project
+  const { mutateAsync: duplicateProject } = useMutation({
+    mutationKey: ['duplicateProject'],
+    mutationFn: async (project: TablesInsert<'projects'>) => {
+      await supabase.from('projects').insert({
+        ...project,
+        id: undefined,
+        created_at: undefined,
+        last_modified_at: undefined,
+        name: `${project.name} (Copy)`,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
 </script>
 
 <template>
@@ -66,8 +86,8 @@
           v-for="project in filteredProjects"
           :key="project.id"
           :project="project"
-          @delete="handleDelete"
-          @duplicate="handleDuplicate"
+          @delete="deleteProject"
+          @duplicate="duplicateProject"
         />
       </div>
     </main>

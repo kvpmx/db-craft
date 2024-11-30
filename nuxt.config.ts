@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
     '@nuxtjs/supabase',
     'nuxt-og-image',
+    '@hebilicious/vue-query-nuxt',
   ],
   components: [
     {
