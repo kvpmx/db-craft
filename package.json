@@ -26,6 +26,7 @@
   "dependencies": {
     "@nuxt/fonts": "^0.10.2",
     "@nuxt/icon": "^1.6.1",
+    "@nuxt/image": "^1.8.1",
     "@nuxtjs/supabase": "^1.4.1",
     "@supabase/supabase-js": "^2.45.6",
     "@vee-validate/nuxt": "^4.14.6",
@@ -33,6 +34,7 @@
     "@vueuse/core": "^11.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "nuxt": "^3.13.2",
     "nuxt-og-image": "^3.0.8",
     "radix-vue": "^1.9.7",

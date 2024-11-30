@@ -5,13 +5,22 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/eslint',
     '@nuxt/icon',
+    '@nuxt/image',
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
     '@vee-validate/nuxt',
     '@nuxtjs/supabase',
     'nuxt-og-image',
   ],
-  components: [{ path: '@/features', pathPrefix: false }],
+  components: [
+    {
+      path: '@/features',
+      pathPrefix: false,
+    },
+  ],
+  image: {
+    dir: 'assets/images',
+  },
   shadcn: {
     prefix: '',
     componentDir: './components',
