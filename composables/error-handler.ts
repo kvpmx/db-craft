@@ -1,15 +1,13 @@
-import { useToast } from '@/components/toast/use-toast';
+import { toast } from 'vue-sonner';
 import type { AuthError } from '@supabase/auth-js';
 
 export const useAuthErrorHandler = () => {
-  const { toast } = useToast();
-
   const withAuthError = async (promise: Promise<{ error: AuthError | null }>) => {
     const { error } = await promise;
 
     if (!error) return true;
 
-    toast({ title: error.message, variant: 'error' });
+    toast.error(error.toString());
     return false;
   };
 

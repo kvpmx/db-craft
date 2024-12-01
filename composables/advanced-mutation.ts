@@ -1,4 +1,4 @@
-import { useToast } from '@/components/toast';
+import { toast } from 'vue-sonner';
 import type { DefaultError, QueryClient, MutationOptions } from '@tanstack/vue-query';
 
 type AdvancedMutationOptions<TData, TError, TVariables, TContext> = MutationOptions<
@@ -24,18 +24,12 @@ export const useAdvancedMutation = <
   }: AdvancedMutationOptions<TData, TError, TVariables, TContext>,
   queryClient?: QueryClient
 ) => {
-  const { toast } = useToast();
-
   return useMutation(
     {
       ...mutationOptions,
       mutationFn: mutationOptions.mutationFn,
       onError: (error, variables, context) => {
-        toast({
-          title: 'Error!',
-          description: errorKey ?? error.toString(),
-          variant: 'error',
-        });
+        toast.error(errorKey ?? error.toString());
 
         if (mutationOptions.onError) {
           mutationOptions.onError(error, variables, context);
@@ -43,7 +37,7 @@ export const useAdvancedMutation = <
       },
       onSuccess: (data, variables, context) => {
         if (successKey) {
-          toast({ title: successKey });
+          toast.success(successKey);
         }
 
         if (mutationOptions.onSuccess) {
