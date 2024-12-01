@@ -7,8 +7,9 @@ type AdvancedMutationOptions<TData, TError, TVariables, TContext> = MutationOpti
   TVariables,
   TContext
 > & {
-  errorKey?: string;
-  successKey?: string;
+  errorMessage?: string;
+  successMessage?: string;
+  loadingMessage?: string;
 };
 
 export const useAdvancedMutation = <
@@ -17,31 +18,47 @@ export const useAdvancedMutation = <
   TVariables = void,
   TContext = unknown,
 >(
-  {
-    errorKey = 'There was an error, please try again later',
-    successKey,
-    ...mutationOptions
-  }: AdvancedMutationOptions<TData, TError, TVariables, TContext>,
+  options: AdvancedMutationOptions<TData, TError, TVariables, TContext>,
   queryClient?: QueryClient
 ) => {
+  const {
+    errorMessage = 'There was an error, please try again later',
+    successMessage = 'Success!',
+    loadingMessage = 'Loading...',
+    ...mutationOptions
+  } = options;
+
+  let loadingToastId: string | number;
+
   return useMutation(
     {
       ...mutationOptions,
-      mutationFn: mutationOptions.mutationFn,
+      onMutate: (variables) => {
+        if (loadingMessage) {
+          loadingToastId = toast.loading(loadingMessage);
+        }
+
+        if (mutationOptions.onMutate) {
+          return mutationOptions.onMutate(variables);
+        }
+      },
       onError: (error, variables, context) => {
-        toast.error(errorKey ?? error.toString());
+        toast.dismiss(loadingToastId);
+        toast.error(errorMessage ?? error.toString());
 
         if (mutationOptions.onError) {
-          mutationOptions.onError(error, variables, context);
+          return mutationOptions.onError(error, variables, context);
         }
       },
       onSuccess: (data, variables, context) => {
-        if (successKey) {
-          toast.success(successKey);
+        toast.dismiss(loadingToastId);
+
+        if (successMessage) {
+          toast.success(successMessage);
         }
 
         if (mutationOptions.onSuccess) {
-          mutationOptions.onSuccess(data, variables, context);
+          return mutationOptions.onSuccess(data, variables, context);
         }
       },
     },
