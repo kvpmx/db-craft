@@ -30,7 +30,10 @@
   <Card>
     <CardHeader class="pb-3">
       <div class="flex justify-between items-center">
-        <CardTitle class="text-lg font-semibold" :title="props.project.name">
+        <CardTitle
+          class="text-lg font-semibold overflow-hidden text-ellipsis whitespace-nowrap"
+          :title="props.project.name"
+        >
           {{ props.project.name }}
         </CardTitle>
         <DropdownMenu>
