@@ -1,5 +1,5 @@
 import { ApiController } from './api-controller';
-import type { TablesInsert } from '@/types/database.types';
+import type { TablesInsert } from '@/types/database';
 
 export class ProjectsController extends ApiController {
   async getAll() {

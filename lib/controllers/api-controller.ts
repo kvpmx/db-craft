@@ -1,4 +1,4 @@
-import type { Database } from '@/types/database.types';
+import type { Database } from '@/types/database';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 
 export abstract class ApiController {

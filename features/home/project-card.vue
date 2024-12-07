@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import type { Tables } from '@/types/database.types';
+  import type { Tables } from '@/types/database';
 
   const props = defineProps<{
     project: Tables<'projects'>;

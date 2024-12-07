@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { ProjectsController } from '@/lib/controllers';
-  import type { TablesInsert } from '@/types/database.types';
+  import type { TablesInsert } from '@/types/database';
 
   definePageMeta({ layout: 'main' });
 

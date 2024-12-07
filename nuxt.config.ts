@@ -45,4 +45,7 @@ export default defineNuxtConfig({
       ErrorMessage: 'VeeErrorMessage',
     },
   },
+  supabase: {
+    types: '@/types/database.ts',
+  },
 });
