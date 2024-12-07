@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { useId } from 'radix-vue';
-  import { provide } from 'vue';
   import { FORM_ITEM_INJECTION_KEY } from './injection-keys';
 
   import type { HTMLAttributes } from 'vue';

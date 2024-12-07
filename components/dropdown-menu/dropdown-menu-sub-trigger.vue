@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { computed } from 'vue';
   import { DropdownMenuSubTrigger, useForwardProps } from 'radix-vue';
 
   import type { HTMLAttributes } from 'vue';

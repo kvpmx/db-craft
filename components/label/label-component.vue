@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { Label } from 'radix-vue';
-  import { computed } from 'vue';
 
   import type { HTMLAttributes } from 'vue';
   import type { LabelProps } from 'radix-vue';
