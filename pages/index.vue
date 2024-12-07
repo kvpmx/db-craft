@@ -1,19 +1,18 @@
 <script lang="ts" setup>
-  import type { Database, TablesInsert } from '@/types/database.types';
-
-  const supabase = useSupabaseClient<Database>();
-  const user = useSupabaseUser();
+  import { ProjectsController } from '@/lib/controllers';
+  import type { TablesInsert } from '@/types/database.types';
 
   const queryClient = useQueryClient();
+  const projectsApi = useApiController(ProjectsController);
+
+  const invalidateProjectsQuery = () => {
+    queryClient.invalidateQueries({ queryKey: ['projects'] });
+  };
 
   // Get all projects
   const { data: projects } = useQuery({
     queryKey: ['projects'],
-    queryFn: async () => {
-      if (!user) return;
-      const { data } = await supabase.from('projects').select('*').eq('author', user.value.id);
-      return data;
-    },
+    queryFn: async () => await projectsApi.getAll(),
   });
 
   // Search projects
@@ -26,31 +25,19 @@
   });
 
   // Delete project
-  const { mutateAsync: deleteProject } = useMutation({
+  const { mutateAsync: deleteProject } = useAdvancedMutation({
     mutationKey: ['deleteProject'],
-    mutationFn: async (id: number) => {
-      await supabase.from('projects').delete().eq('id', id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
-    },
+    mutationFn: async (id: number) => await projectsApi.delete(id),
+    successMessage: 'Project has been deleted',
+    onSuccess: invalidateProjectsQuery,
   });
 
   // Duplicate project
-  const { mutateAsync: duplicateProject } = useMutation({
+  const { mutateAsync: duplicateProject } = useAdvancedMutation({
     mutationKey: ['duplicateProject'],
-    mutationFn: async (project: TablesInsert<'projects'>) => {
-      await supabase.from('projects').insert({
-        ...project,
-        id: undefined,
-        created_at: undefined,
-        last_modified_at: undefined,
-        name: `${project.name} (Copy)`,
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
-    },
+    mutationFn: async (project: TablesInsert<'projects'>) => await projectsApi.duplicate(project),
+    successMessage: 'Project has been duplicated',
+    onSuccess: invalidateProjectsQuery,
   });
 </script>
 
