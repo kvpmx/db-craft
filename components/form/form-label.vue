@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { Label } from '@/components/label';
-  import { cn } from '@/lib/utils';
   import { useFormField } from './use-form-fields';
 
   import type { HTMLAttributes } from 'vue';

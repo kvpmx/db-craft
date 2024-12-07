@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { cn } from '@/lib/utils';
   import { Primitive } from 'radix-vue';
   import { buttonVariants } from './index';
 

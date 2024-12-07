@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-  import { format } from 'date-fns';
-  import { formatInTimeZone } from 'date-fns-tz';
   import type { Tables } from '@/types/database.types';
 
   const props = defineProps<{
@@ -11,19 +9,6 @@
     (e: 'delete', id: number): void;
     (e: 'duplicate', project: Tables<'projects'>): void;
   }>();
-
-  // TODO: move to utils
-  const formatDate = (date: string) => {
-    return format(date, 'MMM d, yyyy');
-  };
-
-  const formatDateAndTime = (date: string) => {
-    return formatInTimeZone(
-      date,
-      Intl.DateTimeFormat().resolvedOptions().timeZone,
-      'dd.MM.yyyy, HH:mm:ss'
-    );
-  };
 </script>
 
 <template>
