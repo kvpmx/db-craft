@@ -102,6 +102,7 @@
               :disabled="loading.valueOf()"
               @click="loginWithGoogle"
             >
+              <Icon name="flat-color-icons:google" size="1.25rem" class="mr-2" />
               Login with Google
             </Button>
           </div>

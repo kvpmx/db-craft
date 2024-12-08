@@ -12,9 +12,13 @@
   };
 
   // Get all projects
-  const { data: projects } = useQuery({
+  const { data: projects, suspense } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => await projectsApi.getAll(),
+  });
+
+  onServerPrefetch(async () => {
+    await suspense();
   });
 
   // Search projects

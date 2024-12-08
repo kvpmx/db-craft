@@ -28,40 +28,38 @@ export const useAdvancedMutation = <
     ...mutationOptions
   } = options;
 
-  let loadingToastId: string | number;
+  const loadingToastId = ref<string | number>();
 
-  return useMutation(
-    {
-      ...mutationOptions,
-      onMutate: (variables) => {
-        if (loadingMessage) {
-          loadingToastId = toast.loading(loadingMessage);
-        }
+  const onMutate = (variables: TVariables) => {
+    if (loadingMessage) {
+      loadingToastId.value = toast.loading(loadingMessage);
+    }
 
-        if (mutationOptions.onMutate) {
-          return mutationOptions.onMutate(variables);
-        }
-      },
-      onError: (error, variables, context) => {
-        toast.dismiss(loadingToastId);
-        toast.error(errorMessage ?? error.toString());
+    if (mutationOptions.onMutate) {
+      return mutationOptions.onMutate(variables);
+    }
+  };
 
-        if (mutationOptions.onError) {
-          return mutationOptions.onError(error, variables, context);
-        }
-      },
-      onSuccess: (data, variables, context) => {
-        toast.dismiss(loadingToastId);
+  const onError = (error: TError, variables: TVariables, context: TContext | undefined) => {
+    toast.dismiss(loadingToastId.value);
+    toast.error(errorMessage ?? error.toString());
 
-        if (successMessage) {
-          toast.success(successMessage);
-        }
+    if (mutationOptions.onError) {
+      return mutationOptions.onError(error, variables, context);
+    }
+  };
 
-        if (mutationOptions.onSuccess) {
-          return mutationOptions.onSuccess(data, variables, context);
-        }
-      },
-    },
-    queryClient
-  );
+  const onSuccess = (data: TData, variables: TVariables, context: TContext) => {
+    toast.dismiss(loadingToastId.value);
+
+    if (successMessage) {
+      toast.success(successMessage);
+    }
+
+    if (mutationOptions.onSuccess) {
+      return mutationOptions.onSuccess(data, variables, context);
+    }
+  };
+
+  return useMutation({ ...mutationOptions, onMutate, onError, onSuccess }, queryClient);
 };
