@@ -44,6 +44,7 @@
         :alt="`Thumbnail for ${props.project.name}`"
         class="w-full h-auto object-cover rounded-md"
         style="aspect-ratio: 2 / 1"
+        placeholder
       />
     </CardContent>
     <CardFooter class="flex justify-between items-center">
