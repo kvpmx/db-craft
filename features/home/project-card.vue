@@ -40,7 +40,7 @@
     </CardHeader>
     <CardContent class="pb-4">
       <NuxtImg
-        :src="props.project.thumbnail ?? '/thumbnail-placeholder.png'"
+        :src="props.project.thumbnail ?? '/images/thumbnail-placeholder.png'"
         :alt="`Thumbnail for ${props.project.name}`"
         class="w-full h-auto object-cover rounded-md"
         style="aspect-ratio: 2 / 1"

@@ -35,7 +35,7 @@ const config: Config = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       backgroundImage: {
-        auth: 'url(@/assets/images/auth-page-background.png)',
+        auth: 'url(/images/auth-page-background.png)',
       },
     },
   },

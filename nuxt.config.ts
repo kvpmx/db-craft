@@ -19,9 +19,6 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
-  image: {
-    dir: 'assets/images',
-  },
   shadcn: {
     prefix: '',
     componentDir: './components',
