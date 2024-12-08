@@ -11,7 +11,7 @@
 </script>
 
 <template>
-  <Label :class="cn(error && 'text-red-500', props.class)" :for="formItemId">
+  <Label :class="cn(error && 'font-semibold', props.class)" :for="formItemId">
     <slot />
   </Label>
 </template>
