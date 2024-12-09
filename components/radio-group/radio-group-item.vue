@@ -25,8 +25,10 @@
       )
     "
   >
-    <RadioGroupIndicator class="flex items-center justify-center">
-      <Icon name="lucide:circle" size="0.625rem" class="fill-current text-current" />
+    <RadioGroupIndicator class="relative block">
+      <span
+        class="w-2.5 h-2.5 rounded-full bg-current absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      ></span>
     </RadioGroupIndicator>
   </RadioGroupItem>
 </template>
