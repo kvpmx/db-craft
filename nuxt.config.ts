@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     'nuxt-og-image',
     '@hebilicious/vue-query-nuxt',
+    '@nuxtjs/i18n',
   ],
   components: [
     {
@@ -47,5 +48,17 @@ export default defineNuxtConfig({
   },
   supabase: {
     types: '@/types/database.ts',
+  },
+  i18n: {
+    legacy: false,
+    defaultLocale: 'en',
+    fallbackLocale: 'en',
+    restructureDir: 'assets',
+    typedOptionsAndMessages: 'default',
+    strategy: 'no_prefix',
+    locales: [
+      { code: 'en', file: 'en.json' },
+      { code: 'uk', file: 'uk.json' },
+    ],
   },
 });

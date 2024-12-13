@@ -29,6 +29,7 @@
     "@nuxt/fonts": "^0.10.2",
     "@nuxt/icon": "^1.6.1",
     "@nuxt/image": "^1.8.1",
+    "@nuxtjs/i18n": "^9.1.1",
     "@nuxtjs/supabase": "^1.4.1",
     "@supabase/supabase-js": "^2.45.6",
     "@tanstack/vue-query": "^5.62.0",
