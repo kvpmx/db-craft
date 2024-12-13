@@ -1,6 +1,6 @@
 <template>
   <header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
       <NuxtImg src="/images/logo.png" class="w-40" alt="DB Craft" />
       <Button variant="ghost" size="icon" class="rounded-full">
         <Icon name="lucide:user-circle" size="1.5rem" />

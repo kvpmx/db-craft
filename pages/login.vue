@@ -49,8 +49,8 @@
 <template>
   <PageMeta title="Login | DB Craft" description="Login to your account" />
 
-  <main class="flex justify-center items-center min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-auth">
-    <Card class="w-full mx-auto max-w-md rounded-xl">
+  <main class="flex min-h-screen items-center justify-center bg-auth px-4 py-12 sm:px-6 lg:px-8">
+    <Card class="mx-auto w-full max-w-md rounded-xl">
       <CardHeader>
         <CardTitle class="text-2xl">Login</CardTitle>
         <CardDescription>Enter your email below to login to your account</CardDescription>
@@ -85,13 +85,13 @@
             </FormField>
           </div>
 
-          <div class="grid gap-4 mt-6">
+          <div class="mt-6 grid gap-4">
             <Button type="submit" class="w-full" :disabled="loading.valueOf()">
               <Icon
                 v-if="loading.valueOf()"
                 name="lucide:loader-circle"
                 size="1rem"
-                class="mr-2 text-white animate-spin"
+                class="mr-2 animate-spin text-white"
               />
               Login
             </Button>

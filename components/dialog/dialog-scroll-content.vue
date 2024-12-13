@@ -30,7 +30,7 @@
       <DialogContent
         :class="
           cn(
-            'relative z-50 grid w-full max-w-lg my-8 gap-4 border border-slate-200 bg-white p-6 shadow-lg duration-200 rounded-lg md:w-full',
+            'relative z-50 my-8 grid w-full max-w-lg gap-4 rounded-lg border border-slate-200 bg-white p-6 shadow-lg duration-200 md:w-full',
             props.class
           )
         "
@@ -52,7 +52,7 @@
         <slot />
 
         <DialogClose
-          class="absolute top-3 right-3 p-0.5 transition-colors rounded-md hover:bg-slate-100"
+          class="absolute right-3 top-3 rounded-md p-0.5 transition-colors hover:bg-slate-100"
         >
           <Icon name="lucide:x" size="1rem" />
           <span class="sr-only">Close</span>

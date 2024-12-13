@@ -14,16 +14,16 @@
 <template>
   <Card>
     <CardHeader class="pb-3">
-      <div class="flex justify-between items-center">
+      <div class="flex items-center justify-between">
         <CardTitle
-          class="text-lg font-semibold overflow-hidden text-ellipsis whitespace-nowrap"
+          class="overflow-hidden text-ellipsis whitespace-nowrap text-lg font-semibold"
           :title="props.project.name"
         >
           {{ props.project.name }}
         </CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
-            <Button variant="ghost" size="icon" class="w-7 h-7">
+            <Button variant="ghost" size="icon" class="h-7 w-7">
               <Icon name="lucide:more-vertical" size="1rem" />
               <span class="sr-only">Open menu</span>
             </Button>
@@ -42,12 +42,12 @@
       <NuxtImg
         :src="props.project.thumbnail ?? '/images/thumbnail-placeholder.png'"
         :alt="`Thumbnail for ${props.project.name}`"
-        class="w-full h-auto object-cover rounded-md"
+        class="h-auto w-full rounded-md object-cover"
         style="aspect-ratio: 2 / 1"
         placeholder
       />
     </CardContent>
-    <CardFooter class="flex justify-between items-center">
+    <CardFooter class="flex items-center justify-between">
       <span
         class="text-sm text-gray-500"
         :title="formatDateAndTime(props.project.last_modified_at)"

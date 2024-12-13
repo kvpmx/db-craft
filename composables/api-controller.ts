@@ -7,10 +7,10 @@ interface ApiControllerConstructor<T extends ApiController> {
 }
 
 export const useApiController = <T extends ApiController>(
-  ControllerContructor: ApiControllerConstructor<T>
+  ControllerConstructor: ApiControllerConstructor<T>
 ) => {
   const supabase = useSupabaseClient<Database>();
   const user = useSupabaseUser();
 
-  return reactive(new ControllerContructor(supabase, user));
+  return reactive(new ControllerConstructor(supabase, user));
 };

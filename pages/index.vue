@@ -50,12 +50,12 @@
 <template>
   <PageMeta title="Home" description="DB Craft is a database design tool for developers" />
 
-  <div class="flex justify-between items-center mb-6 gap-2">
+  <div class="mb-6 flex items-center justify-between gap-2">
     <div class="relative w-full max-w-md">
       <Icon
         name="lucide:search"
         size="1rem"
-        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        class="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400"
       />
       <Input v-model="searchQuery" type="search" placeholder="Search projects..." class="pl-10" />
     </div>
@@ -65,7 +65,7 @@
     </Button>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     <ProjectCard
       v-for="project in filteredProjects"
       :key="project.id"
