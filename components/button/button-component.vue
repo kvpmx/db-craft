@@ -21,7 +21,7 @@
   <Primitive
     :as="as"
     :as-child="asChild"
-    :class="cn(buttonVariants({ variant, size }), props.class)"
+    :class="cn(buttonVariants({ variant, size }), props.class, 'select-none')"
   >
     <slot />
   </Primitive>
