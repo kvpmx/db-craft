@@ -51,16 +51,19 @@
         placeholder
       />
     </CardContent>
-    <CardFooter class="flex items-center justify-between">
+    <CardFooter class="flex items-center justify-between gap-2">
       <span
         class="text-sm text-gray-500"
         :title="formatDateAndTime(props.project.last_modified_at)"
       >
         {{ t('LAST_MODIFIED') }}: {{ formatDate(props.project.last_modified_at) }}
       </span>
-      <Button variant="outline">
-        <NuxtLink :to="`/project/${props.project.id}`">{{ t('OPEN') }}</NuxtLink>
-      </Button>
+
+      <NuxtLink :to="`/project/${props.project.id}`">
+        <Button variant="outline">
+          {{ t('OPEN') }}
+        </Button>
+      </NuxtLink>
     </CardFooter>
   </Card>
 </template>
