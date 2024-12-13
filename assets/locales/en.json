@@ -1,1 +1,14 @@
-{}
+{
+  "USER_PROFILE": "User Profile",
+  "OPEN": "Open",
+  "OPEN_MENU": "Open menu",
+  "DUPLICATE": "Duplicate",
+  "DELETE": "Delete",
+  "LAST_MODIFIED": "Last modified",
+  "HOME_PAGE_TITLE": "Home",
+  "HOME_PAGE_DESCRIPTION": "DB Craft is a database design tool for developers",
+  "SEARCH_PROJECTS": "Search projects...",
+  "NEW_PROJECT": "New Project",
+  "PROJECT_DELETED": "Project has been deleted",
+  "PROJECT_DUPLICATED": "Project has been duplicated"
+}

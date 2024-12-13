@@ -7,6 +7,8 @@
   const queryClient = useQueryClient();
   const projectsApi = useApiController(ProjectsController);
 
+  const { t } = useI18n();
+
   const invalidateProjectsQuery = () => {
     queryClient.invalidateQueries({ queryKey: ['projects'] });
   };
@@ -34,7 +36,7 @@
   const { mutateAsync: deleteProject } = useAdvancedMutation({
     mutationKey: ['deleteProject'],
     mutationFn: async (id: number) => await projectsApi.delete(id),
-    successMessage: 'Project has been deleted',
+    successMessage: t('PROJECT_DELETED'),
     onSuccess: invalidateProjectsQuery,
   });
 
@@ -42,13 +44,13 @@
   const { mutateAsync: duplicateProject } = useAdvancedMutation({
     mutationKey: ['duplicateProject'],
     mutationFn: async (project: TablesInsert<'projects'>) => await projectsApi.duplicate(project),
-    successMessage: 'Project has been duplicated',
+    successMessage: t('PROJECT_DUPLICATED'),
     onSuccess: invalidateProjectsQuery,
   });
 </script>
 
 <template>
-  <PageMeta title="Home" description="DB Craft is a database design tool for developers" />
+  <PageMeta :title="t('HOME_PAGE_TITLE')" :description="t('HOME_PAGE_DESCRIPTION')" />
 
   <div class="mb-6 flex items-center justify-between gap-2">
     <div class="relative w-full max-w-md">
@@ -57,11 +59,16 @@
         size="1rem"
         class="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400"
       />
-      <Input v-model="searchQuery" type="search" placeholder="Search projects..." class="pl-10" />
+      <Input
+        v-model="searchQuery"
+        type="search"
+        :placeholder="t('SEARCH_PROJECTS')"
+        class="pl-10"
+      />
     </div>
     <Button>
       <Icon name="lucide:plus" size="1rem" class="mr-2" />
-      New Project
+      {{ t('NEW_PROJECT') }}
     </Button>
   </div>
 

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import type { Tables } from '@/types/database';
 
+  const { t } = useI18n();
+
   const props = defineProps<{
     project: Tables<'projects'>;
   }>();
@@ -25,14 +27,16 @@
           <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon" class="h-7 w-7">
               <Icon name="lucide:more-vertical" size="1rem" />
-              <span class="sr-only">Open menu</span>
+              <span class="sr-only">{{ t('OPEN_MENU') }}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem @click="emit('duplicate', props.project)">Duplicate</DropdownMenuItem>
+            <DropdownMenuItem @click="emit('duplicate', props.project)">{{
+              t('DUPLICATE')
+            }}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem class="text-red-600" @click="emit('delete', props.project.id)">
-              Delete
+              {{ t('DELETE') }}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -52,10 +56,10 @@
         class="text-sm text-gray-500"
         :title="formatDateAndTime(props.project.last_modified_at)"
       >
-        Last modified: {{ formatDate(props.project.last_modified_at) }}
+        {{ t('LAST_MODIFIED') }}: {{ formatDate(props.project.last_modified_at) }}
       </span>
       <Button variant="outline">
-        <NuxtLink :to="`/project/${props.project.id}`">Open</NuxtLink>
+        <NuxtLink :to="`/project/${props.project.id}`">{{ t('OPEN') }}</NuxtLink>
       </Button>
     </CardFooter>
   </Card>

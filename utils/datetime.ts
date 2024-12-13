@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 export const formatDate = (date: string) => {
-  return format(date, 'MMM d, yyyy');
+  return format(date, 'dd.MM.yyyy');
 };
 
 export const formatDateAndTime = (date: string) => {

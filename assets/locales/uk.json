@@ -1,1 +1,14 @@
-{}
+{
+  "USER_PROFILE": "Профіль користувача",
+  "OPEN": "Відкрити",
+  "OPEN_MENU": "Відкрити меню",
+  "DUPLICATE": "Дублювати",
+  "DELETE": "Видалити",
+  "LAST_MODIFIED": "Востаннє змінено",
+  "HOME_PAGE_TITLE": "Головна",
+  "HOME_PAGE_DESCRIPTION": "DB Craft - це інструмент для моделювання баз даних для розробників",
+  "SEARCH_PROJECTS": "Шукати проєкти...",
+  "NEW_PROJECT": "Новий проєкт",
+  "PROJECT_DELETED": "Проєкт успішно видалено",
+  "PROJECT_DUPLICATED": "Проєкт успішно дубльовано"
+}
