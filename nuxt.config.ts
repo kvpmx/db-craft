@@ -53,12 +53,16 @@ export default defineNuxtConfig({
     legacy: false,
     defaultLocale: 'en',
     fallbackLocale: 'en',
-    restructureDir: 'assets',
+    restructureDir: './lib/i18n',
+    langDir: '../../assets/locales',
     typedOptionsAndMessages: 'default',
     strategy: 'no_prefix',
     locales: [
       { code: 'en', file: 'en.json' },
       { code: 'uk', file: 'uk.json' },
     ],
+    experimental: {
+      localeDetector: 'locale-detector.ts',
+    },
   },
 });
