@@ -11,6 +11,8 @@ export type Database = {
           last_modified_at: string;
           name: string;
           thumbnail: string | null;
+          type: Database['public']['Enums']['database_type'];
+          visibility: Database['public']['Enums']['diagram_visibility'];
         };
         Insert: {
           author: string;
@@ -19,6 +21,8 @@ export type Database = {
           last_modified_at?: string;
           name?: string;
           thumbnail?: string | null;
+          type?: Database['public']['Enums']['database_type'];
+          visibility?: Database['public']['Enums']['diagram_visibility'];
         };
         Update: {
           author?: string;
@@ -27,6 +31,8 @@ export type Database = {
           last_modified_at?: string;
           name?: string;
           thumbnail?: string | null;
+          type?: Database['public']['Enums']['database_type'];
+          visibility?: Database['public']['Enums']['diagram_visibility'];
         };
         Relationships: [];
       };
@@ -38,7 +44,8 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      [_ in never]: never;
+      database_type: 'mysql' | 'postgresql' | 'sqlserver';
+      diagram_visibility: 'public' | 'private';
     };
     CompositeTypes: {
       [_ in never]: never;
