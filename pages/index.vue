@@ -66,10 +66,8 @@
         class="pl-10"
       />
     </div>
-    <Button>
-      <Icon name="lucide:plus" size="1rem" class="mr-2" />
-      {{ t('NEW_PROJECT') }}
-    </Button>
+
+    <CreateDiagramModal />
   </div>
 
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
