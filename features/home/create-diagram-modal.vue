@@ -3,6 +3,8 @@
   import { toTypedSchema } from '@vee-validate/zod';
 
   const { t } = useI18n();
+  const supabase = useSupabaseClient();
+  const user = useSupabaseUser();
 
   const databases = [
     { name: 'MySQL', value: 'mysql', icon: 'devicon:mysql' },
@@ -20,9 +22,13 @@
 
   const { handleSubmit } = useForm({ validationSchema });
 
-  const submitCreateDiagramForm = handleSubmit((data) => {
-    // TODO
-    console.log(data);
+  const submitCreateDiagramForm = handleSubmit(async (data) => {
+    if (!user.value) return;
+
+    await supabase.from('projects').insert({
+      ...data,
+      author: user.value.id,
+    });
   });
 </script>
 
@@ -35,7 +41,7 @@
       </Button>
     </DialogTrigger>
 
-    <DialogScrollContent class="max-w-[95%] sm:max-w-[600px]">
+    <DialogScrollContent class="max-w-[95%] sm:max-w-[600px]" @interact-outside.prevent>
       <DialogHeader>
         <DialogTitle class="text-2xl font-semibold">
           {{ t('NEW_DIAGAM_MODAL_TITLE') }}
