@@ -31,5 +31,9 @@
   "DATABASE_TYPE": "Тип бази даних",
   "PUBLIC": "Публічна",
   "PRIVATE": "Приватна",
-  "CREATE_DIAGRAM": "Створити діаграму"
+  "CREATE_DIAGRAM": "Створити діаграму",
+  "EMAIL_REQUIRED": "Електронна пошта є обов'язковою",
+  "EMAIL_INVALID": "Електронна пошта є недійсною",
+  "PASSWORD_REQUIRED": "Пароль є обов'язковим",
+  "PASSWORD_MIN_LENGTH": "Пароль має містити не менше 8 символів"
 }

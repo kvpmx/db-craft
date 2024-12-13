@@ -11,12 +11,12 @@
   const validationSchema = toTypedSchema(
     z.object({
       email: z
-        .string({ required_error: 'Email is required' })
-        .email({ message: 'The email is invalid' }),
+        .string({ required_error: t('EMAIL_REQUIRED') })
+        .email({ message: t('EMAIL_INVALID') }),
 
       password: z
-        .string({ required_error: 'Password is required' })
-        .min(8, { message: 'Password must be at least 8 characters' }),
+        .string({ required_error: t('PASSWORD_REQUIRED') })
+        .min(8, { message: t('PASSWORD_MIN_LENGTH') }),
     })
   );
 

@@ -52,7 +52,7 @@
             <FormItem>
               <FormLabel>{{ t('DIAGRAM_NAME') }}</FormLabel>
               <FormControl>
-                <Input type="text" v-bind="componentField" />
+                <Input type="text" v-bind="componentField" autocomplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>

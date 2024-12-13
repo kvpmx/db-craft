@@ -60,6 +60,7 @@
         class="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400"
       />
       <Input
+        id="search-projects"
         v-model="searchQuery"
         type="search"
         :placeholder="t('SEARCH_PROJECTS')"
