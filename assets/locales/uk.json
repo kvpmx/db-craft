@@ -10,5 +10,17 @@
   "SEARCH_PROJECTS": "Шукати проєкти...",
   "NEW_PROJECT": "Новий проєкт",
   "PROJECT_DELETED": "Проєкт успішно видалено",
-  "PROJECT_DUPLICATED": "Проєкт успішно дубльовано"
+  "PROJECT_DUPLICATED": "Проєкт успішно дубльовано",
+  "LOGIN_PAGE_TITLE": "Вхід | DB Craft",
+  "LOGIN_PAGE_DESCRIPTION": "Увійдіть до вашого облікового запису",
+  "LOGIN": "Увійти",
+  "LOGIN_FORM_DESCRIPTION": "Введіть електронну адресу та пароль нижче, щоб увійти до свого акаунту",
+  "EMAIL": "Електронна пошта",
+  "PASSWORD": "Пароль",
+  "LOGIN_WITH_GOOGLE": "Увійти за допомогою Google",
+  "DO_NOT_HAVE_ACCOUNT": "Не маєте акаунту?",
+  "SIGN_UP": "Зареєструватися",
+  "DEFAULT_ERROR_MESSAGE": "Сталася помилка, спробуйте, будь ласка, пізніше",
+  "DEFAULT_SUCCESS_MESSAGE": "Успіх!",
+  "DEFAULT_LOADING_MESSAGE": "Завантаження..."
 }

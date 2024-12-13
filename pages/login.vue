@@ -6,6 +6,8 @@
   const supabase = useSupabaseClient();
   const { withAuthError } = useAuthErrorHandler();
 
+  const { t } = useI18n();
+
   const validationSchema = toTypedSchema(
     z.object({
       email: z
@@ -47,13 +49,13 @@
 </script>
 
 <template>
-  <PageMeta title="Login | DB Craft" description="Login to your account" />
+  <PageMeta :title="t('LOGIN_PAGE_TITLE')" :description="t('LOGIN_PAGE_DESCRIPTION')" />
 
   <main class="flex min-h-screen items-center justify-center bg-auth px-4 py-12 sm:px-6 lg:px-8">
     <Card class="mx-auto w-full max-w-md rounded-xl">
       <CardHeader>
-        <CardTitle class="text-2xl">Login</CardTitle>
-        <CardDescription>Enter your email below to login to your account</CardDescription>
+        <CardTitle class="text-2xl">{{ t('LOGIN') }}</CardTitle>
+        <CardDescription>{{ t('LOGIN_FORM_DESCRIPTION') }}</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -61,7 +63,7 @@
           <div class="space-y-4">
             <FormField v-slot="{ componentField }" name="email">
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{{ t('EMAIL') }}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -76,7 +78,7 @@
 
             <FormField v-slot="{ componentField }" name="password">
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{{ t('PASSWORD') }}</FormLabel>
                 <FormControl>
                   <Input type="password" v-bind="componentField" autocomplete="current-password" />
                 </FormControl>
@@ -93,7 +95,7 @@
                 size="1rem"
                 class="mr-2 animate-spin text-white"
               />
-              Login
+              {{ t('LOGIN') }}
             </Button>
             <Button
               type="button"
@@ -103,14 +105,14 @@
               @click="loginWithGoogle"
             >
               <Icon name="flat-color-icons:google" size="1.25rem" class="mr-2" />
-              Login with Google
+              {{ t('LOGIN_WITH_GOOGLE') }}
             </Button>
           </div>
         </form>
 
         <div class="mt-4 text-center text-sm">
-          Don't have an account?
-          <a href="#" class="underline">Sign up</a>
+          {{ t('DO_NOT_HAVE_ACCOUNT') }}
+          <a href="#" class="underline">{{ t('SIGN_UP') }}</a>
         </div>
       </CardContent>
     </Card>

@@ -21,10 +21,12 @@ export const useAdvancedMutation = <
   options: AdvancedMutationOptions<TData, TError, TVariables, TContext>,
   queryClient?: QueryClient
 ) => {
+  const { t } = useI18n();
+
   const {
-    errorMessage = 'There was an error, please try again later',
-    successMessage = 'Success!',
-    loadingMessage = 'Loading...',
+    errorMessage = t('DEFAULT_ERROR_MESSAGE'),
+    successMessage = t('DEFAULT_SUCCESS_MESSAGE'),
+    loadingMessage = t('DEFAULT_LOADING_MESSAGE'),
     ...mutationOptions
   } = options;
 
