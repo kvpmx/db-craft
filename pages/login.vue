@@ -1,12 +1,13 @@
 <script lang="ts" setup>
   import z from 'zod';
   import { toTypedSchema } from '@vee-validate/zod';
+  import { toast } from 'vue-sonner';
   import { routes } from '@/lib/routes';
 
-  const supabase = useSupabaseClient();
-  const { withAuthError } = useAuthErrorHandler();
+  import type { SignInWithPasswordCredentials } from '@supabase/supabase-js';
 
   const { t } = useI18n();
+  const supabase = useSupabaseClient();
 
   const validationSchema = toTypedSchema(
     z.object({
@@ -20,31 +21,23 @@
     })
   );
 
-  const loading = ref(false);
-
   const { handleSubmit } = useForm({ validationSchema });
 
-  const submitLoginForm = handleSubmit(async ({ email, password }) => {
-    loading.value = true;
-
-    const success = await withAuthError(
-      supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-    );
-
-    loading.value = false;
-
-    if (success) navigateTo(routes.home());
+  const { mutateAsync: signInWithPassword, isPending } = useMutation({
+    mutationKey: ['signInWithPassword'],
+    mutationFn: async (data: SignInWithPasswordCredentials) => {
+      await supabase.auth.signInWithPassword(data);
+    },
+    onError: (error: Error) => toast.error(error.toString()),
+    onSuccess: () => navigateTo(routes.home()),
   });
 
+  const submitLoginForm = handleSubmit(async (data) => await signInWithPassword(data));
+
   const loginWithGoogle = async () => {
-    await withAuthError(
-      supabase.auth.signInWithOAuth({
-        provider: 'google',
-      })
-    );
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
   };
 </script>
 
@@ -88,14 +81,15 @@
           </div>
 
           <div class="mt-6 grid gap-4">
-            <ButtonWithLoading type="submit" class="w-full" :loading="loading">
+            <ButtonWithLoading type="submit" class="w-full" :loading="isPending">
               {{ t('LOGIN') }}
             </ButtonWithLoading>
+
             <Button
               type="button"
               variant="outline"
               class="w-full"
-              :disabled="loading"
+              :disabled="isPending"
               @click="loginWithGoogle"
             >
               <Icon name="flat-color-icons:google" size="1.25rem" class="mr-2" />
