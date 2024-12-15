@@ -12,5 +12,5 @@ export const useApiController = <T extends ApiController>(
   const supabase = useSupabaseClient<Database>();
   const user = useSupabaseUser();
 
-  return reactive(new ControllerConstructor(supabase, user));
+  return reactive(new ControllerConstructor(supabase, user.value));
 };

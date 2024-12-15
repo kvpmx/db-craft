@@ -88,20 +88,14 @@
           </div>
 
           <div class="mt-6 grid gap-4">
-            <Button type="submit" class="w-full" :disabled="loading.valueOf()">
-              <Icon
-                v-if="loading.valueOf()"
-                name="lucide:loader-circle"
-                size="1rem"
-                class="mr-2 animate-spin text-white"
-              />
+            <ButtonWithLoading type="submit" class="w-full" :loading="loading">
               {{ t('LOGIN') }}
-            </Button>
+            </ButtonWithLoading>
             <Button
               type="button"
               variant="outline"
               class="w-full"
-              :disabled="loading.valueOf()"
+              :disabled="loading"
               @click="loginWithGoogle"
             >
               <Icon name="flat-color-icons:google" size="1.25rem" class="mr-2" />

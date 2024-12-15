@@ -1,10 +1,11 @@
 <script lang="ts" setup>
   import z from 'zod';
   import { toTypedSchema } from '@vee-validate/zod';
+  import { ProjectsController } from '@/lib/controllers';
+  import type { TablesInsert } from '@/types/database';
 
   const { t } = useI18n();
-  const supabase = useSupabaseClient();
-  const user = useSupabaseUser();
+  const projectsApi = useApiController(ProjectsController);
 
   const databases = [
     { name: 'MySQL', value: 'mysql', icon: 'devicon:mysql' },
@@ -14,26 +15,33 @@
 
   const validationSchema = toTypedSchema(
     z.object({
-      name: z.string({ required_error: t('NAME_REQUIRED') }),
+      name: z
+        .string({ required_error: t('NAME_REQUIRED') })
+        .min(1, { message: t('NAME_REQUIRED') }),
+
       visibility: z.enum(['public', 'private']).default('public'),
       type: z.enum(['mysql', 'postgresql', 'sqlserver']).default('mysql'),
     })
   );
 
+  const dialogOpened = ref(false);
   const { handleSubmit } = useForm({ validationSchema });
 
-  const submitCreateDiagramForm = handleSubmit(async (data) => {
-    if (!user.value) return;
+  const { mutateAsync: createProject, isPending } = useMutation({
+    mutationKey: ['createProject'],
+    mutationFn: async (data: Omit<TablesInsert<'projects'>, 'author'>) => {
+      await projectsApi.create(data);
+    },
+  });
 
-    await supabase.from('projects').insert({
-      ...data,
-      author: user.value.id,
-    });
+  const submitCreateDiagramForm = handleSubmit(async (data) => {
+    await createProject(data);
+    dialogOpened.value = false;
   });
 </script>
 
 <template>
-  <Dialog>
+  <Dialog :open="dialogOpened" @update:open="dialogOpened = !dialogOpened">
     <DialogTrigger as-child>
       <Button>
         <Icon name="lucide:plus" size="1rem" class="mr-2" />
@@ -119,7 +127,14 @@
 
           <!-- Submit button -->
           <DialogFooter>
-            <Button class="w-full sm:ml-auto sm:w-auto" size="lg">{{ t('CREATE_DIAGRAM') }}</Button>
+            <ButtonWithLoading
+              type="submit"
+              class="w-full sm:ml-auto sm:w-auto"
+              size="lg"
+              :loading="isPending"
+            >
+              {{ t('CREATE_DIAGRAM') }}
+            </ButtonWithLoading>
           </DialogFooter>
         </form>
       </div>

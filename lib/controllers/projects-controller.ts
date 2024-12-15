@@ -14,6 +14,15 @@ export class ProjectsController extends ApiController {
     return data;
   }
 
+  async create(newProject: Omit<TablesInsert<'projects'>, 'author'>) {
+    if (!this.user) return;
+
+    await this.supabase.from('projects').insert({
+      ...newProject,
+      author: this.user.id,
+    });
+  }
+
   async delete(id: number) {
     await this.supabase.from('projects').delete().eq('id', id).throwOnError();
   }
