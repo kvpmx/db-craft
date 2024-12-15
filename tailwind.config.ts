@@ -37,6 +37,9 @@ const config: Config = {
       backgroundImage: {
         auth: 'url(/images/auth-page-background.png)',
       },
+      screens: {
+        'sm-tablet': '670px',
+      },
     },
   },
   plugins: [animate],

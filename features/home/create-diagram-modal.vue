@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import z from 'zod';
   import { toTypedSchema } from '@vee-validate/zod';
+  import { routes } from '@/lib/routes';
   import { ProjectsController } from '@/lib/controllers';
   import type { TablesInsert } from '@/types/database';
 
@@ -30,13 +31,16 @@
   const { mutateAsync: createProject, isPending } = useMutation({
     mutationKey: ['createProject'],
     mutationFn: async (data: Omit<TablesInsert<'projects'>, 'author'>) => {
-      await projectsApi.create(data);
+      return await projectsApi.create(data);
+    },
+    onSuccess: (createdProject) => {
+      dialogOpened.value = false;
+      if (createdProject?.id) navigateTo(routes.diagram(createdProject.id));
     },
   });
 
   const submitCreateDiagramForm = handleSubmit(async (data) => {
     await createProject(data);
-    dialogOpened.value = false;
   });
 </script>
 

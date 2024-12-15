@@ -71,7 +71,7 @@
     <CreateDiagramModal />
   </div>
 
-  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <div class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
     <ProjectCard
       v-for="project in filteredProjects"
       :key="project.id"

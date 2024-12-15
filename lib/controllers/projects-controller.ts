@@ -3,7 +3,7 @@ import type { TablesInsert } from '@/types/database';
 
 export class ProjectsController extends ApiController {
   async getAll() {
-    if (!this.user) return;
+    if (!this.user) return null;
 
     const { data } = await this.supabase
       .from('projects')
@@ -14,13 +14,33 @@ export class ProjectsController extends ApiController {
     return data;
   }
 
+  async getById(id: number | string) {
+    if (!this.user) return null;
+
+    const { data } = await this.supabase
+      .from('projects')
+      .select('*')
+      .eq('id', id)
+      .eq('author', this.user.id)
+      .limit(1)
+      .maybeSingle()
+      .throwOnError();
+
+    return data;
+  }
+
   async create(newProject: Omit<TablesInsert<'projects'>, 'author'>) {
     if (!this.user) return;
 
-    await this.supabase.from('projects').insert({
-      ...newProject,
-      author: this.user.id,
-    });
+    const { data } = await this.supabase
+      .from('projects')
+      .insert({ ...newProject, author: this.user.id })
+      .select()
+      .limit(1)
+      .single()
+      .throwOnError();
+
+    return data;
   }
 
   async delete(id: number) {

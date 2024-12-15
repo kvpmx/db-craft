@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  import { routes } from '@/lib/routes';
   import type { Tables } from '@/types/database';
 
   const { t } = useI18n();
@@ -59,7 +60,7 @@
         {{ t('LAST_MODIFIED') }}: {{ formatDate(props.project.last_modified_at) }}
       </span>
 
-      <NuxtLink :to="`/project/${props.project.id}`">
+      <NuxtLink :to="routes.diagram(props.project.id)">
         <Button variant="outline">
           {{ t('OPEN') }}
         </Button>
