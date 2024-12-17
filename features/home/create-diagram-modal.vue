@@ -10,7 +10,7 @@
 
   const databases = [
     { name: 'MySQL', value: 'mysql', icon: 'devicon:mysql' },
-    { name: 'PostgreSQL', value: 'postgresql', icon: 'devicon:postgresql' },
+    { name: 'PostgreSQL', value: 'postgres', icon: 'devicon:postgresql' },
     { name: 'SQL Server', value: 'sqlserver', icon: 'devicon:microsoftsqlserver' },
   ];
 
@@ -21,7 +21,7 @@
         .min(1, { message: t('NAME_REQUIRED') }),
 
       visibility: z.enum(['public', 'private']).default('public'),
-      type: z.enum(['mysql', 'postgresql', 'sqlserver']).default('mysql'),
+      type: z.enum(['mysql', 'postgres', 'sqlserver']).default('mysql'),
     })
   );
 
