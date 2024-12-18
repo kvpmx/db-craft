@@ -3,15 +3,16 @@
   import { toTypedSchema } from '@vee-validate/zod';
   import { routes } from '@/lib/routes';
   import { ProjectsController } from '@/lib/controllers';
+  import { DatabaseType, DiagramVisibility } from '@/lib/constants/diagram';
   import type { TablesInsert } from '@/types/database';
 
   const { t } = useI18n();
   const projectsApi = useApiController(ProjectsController);
 
   const databases = [
-    { name: 'MySQL', value: 'mysql', icon: 'devicon:mysql' },
-    { name: 'PostgreSQL', value: 'postgres', icon: 'devicon:postgresql' },
-    { name: 'SQL Server', value: 'sqlserver', icon: 'devicon:microsoftsqlserver' },
+    { name: 'MySQL', value: DatabaseType.MySQL, icon: 'devicon:mysql' },
+    { name: 'PostgreSQL', value: DatabaseType.PostgreSQL, icon: 'devicon:postgresql' },
+    { name: 'SQL Server', value: DatabaseType.SQLServer, icon: 'devicon:microsoftsqlserver' },
   ];
 
   const validationSchema = toTypedSchema(
@@ -20,8 +21,8 @@
         .string({ required_error: t('NAME_REQUIRED') })
         .min(1, { message: t('NAME_REQUIRED') }),
 
-      visibility: z.enum(['public', 'private']).default('public'),
-      type: z.enum(['mysql', 'postgres', 'sqlserver']).default('mysql'),
+      visibility: z.nativeEnum(DiagramVisibility).default(DiagramVisibility.Public),
+      type: z.nativeEnum(DatabaseType).default(DatabaseType.MySQL),
     })
   );
 
@@ -82,17 +83,21 @@
               <FormLabel>{{ t('DIAGRAM_VISIBILITY') }}</FormLabel>
 
               <FormControl>
-                <RadioGroup class="flex gap-4" v-bind="componentField" default-value="public">
+                <RadioGroup
+                  class="flex gap-4"
+                  v-bind="componentField"
+                  :default-value="DiagramVisibility.Public"
+                >
                   <FormItem class="flex items-center gap-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="public" />
+                      <RadioGroupItem :value="DiagramVisibility.Public" />
                     </FormControl>
                     <FormLabel class="font-normal">{{ t('PUBLIC') }}</FormLabel>
                   </FormItem>
 
                   <FormItem class="flex items-center gap-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="private" />
+                      <RadioGroupItem :value="DiagramVisibility.Private" />
                     </FormControl>
                     <FormLabel class="font-normal">{{ t('PRIVATE') }}</FormLabel>
                   </FormItem>
@@ -110,8 +115,8 @@
                 <ToggleGroup
                   v-bind="componentField"
                   type="single"
-                  :default-value="databases[0].value"
                   class="flex flex-wrap gap-4"
+                  :default-value="DatabaseType.MySQL"
                 >
                   <ToggleGroupItem
                     v-for="db in databases"
