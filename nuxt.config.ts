@@ -15,10 +15,8 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
   ],
   components: [
-    {
-      path: '@/features',
-      pathPrefix: false,
-    },
+    { path: '@/features', pathPrefix: true },
+    { path: '@/features/common', pathPrefix: false },
   ],
   image: {
     provider: 'none',

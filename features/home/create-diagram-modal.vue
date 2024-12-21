@@ -54,7 +54,11 @@
       </Button>
     </DialogTrigger>
 
-    <DialogScrollContent class="max-w-[95%] sm:max-w-[600px]" @interact-outside.prevent>
+    <DialogScrollContent
+      class="max-w-[95%] sm:max-w-[600px]"
+      @interact-outside.prevent
+      @open-auto-focus.prevent
+    >
       <DialogHeader>
         <DialogTitle class="text-2xl font-semibold">
           {{ t('NEW_DIAGAM_MODAL_TITLE') }}

@@ -72,7 +72,7 @@
       />
     </div>
 
-    <CreateDiagramModal />
+    <HomeCreateDiagramModal />
   </div>
 
   <div v-if="isPending" class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
@@ -84,7 +84,7 @@
   </div>
 
   <div v-if="!isPending" class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
-    <ProjectCard
+    <HomeProjectCard
       v-for="project in filteredProjects"
       :key="project.id"
       :project="project"
