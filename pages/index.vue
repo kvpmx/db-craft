@@ -14,7 +14,11 @@
   };
 
   // Get all projects
-  const { data: projects, suspense } = useQuery({
+  const {
+    data: projects,
+    suspense,
+    isPending,
+  } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => await projectsApi.getAll(),
   });
@@ -71,7 +75,15 @@
     <CreateDiagramModal />
   </div>
 
-  <div class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
+  <div v-if="isPending" class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
+    <Skeleton
+      v-for="index in 6"
+      :key="index"
+      class="h-[315px] rounded-lg border border-slate-200 bg-white shadow-sm"
+    />
+  </div>
+
+  <div v-if="!isPending" class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
     <ProjectCard
       v-for="project in filteredProjects"
       :key="project.id"
