@@ -1,11 +1,11 @@
 import type { DatabaseFieldTypes, DatabaseType } from '@/lib/constants/diagram';
 
-export interface DiagramConfig<T extends DatabaseType> {
+export interface DiagramConfig<T extends DatabaseType | unknown = unknown> {
   tables: Table<T>[];
   refs: TableReference[];
 }
 
-export interface Table<T extends DatabaseType> {
+export interface Table<T extends DatabaseType | unknown = unknown> {
   id: string;
   name: string;
   position: Position;
@@ -17,10 +17,10 @@ export interface Position {
   y: number;
 }
 
-export interface TableField<T extends DatabaseType> {
+export interface TableField<T extends DatabaseType | unknown = unknown> {
   id: string;
   name: string;
-  type: (typeof DatabaseFieldTypes)[T][number];
+  type: T extends DatabaseType ? (typeof DatabaseFieldTypes)[T][number] : string;
   primary_key?: boolean;
 }
 

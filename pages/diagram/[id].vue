@@ -22,5 +22,8 @@
 </script>
 
 <template>
-  <div>Diagram: {{ JSON.stringify(data) }}</div>
+  <div class="flex h-[100vh]">
+    <DiagramSidebar :tables="data?.schema.tables ?? []" />
+    <main class="bg-muted/10 w-full flex-1"></main>
+  </div>
 </template>

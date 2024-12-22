@@ -9,6 +9,7 @@ export class ProjectsController extends ApiController {
       .from('projects')
       .select('*')
       .eq('author', this.user.id)
+      .order('created_at', { ascending: false })
       .throwOnError();
 
     return data;

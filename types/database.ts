@@ -10,6 +10,7 @@ export type Database = {
           id: number;
           last_modified_at: string;
           name: string;
+          schema: Json;
           thumbnail: string | null;
           type: Database['public']['Enums']['database_type'];
           visibility: Database['public']['Enums']['diagram_visibility'];
@@ -20,6 +21,7 @@ export type Database = {
           id?: number;
           last_modified_at?: string;
           name?: string;
+          schema?: Json;
           thumbnail?: string | null;
           type?: Database['public']['Enums']['database_type'];
           visibility?: Database['public']['Enums']['diagram_visibility'];
@@ -30,6 +32,7 @@ export type Database = {
           id?: number;
           last_modified_at?: string;
           name?: string;
+          schema?: Json;
           thumbnail?: string | null;
           type?: Database['public']['Enums']['database_type'];
           visibility?: Database['public']['Enums']['diagram_visibility'];
