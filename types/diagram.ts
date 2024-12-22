@@ -1,3 +1,4 @@
+import type { TupleToUnion } from 'type-fest';
 import type { DatabaseFieldTypes, DatabaseType } from '@/lib/constants/diagram';
 
 export interface DiagramConfig<T extends DatabaseType | unknown = unknown> {
@@ -20,7 +21,7 @@ export interface Position {
 export interface TableField<T extends DatabaseType | unknown = unknown> {
   id: string;
   name: string;
-  type: T extends DatabaseType ? (typeof DatabaseFieldTypes)[T][number] : string;
+  type: T extends DatabaseType ? TupleToUnion<(typeof DatabaseFieldTypes)[T]> : string;
   primary_key?: boolean;
 }
 
