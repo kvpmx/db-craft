@@ -1,5 +1,8 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { VueFlow } from '@vue-flow/core';
+  import { Background } from '@vue-flow/background';
+  import { Controls } from '@vue-flow/controls';
+  import { MiniMap } from '@vue-flow/minimap';
 
   import type { DiagramConfig } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
@@ -36,11 +39,20 @@
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />
       </template>
+
+      <Background />
+      <Controls />
+      <MiniMap :pannable="true" :zoomable="true" :width="150" :height="100" />
     </VueFlow>
   </ClientOnly>
 </template>
 
 <style>
+  /* Default styles */
   @import '@vue-flow/core/dist/style.css';
   @import '@vue-flow/core/dist/theme-default.css';
+
+  /* Additional component styles */
+  @import '@vue-flow/controls/dist/style.css';
+  @import '@vue-flow/minimap/dist/style.css';
 </style>
