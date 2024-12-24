@@ -1,14 +1,15 @@
 <script lang="ts" setup>
   import { ProjectsController } from '@/lib/controllers';
 
+  definePageMeta({ middleware: 'diagram-validate' });
+
   const route = useRoute();
   const projectsApi = useApiController(ProjectsController);
 
   const projectId = computed(() => {
-    return Number(typeof route.params.id === 'string' ? route.params.id : route.params.id[0]);
+    return Number(routeParamValue(route.params.id));
   });
 
-  // TODO: throw error if the project with provided ID doesn't exist
   const { data, suspense } = useQuery({
     queryKey: ['project', projectId.value],
     queryFn: async () => {
