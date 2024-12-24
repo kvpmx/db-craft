@@ -9,7 +9,12 @@ export enum DatabaseType {
   SQLServer = 'sqlserver',
 }
 
-export const DatabaseFieldTypes = {
+export const DEFAULT_DIAGRAM_CONFIG = {
+  tables: [],
+  refs: [],
+};
+
+export const DATABASE_FIELD_TYPES = {
   [DatabaseType.MySQL]: [
     'tinyint',
     'smallint',

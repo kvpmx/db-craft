@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { ProjectsController } from '@/lib/controllers';
+  import { DEFAULT_DIAGRAM_CONFIG } from '@/lib/constants/diagram';
 
   definePageMeta({ middleware: 'diagram-validate' });
 
@@ -25,6 +26,9 @@
 <template>
   <div class="flex h-[100vh]">
     <DiagramSidebar :tables="data?.schema.tables ?? []" />
-    <main class="bg-muted/10 w-full flex-1"></main>
+
+    <main class="bg-muted/10 w-full flex-1">
+      <DiagramCanvas :schema="data?.schema ?? DEFAULT_DIAGRAM_CONFIG" />
+    </main>
   </div>
 </template>
