@@ -1,4 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
+  import { useSortable } from '@vueuse/integrations/useSortable';
+
   import type { Table } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
@@ -7,6 +9,14 @@
   const props = defineProps<{
     tables: Table<T>[];
   }>();
+
+  const tables = ref(props.tables);
+
+  // @ts-expect-error: The `useSortable` composable does not have proper type definitions to work in Nuxt.js
+  useSortable('#sortable-container', tables, {
+    handle: '.sortable-handle',
+    animation: 150,
+  });
 </script>
 
 <template>
@@ -19,8 +29,8 @@
       </Button>
     </div>
 
-    <div class="flex-1 overflow-y-auto p-2">
-      <DiagramTableSection v-for="table in props.tables" :key="table.id" :table="table" />
+    <div id="sortable-container" class="flex-1 overflow-y-auto">
+      <DiagramTableSection v-for="table in tables" :key="table.id" :table="table" />
     </div>
 
     <div class="border-t p-3">

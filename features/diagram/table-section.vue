@@ -5,15 +5,28 @@
   const props = defineProps<{
     table: Table<T>;
   }>();
+
+  const isOpen = ref(false);
 </script>
 
 <template>
-  <Collapsible class="w-full">
+  <Collapsible v-model:open="isOpen" class="w-full">
     <CollapsibleTrigger
-      class="hover:bg-accent hover:text-accent-foreground mb-2 flex w-full items-center gap-2 rounded-md bg-blue-200 p-2 text-sm font-medium"
+      ref="trigger"
+      class="hover:bg-accent hover:text-accent-foreground flex w-full items-center justify-between gap-2 border-y-[1px] border-gray-400 p-2 pl-1 text-sm font-medium"
+      :style="{ backgroundColor: props.table.color }"
     >
-      <Icon name="lucide:chevron-down" size="1rem" class="text-muted-foreground" />
-      {{ props.table.name }}
+      <span class="flex items-center gap-1">
+        <Icon name="clarity:drag-handle-line" size="1.5rem" class="sortable-handle">++</Icon>
+        {{ props.table.name }}
+      </span>
+
+      <Icon
+        name="lucide:chevron-down"
+        size="1rem"
+        class="text-muted-foreground"
+        :style="{ transform: `rotate(${isOpen ? '180deg' : '0deg'})` }"
+      />
     </CollapsibleTrigger>
 
     <CollapsibleContent class="mb-2 px-2">
