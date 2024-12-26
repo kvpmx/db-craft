@@ -6,31 +6,40 @@
 
   import type { DiagramConfig } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
+  import type { Node, Edge } from '@vue-flow/core';
 
   const props = defineProps<{
-    schema: DiagramConfig<T>;
+    schema?: DiagramConfig<T>;
   }>();
 
   // Convert tables to nodes
-  const nodes = ref(
-    props.schema.tables.map((table) => ({
+  const nodes = ref<Node[]>([]);
+
+  watchEffect(() => {
+    if (!props.schema) return;
+
+    nodes.value = props.schema.tables.map((table) => ({
       id: table.id,
       type: 'table',
       position: table.position,
       data: table,
-    }))
-  );
+    }));
+  });
 
   // Convert refs to edges
-  const edges = ref(
-    props.schema.refs.map((ref) => ({
+  const edges = ref<Edge[]>([]);
+
+  watchEffect(() => {
+    if (!props.schema) return;
+
+    edges.value = props.schema.refs.map((ref) => ({
       id: ref.id,
       source: ref.source,
       target: ref.target,
       sourceHandle: `source-${ref.source}-${ref.source_field}`,
       targetHandle: `target-${ref.target}-${ref.target_field}`,
-    }))
-  );
+    }));
+  });
 </script>
 
 <template>

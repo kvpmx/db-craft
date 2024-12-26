@@ -1,5 +1,5 @@
 import { ApiController } from './api-controller';
-import type { TablesInsert } from '@/types/database';
+import type { TablesInsert, TablesUpdate } from '@/types/database';
 
 export class ProjectsController extends ApiController {
   async getAll() {
@@ -59,5 +59,9 @@ export class ProjectsController extends ApiController {
         name: `${project.name} (Copy)`,
       })
       .throwOnError();
+  }
+
+  async update(id: number, payload: TablesUpdate<'projects'>) {
+    await this.supabase.from('projects').update(payload).eq('id', id).throwOnError();
   }
 }

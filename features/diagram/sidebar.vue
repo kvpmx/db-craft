@@ -1,19 +1,31 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { useSortable } from '@vueuse/integrations/useSortable';
+  import { ProjectsController } from '@/lib/controllers';
 
-  import type { Table } from '@/types/diagram';
+  import type { DiagramConfig, Table } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
   const { t } = useI18n();
+  const projectsApi = useApiController(ProjectsController);
 
   const props = defineProps<{
-    tables: Table<T>[];
+    id: number;
+    schema?: DiagramConfig<T>;
   }>();
 
+  // Get tables
+  const tables = ref<Table<T>[]>([]);
+
+  watchEffect(() => {
+    if (!props.schema) return;
+    tables.value = props.schema.tables;
+  });
+
+  // Search tables or columns
   const searchQuery = ref('');
 
-  const tables = computed(() => {
-    return props.tables?.filter((table) => {
+  const filteredTables = computed(() => {
+    return tables.value?.filter((table) => {
       const titleMatch = includesIgnoreCase(table.name, searchQuery.value);
 
       const columnsMatch = table.fields.some((field) => {
@@ -24,9 +36,22 @@
     });
   });
 
+  // Make tables list sortable
   useSortable('#sortable-container', tables, {
     handle: '.sortable-handle',
     animation: 150,
+    onEnd: () => {
+      nextTick(async () => {
+        if (!props.schema) return;
+
+        await projectsApi.update(props.id, {
+          schema: {
+            ...props.schema,
+            tables: tables.value,
+          },
+        });
+      });
+    },
   });
 </script>
 
@@ -42,7 +67,7 @@
 
     <div id="sortable-container" class="flex-1 overflow-y-auto">
       <DiagramTableSection
-        v-for="table in tables"
+        v-for="table in filteredTables"
         :key="table.id"
         :table="table"
         :search-query="searchQuery"

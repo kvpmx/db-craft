@@ -10,7 +10,7 @@
     return Number(getRouteParamValue(route.params.id));
   });
 
-  const { data, suspense, isPending } = useQuery({
+  const { data, suspense } = useQuery({
     queryKey: ['project', projectId.value],
     queryFn: async () => {
       return await projectsApi.getById(projectId.value);
@@ -24,10 +24,10 @@
 
 <template>
   <div class="flex h-[100vh]">
-    <DiagramSidebar :tables="data?.schema.tables ?? []" />
+    <DiagramSidebar :id="projectId" :schema="data?.schema" />
 
     <main class="bg-muted/10 w-full flex-1">
-      <DiagramCanvas v-if="!isPending && data?.schema" :schema="data.schema" />
+      <DiagramCanvas :schema="data?.schema" />
     </main>
   </div>
 </template>
