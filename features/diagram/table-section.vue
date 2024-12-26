@@ -4,9 +4,14 @@
 
   const props = defineProps<{
     table: Table<T>;
+    searchQuery?: string;
   }>();
 
   const isOpen = ref(false);
+
+  watchEffect(() => {
+    isOpen.value = Boolean(props.searchQuery);
+  });
 </script>
 
 <template>
@@ -18,7 +23,7 @@
     >
       <span class="flex items-center gap-1">
         <Icon name="clarity:drag-handle-line" size="1.5rem" class="sortable-handle">++</Icon>
-        {{ props.table.name }}
+        <span v-html="textWithHighlight(props.table.name, props.searchQuery)"></span>
       </span>
 
       <Icon
@@ -35,7 +40,7 @@
         :key="column.name"
         class="flex items-center justify-between py-1 text-sm"
       >
-        <span>{{ column.name }}</span>
+        <span v-html="textWithHighlight(column.name, props.searchQuery)"></span>
         <span class="text-muted-foreground">{{ column.type }}</span>
       </div>
     </CollapsibleContent>

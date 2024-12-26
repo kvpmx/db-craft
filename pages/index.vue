@@ -31,9 +31,7 @@
   const searchQuery = ref('');
 
   const filteredProjects = computed(() => {
-    return projects.value?.filter((project) => {
-      return project.name.toLowerCase().includes(searchQuery.value.toLowerCase());
-    });
+    return projects.value?.filter((project) => includesText(project.name, searchQuery.value));
   });
 
   // Delete project
