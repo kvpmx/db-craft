@@ -14,10 +14,10 @@
 
   const tables = computed(() => {
     return props.tables?.filter((table) => {
-      const titleMatch = includesText(table.name, searchQuery.value);
+      const titleMatch = includesIgnoreCase(table.name, searchQuery.value);
 
       const columnsMatch = table.fields.some((field) => {
-        return includesText(field.name, searchQuery.value);
+        return includesIgnoreCase(field.name, searchQuery.value);
       });
 
       return titleMatch || columnsMatch;

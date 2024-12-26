@@ -8,7 +8,7 @@
   const projectsApi = useApiController(ProjectsController);
 
   const projectId = computed(() => {
-    return Number(routeParamValue(route.params.id));
+    return Number(getRouteParamValue(route.params.id));
   });
 
   const { data, suspense } = useQuery({

@@ -23,7 +23,7 @@
     >
       <span class="flex items-center gap-1">
         <Icon name="clarity:drag-handle-line" size="1.5rem" class="sortable-handle">++</Icon>
-        <span v-html="textWithHighlight(props.table.name, props.searchQuery)"></span>
+        <span v-html="highlightTextOccurrences(props.table.name, props.searchQuery)"></span>
       </span>
 
       <Icon
@@ -40,7 +40,7 @@
         :key="column.name"
         class="flex items-center justify-between py-1 text-sm"
       >
-        <span v-html="textWithHighlight(column.name, props.searchQuery)"></span>
+        <span v-html="highlightTextOccurrences(column.name, props.searchQuery)"></span>
         <span class="text-muted-foreground">{{ column.type }}</span>
       </div>
     </CollapsibleContent>
