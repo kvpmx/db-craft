@@ -6,6 +6,7 @@
 
   const props = defineProps<{
     project: Tables<'projects'>;
+    searchQuery?: string;
   }>();
 
   const emit = defineEmits<{
@@ -19,7 +20,7 @@
     <CardHeader class="pb-3">
       <div class="flex items-center justify-between">
         <CardTitle class="truncate text-lg font-semibold" :title="props.project.name">
-          {{ props.project.name }}
+          <span v-html="highlightTextOccurrences(props.project.name, searchQuery)"></span>
         </CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>

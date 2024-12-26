@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { ProjectsController } from '@/lib/controllers';
-  import { DEFAULT_DIAGRAM_CONFIG } from '@/lib/constants/diagram';
 
   definePageMeta({ middleware: 'diagram-validate' });
 
@@ -11,7 +10,7 @@
     return Number(getRouteParamValue(route.params.id));
   });
 
-  const { data, suspense } = useQuery({
+  const { data, suspense, isPending } = useQuery({
     queryKey: ['project', projectId.value],
     queryFn: async () => {
       return await projectsApi.getById(projectId.value);
@@ -28,7 +27,7 @@
     <DiagramSidebar :tables="data?.schema.tables ?? []" />
 
     <main class="bg-muted/10 w-full flex-1">
-      <DiagramCanvas :schema="data?.schema ?? DEFAULT_DIAGRAM_CONFIG" />
+      <DiagramCanvas v-if="!isPending && data?.schema" :schema="data.schema" />
     </main>
   </div>
 </template>

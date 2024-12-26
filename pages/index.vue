@@ -14,11 +14,7 @@
   };
 
   // Get all projects
-  const {
-    data: projects,
-    suspense,
-    isPending,
-  } = useQuery({
+  const { data, suspense, isPending } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => await projectsApi.getAll(),
   });
@@ -31,7 +27,7 @@
   const searchQuery = ref('');
 
   const filteredProjects = computed(() => {
-    return projects.value?.filter((project) => includesIgnoreCase(project.name, searchQuery.value));
+    return data.value?.filter((project) => includesIgnoreCase(project.name, searchQuery.value));
   });
 
   // Delete project
@@ -81,11 +77,12 @@
     />
   </div>
 
-  <div v-if="!isPending" class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
+  <div v-else class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
     <HomeProjectCard
       v-for="project in filteredProjects"
       :key="project.id"
       :project="project"
+      :search-query="searchQuery"
       @delete="deleteProject"
       @duplicate="duplicateProject"
     />

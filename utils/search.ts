@@ -19,6 +19,10 @@ export const includesIgnoreCase = (text: string, searchQuery: string) => {
  */
 export const highlightTextOccurrences = (text: string, substring?: string) => {
   if (!substring) return text;
-  const regex = new RegExp(`(${substring})`, 'gi');
+
+  // Escape special characters in the substring
+  const safeSubstring = substring.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${safeSubstring})`, 'gi');
+
   return text.replace(regex, '<span class="bg-yellow-300 font-semibold">$1</span>');
 };
