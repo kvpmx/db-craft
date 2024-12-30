@@ -37,9 +37,12 @@
   });
 
   // Make tables list sortable
-  useSortable('#sortable-container', tables, {
-    handle: '.sortable-handle',
+  useSortable('#tables-sortable-container', tables, {
+    handle: '.table-section-header',
     animation: 150,
+    forceFallback: true,
+    delay: 100,
+    touchStartThreshold: 10,
     onEnd: () => {
       nextTick(async () => {
         if (!props.schema) return;
@@ -56,7 +59,7 @@
 </script>
 
 <template>
-  <aside class="flex w-80 max-w-[100vh] flex-col border-r">
+  <aside class="flex w-[350px] max-w-[100vh] flex-col border-r">
     <div class="flex items-center justify-between gap-4 border-b p-3">
       <h2 class="text-xl font-semibold">{{ t('TABLES') }}</h2>
       <Button class="justify-start" variant="default" size="sm">
@@ -65,7 +68,7 @@
       </Button>
     </div>
 
-    <div id="sortable-container" class="flex-1 overflow-y-auto">
+    <div id="tables-sortable-container" class="flex-1 overflow-y-auto p-2">
       <DiagramTableSection
         v-for="table in filteredTables"
         :key="table.id"
