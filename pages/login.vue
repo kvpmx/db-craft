@@ -88,12 +88,16 @@
             <Button
               type="button"
               variant="outline"
-              class="w-full"
+              class="w-full truncate"
               :disabled="isPending"
               @click="loginWithGoogle"
             >
-              <Icon name="flat-color-icons:google" size="1.25rem" class="mr-2" />
-              {{ t('LOGIN_WITH_GOOGLE') }}
+              <Icon
+                name="flat-color-icons:google"
+                size="1.25rem"
+                class="mr-2 h-5 w-5 flex-shrink-0"
+              />
+              <span class="truncate">{{ t('LOGIN_WITH_GOOGLE') }}</span>
             </Button>
           </div>
         </form>
