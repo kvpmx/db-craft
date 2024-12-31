@@ -4,9 +4,10 @@
     description?: string;
   }>();
 
-  defineOgImageComponent('BrandedLogo', {
+  defineOgImageComponent('OgImageTemplate', {
     title: props.title,
     description: props.description,
+    logo: '/images/logo.png',
   });
 </script>
 
