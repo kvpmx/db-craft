@@ -29,7 +29,7 @@
       v-if="props.loading"
       name="lucide:loader-circle"
       size="1rem"
-      class="mr-2 animate-spin text-white"
+      class="mr-2 h-4 w-4 animate-spin text-white"
     />
     <slot />
   </Primitive>

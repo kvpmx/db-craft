@@ -47,7 +47,7 @@
       <Icon
         name="lucide:chevron-down"
         size="1rem"
-        class="text-muted-foreground"
+        class="text-muted-foreground h-4 w-4"
         :style="{ transform: `rotate(${isOpen ? '180deg' : '0deg'})` }"
       />
       <span v-html="highlightTextOccurrences(props.table.name, props.searchQuery)"></span>
@@ -68,7 +68,7 @@
         <Input :default-value="column.name" class="h-7 flex-1 p-1.5 text-xs" />
         <Input :default-value="column.type" class="h-7 flex-1 p-1.5 text-xs" />
         <Button variant="secondary" size="xs">
-          <Icon name="lucide:key-round" size="0.8rem" />
+          <Icon name="lucide:key-round" size="0.75rem" class="h-3 w-3" />
         </Button>
       </div>
     </CollapsibleContent>

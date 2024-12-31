@@ -25,6 +25,6 @@
     "
   >
     <slot />
-    <Icon name="lucide:chevron-right" size="1rem" class="ml-auto" />
+    <Icon name="lucide:chevron-right" size="1rem" class="ml-auto h-4 w-4" />
   </DropdownMenuSubTrigger>
 </template>

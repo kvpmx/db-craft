@@ -55,7 +55,7 @@
           class="absolute right-3 top-3 rounded-md p-1 transition-colors hover:bg-slate-100"
           style="line-height: 0.7"
         >
-          <Icon name="lucide:x" size="1rem" />
+          <Icon name="lucide:x" size="1rem" class="h-4 w-4" />
           <span class="sr-only">Close</span>
         </DialogClose>
       </DialogContent>

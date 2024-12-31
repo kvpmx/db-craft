@@ -31,7 +31,7 @@
   >
     <span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuItemIndicator>
-        <Icon name="lucide:circle" size="0.5rem" class="fill-current" />
+        <Icon name="lucide:circle" size="0.5rem" class="h-2 w-2 fill-current" />
       </DropdownMenuItemIndicator>
     </span>
     <slot />

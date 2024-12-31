@@ -45,7 +45,7 @@
       <DialogClose
         class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-slate-100"
       >
-        <Icon name="lucide:x" size="1rem" class="text-slate-500" />
+        <Icon name="lucide:x" size="1rem" class="h-4 w-4 text-slate-500" />
       </DialogClose>
     </DialogContent>
   </DialogPortal>

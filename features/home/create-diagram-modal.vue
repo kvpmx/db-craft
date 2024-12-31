@@ -49,7 +49,7 @@
   <Dialog :open="dialogOpened" @update:open="dialogOpened = !dialogOpened">
     <DialogTrigger as-child>
       <Button>
-        <Icon name="lucide:plus" size="1rem" class="mr-2" />
+        <Icon name="lucide:plus" size="1rem" class="mr-2 h-4 w-4" />
         {{ t('NEW_PROJECT') }}
       </Button>
     </DialogTrigger>
@@ -129,7 +129,7 @@
                     class="hover:border-primary relative h-auto min-w-40 flex-1 cursor-pointer rounded-lg border p-4 transition-colors"
                   >
                     <div class="flex flex-col items-center gap-2">
-                      <Icon :name="db.icon" :alt="db.name" size="2rem" />
+                      <Icon :name="db.icon" :alt="db.name" size="2rem" class="h-8 w-8" />
                       <span class="text-sm font-medium">{{ db.name }}</span>
                     </div>
                   </ToggleGroupItem>

@@ -5,6 +5,7 @@ const config: Config = {
   darkMode: ['class'],
   content: [
     './components/**/*.{ts,tsx,vue}',
+    './features/**/*.{ts,tsx,vue}',
     './layouts/**/*.{ts,tsx,vue}',
     './pages/**/*.{ts,tsx,vue}',
     './app.vue',

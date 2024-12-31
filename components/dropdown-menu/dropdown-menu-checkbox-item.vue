@@ -31,7 +31,7 @@
   >
     <span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuItemIndicator>
-        <Icon name="lucide:check" size="1rem" />
+        <Icon name="lucide:check" size="1rem" class="h-4 w-4" />
       </DropdownMenuItemIndicator>
     </span>
     <slot />

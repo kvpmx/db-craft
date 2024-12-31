@@ -25,7 +25,7 @@
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon" class="h-7 w-7">
-              <Icon name="lucide:more-vertical" size="1rem" />
+              <Icon name="lucide:more-vertical" size="1rem" class="h-4 w-4" />
               <span class="sr-only">{{ t('OPEN_MENU') }}</span>
             </Button>
           </DropdownMenuTrigger>
