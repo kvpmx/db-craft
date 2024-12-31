@@ -21,6 +21,9 @@ export default defineNuxtConfig({
   image: {
     provider: 'none',
   },
+  ogImage: {
+    componentDirs: ['@/features/common'],
+  },
   shadcn: {
     prefix: '',
     componentDir: './components',
@@ -48,12 +51,9 @@ export default defineNuxtConfig({
     types: '@/types/database.ts',
   },
   i18n: {
-    legacy: false,
     defaultLocale: 'en',
-    fallbackLocale: 'en',
     restructureDir: './lib/i18n',
     langDir: '../../assets/locales',
-    typedOptionsAndMessages: 'default',
     strategy: 'no_prefix',
     locales: [
       { code: 'en', file: 'en.json' },
@@ -61,6 +61,7 @@ export default defineNuxtConfig({
     ],
     experimental: {
       localeDetector: 'locale-detector.ts',
+      typedOptionsAndMessages: 'default',
     },
   },
 });
