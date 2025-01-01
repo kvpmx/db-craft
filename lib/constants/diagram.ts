@@ -1,3 +1,5 @@
+import type { DiagramConfig } from '@/types/diagram';
+
 export enum DiagramVisibility {
   Public = 'public',
   Private = 'private',
@@ -12,7 +14,7 @@ export enum DatabaseType {
 export const DEFAULT_DIAGRAM_CONFIG = {
   tables: [],
   refs: [],
-};
+} as DiagramConfig;
 
 export const DATABASE_FIELD_TYPES = {
   [DatabaseType.MySQL]: [

@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     'nuxt-og-image',
     '@hebilicious/vue-query-nuxt',
     '@nuxtjs/i18n',
+    '@pinia/nuxt',
   ],
   components: [
     { path: '@/features', pathPrefix: true },
@@ -63,5 +64,8 @@ export default defineNuxtConfig({
       localeDetector: 'locale-detector.ts',
       typedOptionsAndMessages: 'default',
     },
+  },
+  pinia: {
+    storesDirs: ['./stores/**'],
   },
 });

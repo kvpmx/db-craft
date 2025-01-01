@@ -1,11 +1,11 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { useSortable } from '@vueuse/integrations/useSortable';
 
-  import type { Table } from '@/types/diagram';
+  import type { TableWithVisibility } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
   const props = defineProps<{
-    table: Table<T>;
+    table: TableWithVisibility<T>;
     searchQuery?: string;
   }>();
 
@@ -17,26 +17,29 @@
   });
 
   // Make columns list sortable
-  const columns = ref(props.table.fields);
-  const columnsContainerRef = ref<HTMLElement | null>(null);
 
+  const currentProject = useCurrentProject();
+
+  const columns = computed({
+    get: () => props.table.fields,
+    set: (value) => currentProject.updateTableFields(props.table.id, value),
+  });
+
+  const columnsContainerRef = ref<HTMLElement | null>(null);
   const isDragging = ref(false);
 
   useSortable(columnsContainerRef, columns, {
     handle: '.sortable-handle',
     animation: 150,
     forceFallback: true,
-    onStart: () => {
-      isDragging.value = true;
-    },
-    onEnd: () => {
-      isDragging.value = false;
-    },
+    onStart: () => (isDragging.value = true),
+    onEnd: () => (isDragging.value = false),
   });
 </script>
 
 <template>
   <Collapsible
+    v-if="props.table.visible"
     v-model:open="isOpen"
     class="mb-2 w-full overflow-hidden rounded-md border-[1px] border-gray-500 bg-white"
   >
@@ -65,8 +68,17 @@
           size="1.5rem"
           class="sortable-handle h-6 w-6 flex-shrink-0 cursor-move"
         />
-        <Input :default-value="column.name" class="h-7 flex-1 p-1.5 text-xs" />
-        <Input :default-value="column.type" class="h-7 flex-1 p-1.5 text-xs" />
+        <Input
+          v-model="column.name"
+          :default-value="column.name"
+          class="h-7 flex-1 p-1.5 text-xs"
+        />
+        <Input
+          v-model="column.type"
+          :default-value="column.type"
+          class="h-7 flex-1 p-1.5 text-xs"
+        />
+        <!-- TODO -->
         <Button variant="secondary" size="xs">
           <Icon name="lucide:key-round" size="0.75rem" class="h-3 w-3" />
         </Button>

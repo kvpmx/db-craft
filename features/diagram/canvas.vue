@@ -4,21 +4,18 @@
   import { Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
 
-  import type { DiagramConfig } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { Node, Edge } from '@vue-flow/core';
 
-  const props = defineProps<{
-    schema?: DiagramConfig<T>;
-  }>();
+  const currentProject = useCurrentProject();
 
   // Convert tables to nodes
   const nodes = ref<Node[]>([]);
 
   watchEffect(() => {
-    if (!props.schema) return;
+    if (!currentProject.state?.schema) return;
 
-    nodes.value = props.schema.tables.map((table) => ({
+    nodes.value = currentProject.state.schema.tables.map((table) => ({
       id: table.id,
       type: 'table',
       position: table.position,
@@ -30,9 +27,9 @@
   const edges = ref<Edge[]>([]);
 
   watchEffect(() => {
-    if (!props.schema) return;
+    if (!currentProject.state?.schema) return;
 
-    edges.value = props.schema.refs.map((ref) => ({
+    edges.value = currentProject.state.schema.refs.map((ref) => ({
       id: ref.id,
       source: ref.source,
       target: ref.target,

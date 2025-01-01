@@ -1,39 +1,32 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { useSortable } from '@vueuse/integrations/useSortable';
-  import { ProjectsController } from '@/lib/controllers';
 
-  import type { DiagramConfig, Table } from '@/types/diagram';
+  import type { TableWithVisibility } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
   const { t } = useI18n();
-  const projectsApi = useApiController(ProjectsController);
-
-  const props = defineProps<{
-    id: number;
-    schema?: DiagramConfig<T>;
-  }>();
-
-  // Get tables
-  const tables = ref<Table<T>[]>([]);
-
-  watchEffect(() => {
-    if (!props.schema) return;
-    tables.value = props.schema.tables;
-  });
-
-  // Search tables or columns
+  const currentProject = useCurrentProject();
   const searchQuery = ref('');
 
-  const filteredTables = computed(() => {
-    return tables.value?.filter((table) => {
+  // Get tables
+  const getFilteredTables = () => {
+    return currentProject.state?.schema.tables?.map((table) => {
       const titleMatch = includesIgnoreCase(table.name, searchQuery.value);
 
       const columnsMatch = table.fields.some((field) => {
         return includesIgnoreCase(field.name, searchQuery.value);
       });
 
-      return titleMatch || columnsMatch;
-    });
+      return {
+        ...table,
+        visible: titleMatch || columnsMatch,
+      };
+    }) as TableWithVisibility<T>[];
+  };
+
+  const tables = computed({
+    get: getFilteredTables,
+    set: (value) => currentProject.updateDiagramConfig({ tables: value }),
   });
 
   // Make tables list sortable
@@ -43,18 +36,6 @@
     forceFallback: true,
     delay: 100,
     touchStartThreshold: 10,
-    onEnd: () => {
-      nextTick(async () => {
-        if (!props.schema) return;
-
-        await projectsApi.update(props.id, {
-          schema: {
-            ...props.schema,
-            tables: tables.value,
-          },
-        });
-      });
-    },
   });
 </script>
 
@@ -70,7 +51,7 @@
 
     <div id="tables-sortable-container" class="flex-1 overflow-y-auto p-2">
       <DiagramTableSection
-        v-for="table in filteredTables"
+        v-for="table in tables"
         :key="table.id"
         :table="table"
         :search-query="searchQuery"
