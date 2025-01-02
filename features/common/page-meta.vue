@@ -13,9 +13,9 @@
 
 <template>
   <Head>
-    <Title>{{ props.title }}</Title>
-    <Meta v-if="props.description" name="description" :content="props.description" />
-    <Meta property="og:title" :content="props.title" />
-    <Meta v-if="props.description" property="og:description" :content="props.description" />
+    <Title>{{ title }}</Title>
+    <Meta v-if="description" name="description" :content="description" />
+    <Meta property="og:title" :content="title" />
+    <Meta v-if="description" property="og:description" :content="description" />
   </Head>
 </template>

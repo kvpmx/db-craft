@@ -25,17 +25,17 @@
   >
     <div
       class="rounded-t-md border-b-[1px] border-solid border-slate-800 p-2 text-sm font-semibold"
-      :style="{ backgroundColor: props.data.color }"
+      :style="{ backgroundColor: data.color }"
     >
-      {{ props.data.name }}
+      {{ data.name }}
     </div>
     <div
-      v-for="field in props.data.fields"
+      v-for="field in data.fields"
       :key="field.id"
       class="field-row relative cursor-pointer border-solid border-slate-800 px-2 py-1 [&:not(:last-child)]:border-b-[1px]"
     >
       <Handle
-        :id="`source-${props.data.id}-${field.id}`"
+        :id="`source-${data.id}-${field.id}`"
         :position="Position.Left"
         type="source"
         class="field-row-handle"
@@ -45,7 +45,7 @@
         <span class="text-gray-500">{{ field.type }}</span>
       </div>
       <Handle
-        :id="`target-${props.data.id}-${field.id}`"
+        :id="`target-${data.id}-${field.id}`"
         :position="Position.Right"
         type="target"
         class="field-row-handle"
