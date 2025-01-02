@@ -36,10 +36,16 @@
     forceFallback: true,
     fallbackTolerance: 5,
   });
+
+  // Hide sidebar
+  const sidebarHidden = ref(false);
 </script>
 
 <template>
-  <aside class="flex w-[350px] max-w-[100vh] flex-col border-r">
+  <aside
+    class="relative flex w-[350px] flex-col border-r transition-all"
+    :style="{ marginLeft: sidebarHidden ? '-350px' : '0' }"
+  >
     <div class="flex items-center justify-between gap-4 border-b p-3">
       <h2 class="text-xl font-semibold">{{ t('TABLES') }}</h2>
       <Button class="justify-start" variant="default" size="sm">
@@ -74,5 +80,18 @@
         />
       </div>
     </div>
+
+    <Button
+      variant="outline"
+      size="xs"
+      class="absolute -right-10 top-3 z-10 px-1.5"
+      @click="sidebarHidden = !sidebarHidden"
+    >
+      <Icon
+        :name="sidebarHidden ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
+        size="1rem"
+        class="h-4 w-4"
+      />
+    </Button>
   </aside>
 </template>

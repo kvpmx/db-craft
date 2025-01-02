@@ -17,19 +17,16 @@
           @click="currentProject.saveConfigToDatabase"
         >
           <Icon
-            v-if="currentProject.saved"
-            name="iconamoon:cloud-yes"
+            :name="currentProject.saved ? 'iconamoon:cloud-yes' : 'iconamoon:cloud-error'"
             size="1rem"
-            class="h-4 w-4 text-gray-600"
+            :class="['h-4 w-4', currentProject.saved ? 'text-gray-600' : 'text-yellow-600']"
           />
-          <Icon v-else name="iconamoon:cloud-error" size="1rem" class="h-4 w-4 text-yellow-600" />
           {{ t('SAVE') }}
         </Button>
       </TooltipTrigger>
 
       <TooltipContent class="text-[12px]">
-        <span v-if="currentProject.saved">{{ t('ALL_CHANGES_SAVED') }}</span>
-        <span v-else>{{ t('UNSAVED_CHANGES') }}</span>
+        {{ currentProject.saved ? t('ALL_CHANGES_SAVED') : t('UNSAVED_CHANGES') }}
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>

@@ -30,7 +30,7 @@
     :title="currentProject.state.name"
     :description="t('DIAGRAM_PAGE_DESCRIPTION')"
   />
-  <div class="flex h-[100vh] flex-col">
+  <div class="flex h-[100vh] flex-col overflow-hidden">
     <DiagramPageHeader />
 
     <div class="flex max-h-[calc(100vh-58px)] flex-1">

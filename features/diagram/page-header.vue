@@ -4,7 +4,7 @@
 
 <template>
   <header class="border-b-[1px] bg-white">
-    <div class="flex items-center justify-between px-4 py-2 sm:px-6 lg:px-3">
+    <div class="flex items-center justify-between px-3 py-2">
       <NuxtLink :to="routes.home()" class="select-none">
         <NuxtImg src="/images/logo.png" class="w-28" alt="DB Craft" />
       </NuxtLink>
