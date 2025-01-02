@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useFormField } from './use-form-fields';
+  import { useFormField } from './form-fields';
   import type { HTMLAttributes } from 'vue';
 
   const props = defineProps<{

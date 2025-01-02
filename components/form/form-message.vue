@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { ErrorMessage } from 'vee-validate';
-  import { useFormField } from './use-form-fields';
+  import { useFormField } from './form-fields';
 
   const { name, formMessageId } = useFormField();
 </script>
