@@ -40,5 +40,8 @@
   "NEW_TABLE": "Нова таблиця",
   "SEARCH": "Пошук...",
   "SEARCH_TABLE_OR_COLUMN": "Шукайте за назвою таблиці або стовпця",
-  "DIAGRAM_PAGE_DESCRIPTION": "Легко змінюйте та оновлюйте схему бази даних"
+  "DIAGRAM_PAGE_DESCRIPTION": "Легко змінюйте та оновлюйте схему бази даних",
+  "SAVE": "Зберегти",
+  "UNSAVED_CHANGES": "У вас є незбережені зміни",
+  "ALL_CHANGES_SAVED": "Всі зміни збережено"
 }

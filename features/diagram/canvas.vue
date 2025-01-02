@@ -41,7 +41,7 @@
 
 <template>
   <ClientOnly>
-    <VueFlow v-model:nodes="nodes" v-model:edges="edges" style="height: 100vh; width: 100%">
+    <VueFlow v-model:nodes="nodes" v-model:edges="edges" style="height: 100%; width: 100%">
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />
       </template>

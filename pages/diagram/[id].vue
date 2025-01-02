@@ -21,11 +21,14 @@
     :title="currentProject.state.name"
     :description="t('DIAGRAM_PAGE_DESCRIPTION')"
   />
+  <div class="flex h-[100vh] flex-col">
+    <DiagramPageHeader />
 
-  <div class="flex h-[100vh]">
-    <DiagramSidebar />
-    <main class="bg-muted/10 w-full flex-1">
-      <DiagramCanvas />
-    </main>
+    <div class="flex flex-1">
+      <DiagramSidebar />
+      <main class="bg-muted/10 w-full flex-1">
+        <DiagramCanvas />
+      </main>
+    </div>
   </div>
 </template>
