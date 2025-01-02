@@ -6,12 +6,22 @@
   import type { DatabaseType } from '@/lib/constants/diagram';
 
   const props = defineProps<NodeProps<Table<T>>>();
+
+  const emit = defineEmits<{
+    (e: 'update-node-internals', id: string): void;
+  }>();
+
+  watch(
+    () => props.data.fields,
+    () => nextTick(() => emit('update-node-internals', props.id)),
+    { immediate: true, deep: true }
+  );
 </script>
 
 <template>
   <div
     class="w-52 rounded-md border-[1px] border-solid border-slate-800 bg-white font-mono text-xs"
-    style="font-family: Menlo"
+    style="font-family: JetBrains Mono"
   >
     <div
       class="rounded-t-md border-b-[1px] border-solid border-slate-800 p-2 text-sm font-semibold"

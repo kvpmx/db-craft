@@ -1,4 +1,5 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
+  import { useDebounceFn } from '@vueuse/core';
   import { useSortable } from '@vueuse/integrations/useSortable';
 
   import type { TableWithVisibility } from '@/types/diagram';
@@ -16,19 +17,21 @@
     isOpen.value = Boolean(props.searchQuery);
   });
 
-  // Make columns list sortable
-
+  // Update table fields
   const currentProject = useCurrentProject();
 
-  const columns = computed({
-    get: () => props.table.fields,
-    set: (value) => currentProject.updateTableFields(props.table.id, value),
-  });
+  const saveTableFields = useDebounceFn(
+    () => currentProject.updateTableFields(props.table.id, props.table.fields),
+    1000
+  );
 
+  watch(props.table.fields, () => saveTableFields(), { deep: true });
+
+  // Make columns list sortable
   const columnsContainerRef = ref<HTMLElement | null>(null);
   const isDragging = ref(false);
 
-  useSortable(columnsContainerRef, columns, {
+  useSortable(columnsContainerRef, props.table.fields, {
     handle: '.sortable-handle',
     animation: 150,
     forceFallback: true,
@@ -39,13 +42,13 @@
 
 <template>
   <Collapsible
-    v-if="props.table.visible"
+    v-if="table.visible"
     v-model:open="isOpen"
     class="mb-2 w-full overflow-hidden rounded-md border-[1px] border-gray-500 bg-white"
   >
     <CollapsibleTrigger
       class="table-section-header hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 p-2 text-sm font-medium data-[state=closed]:rounded-md"
-      :style="{ backgroundColor: props.table.color }"
+      :style="{ backgroundColor: table.color }"
     >
       <Icon
         name="lucide:chevron-down"
@@ -53,12 +56,12 @@
         class="text-muted-foreground h-4 w-4"
         :style="{ transform: `rotate(${isOpen ? '180deg' : '0deg'})` }"
       />
-      <span v-html="highlightTextOccurrences(props.table.name, props.searchQuery)"></span>
+      <span v-html="highlightTextOccurrences(table.name, searchQuery)"></span>
     </CollapsibleTrigger>
 
     <CollapsibleContent ref="columnsContainerRef" class="py-2">
       <div
-        v-for="column in columns"
+        v-for="column in table.fields"
         :key="column.id"
         class="column-item transition-color flex items-center justify-between gap-2 p-3 py-1 pl-1"
         :data-dragging="isDragging"
@@ -68,16 +71,8 @@
           size="1.5rem"
           class="sortable-handle h-6 w-6 flex-shrink-0 cursor-move"
         />
-        <Input
-          v-model="column.name"
-          :default-value="column.name"
-          class="h-7 flex-1 p-1.5 text-xs"
-        />
-        <Input
-          v-model="column.type"
-          :default-value="column.type"
-          class="h-7 flex-1 p-1.5 text-xs"
-        />
+        <Input v-model="column.name" class="h-7 flex-1 p-1.5 text-xs" />
+        <Input v-model="column.type" class="h-7 flex-1 p-1.5 text-xs" />
         <!-- TODO -->
         <Button variant="secondary" size="xs">
           <Icon name="lucide:key-round" size="0.75rem" class="h-3 w-3" />
