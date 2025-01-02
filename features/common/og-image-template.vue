@@ -15,7 +15,7 @@
   >
     <div class="flex h-full items-start justify-start">
       <div class="flex h-full w-full flex-col justify-between p-20">
-        <img :src="logo" height="100" />
+        <NuxtImg :src="logo" height="100" :alt="title" />
         <div>
           <h1 class="text-left text-[60px] font-bold text-slate-800">
             {{ title }}

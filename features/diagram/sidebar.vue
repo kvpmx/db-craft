@@ -29,13 +29,13 @@
     set: (value) => currentProject.updateDiagramConfig({ tables: value }),
   });
 
-  // Make tables list sortable
+  // Make a table list sortable
   useSortable('#tables-sortable-container', tables, {
     handle: '.table-section-header',
     animation: 150,
     forceFallback: true,
-    delay: 100,
-    touchStartThreshold: 10,
+    // delay: 100,
+    // touchStartThreshold: 10,
   });
 </script>
 

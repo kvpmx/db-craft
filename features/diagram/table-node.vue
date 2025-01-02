@@ -21,7 +21,7 @@
 <template>
   <div
     class="w-52 rounded-md border-[1px] border-solid border-slate-800 bg-white font-mono text-xs"
-    style="font-family: JetBrains Mono"
+    :style="{ fontFamily: 'JetBrains Mono, monospace' }"
   >
     <div
       class="rounded-t-md border-b-[1px] border-solid border-slate-800 p-2 text-sm font-semibold"

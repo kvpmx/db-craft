@@ -1,5 +1,4 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
-  import { useDebounceFn } from '@vueuse/core';
   import { useSortable } from '@vueuse/integrations/useSortable';
 
   import type { TableWithVisibility } from '@/types/diagram';
@@ -20,14 +19,13 @@
   // Update table fields
   const currentProject = useCurrentProject();
 
-  const saveTableFields = useDebounceFn(
+  watch(
+    props.table.fields,
     () => currentProject.updateTableFields(props.table.id, props.table.fields),
-    1000
+    { deep: true }
   );
 
-  watch(props.table.fields, () => saveTableFields(), { deep: true });
-
-  // Make columns list sortable
+  // Make a column list sortable
   const columnsContainerRef = ref<HTMLElement | null>(null);
   const isDragging = ref(false);
 

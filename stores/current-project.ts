@@ -9,9 +9,12 @@ export const useCurrentProject = defineStore('current-project', () => {
   const projectsApi = useApiController(ProjectsController);
 
   const fetch = async (id: number) => {
-    const data = await projectsApi.getById(id);
-    state.value = data;
-    return true;
+    try {
+      state.value = await projectsApi.getById(id);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const updateDiagramConfig = async (payload: Partial<DiagramConfig>) => {

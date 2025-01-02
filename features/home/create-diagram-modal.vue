@@ -61,10 +61,10 @@
     >
       <DialogHeader>
         <DialogTitle class="text-2xl font-semibold">
-          {{ t('NEW_DIAGAM_MODAL_TITLE') }}
+          {{ t('NEW_DIAGRAM_MODAL_TITLE') }}
         </DialogTitle>
         <DialogDescription>
-          {{ t('NEW_DIAGAM_MODAL_DESCRIPTION') }}
+          {{ t('NEW_DIAGRAM_MODAL_DESCRIPTION') }}
         </DialogDescription>
       </DialogHeader>
 
