@@ -13,6 +13,15 @@
   useAsyncData(`project-${projectId.value}`, async () => {
     return await currentProject.fetch(projectId.value);
   });
+
+  onBeforeRouteLeave(() => {
+    if (currentProject.saved) return true;
+    return window.confirm(t('UNSAVED_CHANGES_WARNING'));
+  });
+
+  onUnmounted(() => {
+    currentProject.reset();
+  });
 </script>
 
 <template>

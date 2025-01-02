@@ -43,5 +43,6 @@
   "DIAGRAM_PAGE_DESCRIPTION": "Легко змінюйте та оновлюйте схему бази даних",
   "SAVE": "Зберегти",
   "UNSAVED_CHANGES": "У вас є незбережені зміни",
-  "ALL_CHANGES_SAVED": "Всі зміни збережено"
+  "ALL_CHANGES_SAVED": "Всі зміни збережено",
+  "UNSAVED_CHANGES_WARNING": "У вас є незбережені зміни. Бажаєте залишити сторінку?"
 }

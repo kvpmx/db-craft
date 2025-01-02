@@ -1,22 +1,23 @@
 <script lang="ts" setup>
   const { t } = useI18n();
-
-  // TODO
-  const changesSaved = ref(true);
+  const currentProject = useCurrentProject();
 </script>
 
 <template>
   <TooltipProvider>
     <Tooltip>
-      <TooltipTrigger class="flex items-center">
+      <TooltipTrigger class="flex items-center" as-child>
         <Button
           variant="secondary"
           size="sm"
-          :class="['flex gap-2 border-[1px] font-medium', !changesSaved && 'border-yellow-600']"
-          @click="changesSaved = !changesSaved"
+          :class="[
+            'flex gap-2 border-[1px] font-medium',
+            !currentProject.saved && 'border-yellow-600',
+          ]"
+          @click="currentProject.saveConfigToDatabase"
         >
           <Icon
-            v-if="changesSaved"
+            v-if="currentProject.saved"
             name="iconamoon:cloud-yes"
             size="1rem"
             class="h-4 w-4 bg-gray-600"
@@ -27,7 +28,7 @@
       </TooltipTrigger>
 
       <TooltipContent class="text-[12px]">
-        <span v-if="changesSaved">{{ t('ALL_CHANGES_SAVED') }}</span>
+        <span v-if="currentProject.saved">{{ t('ALL_CHANGES_SAVED') }}</span>
         <span v-else>{{ t('UNSAVED_CHANGES') }}</span>
       </TooltipContent>
     </Tooltip>

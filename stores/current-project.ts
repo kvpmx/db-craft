@@ -2,17 +2,10 @@ import { ProjectsController } from '@/lib/controllers';
 import type { Tables } from '@/types/database';
 import type { DiagramConfig, TableField } from '@/types/diagram';
 
-export interface UpdateDiagramConfigOptions {
-  /** Save modified diagram config to the database */
-  saveToDatabase?: boolean;
-}
-
-const DEFAULT_UPDATE_DIAGRAM_CONFIG_OPTIONS: UpdateDiagramConfigOptions = {
-  saveToDatabase: true,
-};
-
 export const useCurrentProject = defineStore('current-project', () => {
   const state = ref<Tables<'projects'> | null>(null);
+  const saved = ref(true);
+
   const projectsApi = useApiController(ProjectsController);
 
   const fetch = async (id: number) => {
@@ -21,29 +14,16 @@ export const useCurrentProject = defineStore('current-project', () => {
     return true;
   };
 
-  const updateDiagramConfig = async (
-    payload: Partial<DiagramConfig>,
-    options: UpdateDiagramConfigOptions = DEFAULT_UPDATE_DIAGRAM_CONFIG_OPTIONS
-  ) => {
+  const updateDiagramConfig = async (payload: Partial<DiagramConfig>) => {
     if (!state.value) return;
 
     state.value.schema = {
       ...state.value.schema,
       ...payload,
     };
-
-    if (options.saveToDatabase) {
-      await projectsApi.update(state.value.id, {
-        schema: state.value.schema,
-      });
-    }
   };
 
-  const updateTableFields = async (
-    id: string,
-    fields: TableField[],
-    options: UpdateDiagramConfigOptions = DEFAULT_UPDATE_DIAGRAM_CONFIG_OPTIONS
-  ) => {
+  const updateTableFields = async (id: string, fields: TableField[]) => {
     if (!state.value) return;
 
     const table = state.value.schema.tables.find((table) => {
@@ -52,13 +32,39 @@ export const useCurrentProject = defineStore('current-project', () => {
 
     if (!table) return;
     table.fields = fields;
-
-    if (options.saveToDatabase) {
-      await projectsApi.update(state.value.id, {
-        schema: state.value.schema,
-      });
-    }
   };
 
-  return { state, fetch, updateDiagramConfig, updateTableFields };
+  const reset = () => {
+    state.value = null;
+    saved.value = true;
+  };
+
+  const saveConfigToDatabase = async () => {
+    if (!state.value) return;
+
+    await projectsApi.update(state.value.id, {
+      schema: state.value.schema,
+    });
+
+    saved.value = true;
+  };
+
+  watch(
+    state,
+    (currentValue, previousValue) => {
+      if (!currentValue || !previousValue) return;
+      saved.value = false;
+    },
+    { deep: true }
+  );
+
+  return {
+    state,
+    saved,
+    fetch,
+    updateDiagramConfig,
+    updateTableFields,
+    reset,
+    saveConfigToDatabase,
+  };
 });
