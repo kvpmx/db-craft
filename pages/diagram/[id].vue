@@ -33,7 +33,7 @@
   <div class="flex h-[100vh] flex-col">
     <DiagramPageHeader />
 
-    <div class="flex flex-1">
+    <div class="flex max-h-[calc(100vh-58px)] flex-1">
       <DiagramSidebar />
       <main class="bg-muted/10 w-full flex-1">
         <DiagramCanvas />

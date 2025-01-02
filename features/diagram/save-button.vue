@@ -20,7 +20,7 @@
             v-if="currentProject.saved"
             name="iconamoon:cloud-yes"
             size="1rem"
-            class="h-4 w-4 bg-gray-600"
+            class="h-4 w-4 text-gray-600"
           />
           <Icon v-else name="iconamoon:cloud-error" size="1rem" class="h-4 w-4 text-yellow-600" />
           {{ t('SAVE') }}

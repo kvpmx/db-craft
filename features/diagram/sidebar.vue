@@ -34,8 +34,7 @@
     handle: '.table-section-header',
     animation: 150,
     forceFallback: true,
-    // delay: 100,
-    // touchStartThreshold: 10,
+    fallbackTolerance: 5,
   });
 </script>
 
@@ -49,7 +48,7 @@
       </Button>
     </div>
 
-    <div id="tables-sortable-container" class="flex-1 overflow-y-auto p-2">
+    <div id="tables-sortable-container" class="flex-1 overflow-y-scroll p-2">
       <DiagramTableSection
         v-for="table in tables"
         :key="table.id"
