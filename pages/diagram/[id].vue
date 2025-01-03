@@ -10,10 +10,12 @@
 
   const currentProject = useCurrentProject();
 
+  // Fetch the project data
   useAsyncData(`project-${projectId.value}`, async () => {
     return await currentProject.fetch(projectId.value);
   });
 
+  // Check if the project has unsaved changes before leaving the page
   onBeforeRouteLeave(() => {
     if (currentProject.saved) return true;
     return window.confirm(t('UNSAVED_CHANGES_WARNING'));
