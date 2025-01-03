@@ -37,6 +37,17 @@ export const useCurrentProject = defineStore('current-project', () => {
     table.fields = fields;
   };
 
+  const updateColor = (id: string, color: string) => {
+    if (!state.value) return;
+
+    const table = state.value.schema.tables.find((table) => {
+      return table.id === id;
+    });
+
+    if (!table) return;
+    table.color = color;
+  };
+
   const reset = () => {
     state.value = null;
     saved.value = true;
@@ -67,6 +78,7 @@ export const useCurrentProject = defineStore('current-project', () => {
     fetch,
     updateDiagramConfig,
     updateTableFields,
+    updateColor,
     reset,
     saveConfigToDatabase,
   };

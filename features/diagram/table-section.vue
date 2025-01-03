@@ -1,5 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { useSortable } from '@vueuse/integrations/useSortable';
+  import { colors } from '@/lib/constants/colors';
 
   import type { TableWithVisibility } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
@@ -35,6 +36,14 @@
     forceFallback: true,
     onStart: () => (isDragging.value = true),
     onEnd: () => (isDragging.value = false),
+  });
+
+  // Change table color
+  const color = ref<string>(props.table.color ?? colors[0]);
+
+  watch(color, () => {
+    if (!color.value) return;
+    currentProject.updateColor(props.table.id, color.value);
   });
 </script>
 
@@ -76,6 +85,8 @@
           <Icon name="lucide:key-round" size="0.75rem" class="h-3 w-3" />
         </Button>
       </div>
+
+      <DiagramColorPicker v-model="color" />
     </CollapsibleContent>
   </Collapsible>
 </template>
