@@ -10,6 +10,8 @@
     searchQuery?: string;
   }>();
 
+  const { t } = useI18n();
+
   // Open collapsible on search
   const isOpen = ref(false);
 
@@ -36,6 +38,9 @@
     forceFallback: true,
     onStart: () => (isDragging.value = true),
     onEnd: () => (isDragging.value = false),
+    onMove: (event) => {
+      return !event.related.classList.contains('collapsible-footer');
+    },
   });
 
   // Change table color
@@ -86,7 +91,16 @@
         </Button>
       </div>
 
-      <DiagramColorPicker v-model="color" />
+      <div class="collapsible-footer">
+        <Separator class="my-2" />
+        <div class="flex items-center justify-between px-2">
+          <DiagramColorPicker v-model="color" />
+          <Button size="xs" variant="secondary" class="flex items-center gap-1 text-[12px]">
+            <Icon name="lucide:plus" size="1rem" class="h-4 w-4" />
+            {{ t('ADD_FIELD') }}
+          </Button>
+        </div>
+      </div>
     </CollapsibleContent>
   </Collapsible>
 </template>

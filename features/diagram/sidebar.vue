@@ -46,10 +46,10 @@
     class="relative flex w-[350px] flex-col border-r transition-all"
     :style="{ marginLeft: sidebarHidden ? '-350px' : '0' }"
   >
-    <div class="flex items-center justify-between gap-4 border-b p-3">
-      <h2 class="text-xl font-semibold">{{ t('TABLES') }}</h2>
-      <Button class="justify-start" variant="default" size="sm">
-        <Icon name="lucide:plus" size="1rem" class="mr-2 h-4 w-4" />
+    <div class="flex items-center justify-between gap-4 border-b px-3 py-2">
+      <h2 class="text-md font-semibold">{{ t('TABLES') }}</h2>
+      <Button class="justify-start" variant="secondary" size="xs">
+        <Icon name="lucide:table-2" size="1rem" class="mr-2 h-4 w-4" />
         {{ t('NEW_TABLE') }}
       </Button>
     </div>
@@ -84,7 +84,7 @@
     <Button
       variant="outline"
       size="xs"
-      class="absolute -right-10 top-3 z-10 px-1.5"
+      class="absolute -right-10 top-2 z-10 px-1.5"
       @click="sidebarHidden = !sidebarHidden"
     >
       <Icon
