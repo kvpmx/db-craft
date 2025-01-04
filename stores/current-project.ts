@@ -1,6 +1,8 @@
 import { ProjectsController } from '@/lib/controllers';
+
+import type { Simplify } from 'type-fest';
 import type { Tables } from '@/types/database';
-import type { DiagramConfig, TableField } from '@/types/diagram';
+import type { DiagramConfig, Table } from '@/types/diagram';
 
 export const useCurrentProject = defineStore('current-project', () => {
   const state = ref<Tables<'projects'> | null>(null);
@@ -26,7 +28,7 @@ export const useCurrentProject = defineStore('current-project', () => {
     };
   };
 
-  const updateTableFields = async (id: string, fields: TableField[]) => {
+  const updateTableData = async (id: string, payload: Partial<Table>) => {
     if (!state.value) return;
 
     const table = state.value.schema.tables.find((table) => {
@@ -34,18 +36,11 @@ export const useCurrentProject = defineStore('current-project', () => {
     });
 
     if (!table) return;
-    table.fields = fields;
-  };
 
-  const updateColor = (id: string, color: string) => {
-    if (!state.value) return;
-
-    const table = state.value.schema.tables.find((table) => {
-      return table.id === id;
-    });
-
-    if (!table) return;
-    table.color = color;
+    for (const [key, value] of Object.entries(payload)) {
+      type Key = Simplify<keyof Table>;
+      (table[key as Key] as Table[Key]) = value;
+    }
   };
 
   const reset = () => {
@@ -77,8 +72,7 @@ export const useCurrentProject = defineStore('current-project', () => {
     saved,
     fetch,
     updateDiagramConfig,
-    updateTableFields,
-    updateColor,
+    updateTableData,
     reset,
     saveConfigToDatabase,
   };

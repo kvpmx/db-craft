@@ -24,7 +24,7 @@
 
   watch(
     props.table.fields,
-    () => currentProject.updateTableFields(props.table.id, props.table.fields),
+    () => currentProject.updateTableData(props.table.id, { fields: props.table.fields }),
     { deep: true }
   );
 
@@ -48,7 +48,7 @@
 
   watch(color, () => {
     if (!color.value) return;
-    currentProject.updateColor(props.table.id, color.value);
+    currentProject.updateTableData(props.table.id, { color: color.value });
   });
 </script>
 

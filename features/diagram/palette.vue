@@ -2,6 +2,7 @@
   import { colors } from '@/lib/constants/colors';
 
   const selectedColor = defineModel<string>({ required: true });
+  // TODO: Require the color to be always selected
 </script>
 
 <template>

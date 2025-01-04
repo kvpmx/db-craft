@@ -1,5 +1,5 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
-  import { VueFlow } from '@vue-flow/core';
+  import { useVueFlow, VueFlow } from '@vue-flow/core';
   import { Background } from '@vue-flow/background';
   import { Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
@@ -35,7 +35,17 @@
       target: ref.target,
       sourceHandle: `source-${ref.source}-${ref.source_field}`,
       targetHandle: `target-${ref.target}-${ref.target_field}`,
+      style: { strokeWidth: 2 },
     }));
+  });
+
+  // Update the node position
+  const { onNodeDragStop } = useVueFlow();
+
+  onNodeDragStop((event) => {
+    currentProject.updateTableData(event.node.id, {
+      position: event.node.position,
+    });
   });
 </script>
 
