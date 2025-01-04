@@ -20,7 +20,7 @@
 
 <template>
   <div
-    class="w-52 rounded-md border-[1px] border-solid border-slate-800 bg-white font-mono text-xs"
+    class="w-60 rounded-md border-[1px] border-solid border-slate-800 bg-white font-mono text-xs"
     :style="{ fontFamily: 'JetBrains Mono, monospace' }"
   >
     <div
@@ -40,9 +40,19 @@
         type="source"
         class="field-row-handle"
       />
-      <div class="flex items-center justify-between">
-        <span class="max-w-[50%] truncate" :title="field.name">{{ field.name }}</span>
-        <span class="text-gray-500">{{ field.type }}</span>
+      <div class="flex items-center justify-between gap-4">
+        <span class="flex-grow truncate" :title="field.name">{{ field.name }}</span>
+
+        <div class="flex items-baseline gap-1">
+          <Icon
+            v-if="field.primary_key"
+            name="lucide:key-round"
+            size="0.625rem"
+            class="h-2.5 w-2.5 flex-shrink-0 text-yellow-600"
+          />
+
+          <span class="text-gray-500">{{ field.type }}</span>
+        </div>
       </div>
       <Handle
         :id="`target-${data.id}-${field.id}`"

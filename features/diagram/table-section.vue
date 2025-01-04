@@ -85,10 +85,19 @@
         />
         <Input v-model="column.name" class="h-7 flex-1 p-1.5 text-xs" />
         <Input v-model="column.type" class="h-7 flex-1 p-1.5 text-xs" />
-        <!-- TODO -->
-        <Button variant="secondary" size="xs">
-          <Icon name="lucide:key-round" size="0.75rem" class="h-3 w-3" />
-        </Button>
+
+        <Toggle
+          v-model:pressed="column.primary_key"
+          variant="outline"
+          size="sm"
+          :class="['h-7 px-1.5', column.primary_key && 'border-yellow-600']"
+        >
+          <Icon
+            name="lucide:key-round"
+            size="0.75rem"
+            :class="['h-3 w-3', column.primary_key && 'text-yellow-600']"
+          />
+        </Toggle>
       </div>
 
       <div class="collapsible-footer">
