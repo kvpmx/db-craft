@@ -51,7 +51,12 @@
 
 <template>
   <ClientOnly>
-    <VueFlow v-model:nodes="nodes" v-model:edges="edges" style="height: 100%; width: 100%">
+    <VueFlow
+      v-model:nodes="nodes"
+      v-model:edges="edges"
+      style="height: 100%; width: 100%"
+      fit-view-on-init
+    >
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />
       </template>

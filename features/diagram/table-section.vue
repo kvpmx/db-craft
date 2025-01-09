@@ -83,8 +83,14 @@
           size="1.5rem"
           class="sortable-handle h-6 w-6 flex-shrink-0 cursor-move"
         />
-        <Input v-model="column.name" class="h-7 flex-1 p-1.5 text-xs" />
-        <Input v-model="column.type" class="h-7 flex-1 p-1.5 text-xs" />
+        <Input
+          v-model="column.name"
+          :name="`${table.name}:${column.name}`"
+          autocomplete="off"
+          class="h-7 flex-1 p-1.5 text-xs"
+        />
+
+        <DiagramFieldTypeSelector v-model="column.type" />
 
         <Toggle
           v-model:pressed="column.primary_key"
