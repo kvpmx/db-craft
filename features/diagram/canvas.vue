@@ -1,9 +1,11 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
+  import { v4 as uuidv4 } from 'uuid';
+  import { useMagicKeys } from '@vueuse/core';
+
   import { useVueFlow, VueFlow } from '@vue-flow/core';
   import { Background } from '@vue-flow/background';
   import { Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
-  import { v4 as uuidv4 } from 'uuid';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { Node, Edge } from '@vue-flow/core';
@@ -42,7 +44,7 @@
   });
 
   // Update the node position
-  const { onNodeDragStop, onConnect, onEdgeUpdate } = useVueFlow();
+  const { onNodeDragStop, onConnect, onEdgeUpdate, getSelectedEdges } = useVueFlow();
 
   onNodeDragStop((event) => {
     currentProject.updateTableData(event.node.id, {
@@ -50,18 +52,31 @@
     });
   });
 
+  // Create new connection
   onConnect((connection) => {
     const tableRef = createOrUpdateConnection(uuidv4(), connection);
     if (!currentProject.state?.schema || !tableRef) return;
     currentProject.state.schema.refs.push(tableRef);
   });
 
+  // Update edges
   onEdgeUpdate(({ edge, connection }) => {
     const tableRef = createOrUpdateConnection(edge.id, connection);
     if (!currentProject.state?.schema || !tableRef) return;
 
     const idx = currentProject.state.schema.refs.findIndex((item) => item.id === edge.id);
     currentProject.state.schema.refs[idx] = tableRef;
+  });
+
+  // Remove selected edges
+  const { delete: deleteKey } = useMagicKeys();
+
+  watch(deleteKey, () => {
+    getSelectedEdges.value.forEach((edge) => {
+      if (!currentProject.state?.schema) return;
+      const idx = currentProject.state.schema.refs.findIndex((item) => item.id === edge.id);
+      currentProject.state.schema.refs.splice(idx, 1);
+    });
   });
 </script>
 
@@ -71,7 +86,8 @@
       v-model:nodes="nodes"
       v-model:edges="edges"
       style="height: 100%; width: 100%"
-      fit-view-on-init
+      :delete-key-code="null"
+      :fit-view-on-init="true"
     >
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />
