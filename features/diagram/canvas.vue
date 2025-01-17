@@ -8,7 +8,7 @@
   import { MiniMap } from '@vue-flow/minimap';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
-  import type { Node, Edge } from '@vue-flow/core';
+  import type { Node, Edge, ValidConnectionFunc } from '@vue-flow/core';
 
   const currentProject = useCurrentProject();
 
@@ -59,7 +59,7 @@
     currentProject.state.schema.refs.push(tableRef);
   });
 
-  // Update edges
+  // Allow to update edges
   onEdgeUpdate(({ edge, connection }) => {
     const tableRef = createOrUpdateConnection(edge.id, connection);
     if (!currentProject.state?.schema || !tableRef) return;
@@ -68,7 +68,7 @@
     currentProject.state.schema.refs[idx] = tableRef;
   });
 
-  // Remove selected edges
+  // Remove selected edges using the 'delete' key
   const { delete: deleteKey } = useMagicKeys();
 
   watch(deleteKey, () => {
@@ -78,6 +78,11 @@
       currentProject.state.schema.refs.splice(idx, 1);
     });
   });
+
+  // Do not allow to connect two field in the same table
+  const validateConnection: ValidConnectionFunc = (connection) => {
+    return connection.source !== connection.target;
+  };
 </script>
 
 <template>
@@ -88,6 +93,7 @@
       style="height: 100%; width: 100%"
       :delete-key-code="null"
       :fit-view-on-init="true"
+      :is-valid-connection="validateConnection"
     >
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />

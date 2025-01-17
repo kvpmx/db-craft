@@ -1,5 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { Position, Handle } from '@vue-flow/core';
+  import { onClickOutside } from '@vueuse/core';
 
   import type { NodeProps } from '@vue-flow/core';
   import type { Table } from '@/types/diagram';
@@ -16,15 +17,28 @@
     () => nextTick(() => emit('update-node-internals', props.id)),
     { immediate: true, deep: true }
   );
+
+  // Select the table node
+  const selected = ref(false);
+  const target = ref<HTMLDivElement | null>(null);
+
+  onClickOutside(target, () => {
+    selected.value = false;
+  });
 </script>
 
 <template>
   <div
-    class="w-60 rounded-md border-[1px] border-solid border-slate-800 bg-white font-mono text-xs"
+    ref="target"
+    :class="[
+      'w-60 rounded-[8px] border-2 border-solid bg-white font-mono text-xs',
+      selected ? 'border-rose-600' : 'border-slate-600',
+    ]"
     :style="{ fontFamily: 'JetBrains Mono, monospace' }"
+    @click="selected = !selected"
   >
     <div
-      class="rounded-t-md border-b-[1px] border-solid border-slate-800 p-2 text-sm font-semibold"
+      class="rounded-t-md border-b-[1px] border-solid border-slate-300 p-2 text-sm font-semibold"
       :style="{ backgroundColor: data.color }"
     >
       {{ data.name }}
@@ -32,12 +46,12 @@
     <div
       v-for="field in data.fields"
       :key="field.id"
-      class="field-row relative cursor-pointer border-solid border-slate-800 px-2 py-1 [&:not(:last-child)]:border-b-[1px]"
+      class="relative cursor-pointer border-solid border-slate-300 px-2 py-1 [&:not(:last-child)]:border-b-[1px]"
     >
       <Handle
         :id="`left-${data.id}-${field.id}`"
         :position="Position.Left"
-        class="field-row-handle"
+        :class="!selected && 'hidden'"
       />
       <div class="flex items-center justify-between gap-4">
         <span class="flex-grow truncate" :title="field.name">{{ field.name }}</span>
@@ -56,18 +70,24 @@
       <Handle
         :id="`right-${data.id}-${field.id}`"
         :position="Position.Right"
-        class="field-row-handle"
+        :class="!selected && 'hidden'"
       />
     </div>
   </div>
 </template>
 
 <style scoped>
-  .field-row .field-row-handle {
-    opacity: 0;
+  .vue-flow__handle {
+    width: 8px;
+    height: 8px;
+    background: #e11d48; /* bg-rose-600 */
   }
 
-  .field-row:hover .field-row-handle {
-    opacity: 1;
+  .vue-flow__handle-right {
+    right: -1px;
+  }
+
+  .vue-flow__handle-left {
+    left: -1px;
   }
 </style>
