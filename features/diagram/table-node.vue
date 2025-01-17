@@ -51,7 +51,7 @@
       <Handle
         :id="`left-${data.id}-${field.id}`"
         :position="Position.Left"
-        :class="!selected && 'hidden'"
+        :class="!selected && 'invisible'"
       />
       <div class="flex items-center justify-between gap-4">
         <span class="flex-grow truncate" :title="field.name">{{ field.name }}</span>
@@ -70,7 +70,7 @@
       <Handle
         :id="`right-${data.id}-${field.id}`"
         :position="Position.Right"
-        :class="!selected && 'hidden'"
+        :class="!selected && 'invisible'"
       />
     </div>
   </div>
