@@ -5,17 +5,17 @@ import type { HandlePlacement, TableReference } from '@/types/diagram';
  * Parses a handle ID string into placement and field values.
  *
  * @param {string} connectionHandle - A string that represents a unique identifier for a connection handle.
- * It is expected to be in the format "placement-table-field", where each part is separated by a hyphen (-).
+ * It is expected to be in the format "placement:table:field", where each part is separated by a colon.
  * @returns A tuple containing the `placement` and `fieldId` values parsed from the `handleId`.
  */
 export const parseConnectionData = (connectionHandle: string) => {
-  const [placement, _tableId, fieldId] = connectionHandle.split('-');
+  const [placement, _tableId, fieldId] = connectionHandle.split(':');
   return [placement as HandlePlacement, fieldId] as const;
 };
 
 /**
- * Creates or updates a connection between two elements based on the provided connection
- * data.
+ * Creates or updates a connection between two elements based
+ * on the provided connection data.
  *
  * @param refId - The reference ID for the connection being created or updated.
  * @param connection - An object that represents a connection between two nodes.

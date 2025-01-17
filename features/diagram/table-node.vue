@@ -49,7 +49,7 @@
       class="relative cursor-pointer border-solid border-slate-300 px-2 py-1 [&:not(:last-child)]:border-b-[1px]"
     >
       <Handle
-        :id="`left-${data.id}-${field.id}`"
+        :id="`left:${data.id}:${field.id}`"
         :position="Position.Left"
         :class="!selected && 'invisible'"
       />
@@ -68,7 +68,7 @@
         </div>
       </div>
       <Handle
-        :id="`right-${data.id}-${field.id}`"
+        :id="`right:${data.id}:${field.id}`"
         :position="Position.Right"
         :class="!selected && 'invisible'"
       />

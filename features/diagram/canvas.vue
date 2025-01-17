@@ -36,8 +36,8 @@
       id: ref.id,
       source: ref.source,
       target: ref.target,
-      sourceHandle: `${ref.source_handle_placement}-${ref.source}-${ref.source_field}`,
-      targetHandle: `${ref.target_handle_placement}-${ref.target}-${ref.target_field}`,
+      sourceHandle: `${ref.source_handle_placement}:${ref.source}:${ref.source_field}`,
+      targetHandle: `${ref.target_handle_placement}:${ref.target}:${ref.target_field}`,
       style: { strokeWidth: 2 },
       updatable: true,
     }));
