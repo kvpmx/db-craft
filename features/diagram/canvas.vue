@@ -3,6 +3,7 @@
   import { Background } from '@vue-flow/background';
   import { Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
+  import { v4 as uuidv4 } from 'uuid';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { Node, Edge } from '@vue-flow/core';
@@ -33,19 +34,34 @@
       id: ref.id,
       source: ref.source,
       target: ref.target,
-      sourceHandle: `source-${ref.source}-${ref.source_field}`,
-      targetHandle: `target-${ref.target}-${ref.target_field}`,
+      sourceHandle: `${ref.source_handle_placement}-${ref.source}-${ref.source_field}`,
+      targetHandle: `${ref.target_handle_placement}-${ref.target}-${ref.target_field}`,
       style: { strokeWidth: 2 },
+      updatable: true,
     }));
   });
 
   // Update the node position
-  const { onNodeDragStop } = useVueFlow();
+  const { onNodeDragStop, onConnect, onEdgeUpdate } = useVueFlow();
 
   onNodeDragStop((event) => {
     currentProject.updateTableData(event.node.id, {
       position: event.node.position,
     });
+  });
+
+  onConnect((connection) => {
+    const tableRef = createOrUpdateConnection(uuidv4(), connection);
+    if (!currentProject.state?.schema || !tableRef) return;
+    currentProject.state.schema.refs.push(tableRef);
+  });
+
+  onEdgeUpdate(({ edge, connection }) => {
+    const tableRef = createOrUpdateConnection(edge.id, connection);
+    if (!currentProject.state?.schema || !tableRef) return;
+
+    const idx = currentProject.state.schema.refs.findIndex((item) => item.id === edge.id);
+    currentProject.state.schema.refs[idx] = tableRef;
   });
 </script>
 

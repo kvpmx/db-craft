@@ -34,10 +34,14 @@ export interface TableField<T extends DatabaseType | unknown = unknown> {
   primary_key?: boolean;
 }
 
+export type HandlePlacement = 'left' | 'right';
+
 export interface TableReference {
   id: string;
   source: string;
   target: string;
   source_field: string;
   target_field: string;
+  source_handle_placement: HandlePlacement;
+  target_handle_placement: HandlePlacement;
 }

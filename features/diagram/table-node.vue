@@ -35,9 +35,8 @@
       class="field-row relative cursor-pointer border-solid border-slate-800 px-2 py-1 [&:not(:last-child)]:border-b-[1px]"
     >
       <Handle
-        :id="`source-${data.id}-${field.id}`"
+        :id="`left-${data.id}-${field.id}`"
         :position="Position.Left"
-        type="source"
         class="field-row-handle"
       />
       <div class="flex items-center justify-between gap-4">
@@ -55,9 +54,8 @@
         </div>
       </div>
       <Handle
-        :id="`target-${data.id}-${field.id}`"
+        :id="`right-${data.id}-${field.id}`"
         :position="Position.Right"
-        type="target"
         class="field-row-handle"
       />
     </div>
