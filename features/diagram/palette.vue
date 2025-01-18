@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { colors } from '@/lib/constants/colors';
+  import { DEFAULT_COLORS } from '@/lib/constants/colors';
 
   const selectedColor = defineModel<string>({ required: true });
 </script>
@@ -7,7 +7,7 @@
 <template>
   <div class="grid grid-cols-5 gap-1.5">
     <Button
-      v-for="color in colors"
+      v-for="color in DEFAULT_COLORS"
       :key="color"
       :style="{ backgroundColor: color }"
       :data-state="selectedColor === color ? 'on' : 'off'"

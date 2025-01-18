@@ -1,6 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { useSortable } from '@vueuse/integrations/useSortable';
-  import { colors } from '@/lib/constants/colors';
+  import { DEFAULT_COLORS } from '@/lib/constants/colors';
 
   import type { TableWithVisibility } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
@@ -44,7 +44,7 @@
   });
 
   // Change table color
-  const color = ref<string>(props.table.color ?? colors[0]);
+  const color = ref<string>(props.table.color ?? DEFAULT_COLORS[0]);
 
   watch(color, () => {
     if (!color.value) return;

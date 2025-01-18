@@ -1,4 +1,4 @@
-export const colors = [
+export const DEFAULT_COLORS = [
   '#fda4af',
   '#f9a8d4',
   '#f0abfc',
