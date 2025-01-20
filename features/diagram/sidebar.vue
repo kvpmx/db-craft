@@ -1,5 +1,8 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
+  import { v4 as uuidv4 } from 'uuid';
   import { useSortable } from '@vueuse/integrations/useSortable';
+  import { DEFAULT_COLORS } from '@/lib/constants/colors';
+  import { PRIMARY_KEY_DEFAULT_TYPES } from '@/lib/constants/diagram';
 
   import type { TableWithVisibility } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
@@ -39,6 +42,27 @@
 
   // Hide sidebar
   const sidebarHidden = ref(false);
+
+  // Add a new table
+  const addTable = () => {
+    if (!currentProject.state) return;
+    const count = currentProject.state.schema.tables.length;
+
+    currentProject.state.schema.tables.push({
+      id: uuidv4(),
+      name: `new_table_${count + 1}`,
+      fields: [
+        {
+          id: uuidv4(),
+          name: 'id',
+          type: PRIMARY_KEY_DEFAULT_TYPES[currentProject.state.type],
+          primary_key: true,
+        },
+      ],
+      color: chooseRandom(DEFAULT_COLORS),
+      position: { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
+    });
+  };
 </script>
 
 <template>
@@ -48,7 +72,7 @@
   >
     <div class="flex items-center justify-between gap-4 border-b px-3 py-2">
       <h2 class="text-md font-semibold">{{ t('TABLES') }}</h2>
-      <Button class="justify-start" variant="secondary" size="xs">
+      <Button class="justify-start" variant="secondary" size="xs" @click="addTable">
         <Icon name="lucide:table-2" size="1rem" class="mr-2 h-4 w-4" />
         {{ t('NEW_TABLE') }}
       </Button>

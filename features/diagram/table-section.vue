@@ -1,6 +1,8 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
+  import { v4 as uuidv4 } from 'uuid';
   import { useSortable } from '@vueuse/integrations/useSortable';
   import { DEFAULT_COLORS } from '@/lib/constants/colors';
+  import { DATABASE_FIELD_TYPES } from '@/lib/constants/diagram';
 
   import type { TableWithVisibility } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
@@ -50,6 +52,22 @@
     if (!color.value) return;
     currentProject.updateTableData(props.table.id, { color: color.value });
   });
+
+  // Add a new field
+  const addField = () => {
+    if (!currentProject.state) return;
+
+    currentProject.updateTableData(props.table.id, {
+      fields: [
+        ...props.table.fields,
+        {
+          id: uuidv4(),
+          name: `field_${props.table.fields.length + 1}`,
+          type: DATABASE_FIELD_TYPES[currentProject.state.type][0],
+        },
+      ],
+    });
+  };
 </script>
 
 <template>
@@ -110,7 +128,12 @@
         <Separator class="my-2" />
         <div class="flex items-center justify-between px-2">
           <DiagramColorPicker v-model="color" />
-          <Button size="xs" variant="secondary" class="flex items-center gap-1 text-[12px]">
+          <Button
+            size="xs"
+            variant="secondary"
+            class="flex items-center gap-1 text-[12px]"
+            @click="addField"
+          >
             <Icon name="lucide:plus" size="1rem" class="h-4 w-4" />
             {{ t('ADD_FIELD') }}
           </Button>

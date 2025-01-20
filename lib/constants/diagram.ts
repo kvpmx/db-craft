@@ -151,3 +151,9 @@ export const DATABASE_FIELD_TYPES = {
     'geometry',
   ],
 } as const;
+
+export const PRIMARY_KEY_DEFAULT_TYPES = {
+  [DatabaseType.MySQL]: 'int',
+  [DatabaseType.PostgreSQL]: 'serial',
+  [DatabaseType.SQLServer]: 'serial',
+} as const;
