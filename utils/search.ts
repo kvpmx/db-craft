@@ -1,5 +1,5 @@
 /**
- * Checks if the given text includes the search query, ignoring case sensitivity.
+ * Check if the given text includes the search query, ignoring case sensitivity.
  *
  * @param text - The text to search within.
  * @param searchQuery - The query to search for.
@@ -10,7 +10,7 @@ export const includesIgnoreCase = (text: string, searchQuery: string) => {
 };
 
 /**
- * Highlights occurrences of a substring in the given text by wrapping them in a span
+ * Highlight occurrences of a substring in the given text by wrapping them in a span
  * element with specific styling. If no substring is provided, the text is returned unchanged.
  *
  * @param text - The text in which to highlight the substring.

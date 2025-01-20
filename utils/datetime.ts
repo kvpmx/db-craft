@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 /**
- * Formats a date string into `dd.MM.yyyy` format.
+ * Format a date string into `dd.MM.yyyy` format.
  *
  * @param date - The date string to format.
  * @returns The formatted date in `dd.MM.yyyy` format.
@@ -12,7 +12,7 @@ export const formatDate = (date: string) => {
 };
 
 /**
- * Formats a date string into `dd.MM.yyyy, HH:mm:ss` format in the system's time zone.
+ * Format a date string into `dd.MM.yyyy, HH:mm:ss` format in the system's time zone.
  *
  * @param date - The date string to format.
  * @returns The formatted date and time in `dd.MM.yyyy, HH:mm:ss` format.

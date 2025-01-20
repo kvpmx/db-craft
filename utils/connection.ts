@@ -2,7 +2,7 @@ import type { Connection } from '@vue-flow/core';
 import type { HandlePlacement, TableReference } from '@/types/diagram';
 
 /**
- * Parses a handle ID string into placement and field values.
+ * Parse a handle ID string into placement and field values.
  *
  * @param {string} connectionHandle - A string that represents a unique identifier for a connection handle.
  * It is expected to be in the format "placement:table:field", where each part is separated by a colon.
@@ -14,7 +14,7 @@ export const parseConnectionData = (connectionHandle: string) => {
 };
 
 /**
- * Creates or updates a connection between two elements based
+ * Create or update a connection between two elements based
  * on the provided connection data.
  *
  * @param refId - The reference ID for the connection being created or updated.

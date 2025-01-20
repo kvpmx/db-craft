@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import type { ClassValue } from 'clsx';
 
 /**
- * Merges and deduplicates class names, including Tailwind CSS utility classes.
+ * Merge and deduplicate class names, including Tailwind CSS utility classes.
  *
  * Combines the functionality of `clsx` for conditional class merging and `tailwind-merge`
  * for resolving conflicting Tailwind CSS classes.
