@@ -47,5 +47,6 @@
   "UNSAVED_CHANGES_WARNING": "У вас є незбережені зміни. Бажаєте залишити сторінку?",
   "ADD_FIELD": "Додати поле",
   "NO_FIELD_TYPES_FOUND": "не знайдено жодного типу за вашим запитом",
-  "SEARCH_FIELD_TYPES": "Шукайте типи поля..."
+  "SEARCH_FIELD_TYPES": "Шукайте типи поля...",
+  "TIME_AGO": "{time} тому"
 }

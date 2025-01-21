@@ -49,10 +49,16 @@ export const useCurrentProject = defineStore('current-project', () => {
   };
 
   const saveConfigToDatabase = async () => {
-    if (!state.value) return;
+    if (!state.value || saved.value) return;
+
+    state.value.last_modified_at = new Date().toISOString();
 
     await projectsApi.update(state.value.id, {
+      last_modified_at: state.value.last_modified_at,
+      name: state.value.name,
       schema: state.value.schema,
+      thumbnail: state.value.thumbnail,
+      visibility: state.value.visibility,
     });
 
     saved.value = true;

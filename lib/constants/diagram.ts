@@ -157,3 +157,21 @@ export const PRIMARY_KEY_DEFAULT_TYPES = {
   [DatabaseType.PostgreSQL]: 'serial',
   [DatabaseType.SQLServer]: 'serial',
 } as const;
+
+export const DATABASES = [
+  {
+    name: 'MySQL',
+    value: DatabaseType.MySQL,
+    icon: 'devicon:mysql',
+  },
+  {
+    name: 'PostgreSQL',
+    value: DatabaseType.PostgreSQL,
+    icon: 'devicon:postgresql',
+  },
+  {
+    name: 'SQL Server',
+    value: DatabaseType.SQLServer,
+    icon: 'devicon:microsoftsqlserver',
+  },
+];

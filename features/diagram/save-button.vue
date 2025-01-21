@@ -1,6 +1,19 @@
 <script lang="ts" setup>
-  const { t } = useI18n();
+  import { formatDistanceToNow } from 'date-fns';
+  import { DATETIME_LOCALES } from '@/lib/constants/locale';
+
+  const { t, locale } = useI18n();
   const currentProject = useCurrentProject();
+
+  const timeAgo = computed(() => {
+    if (!currentProject.state) return null;
+
+    const distanceToNow = formatDistanceToNow(new Date(currentProject.state.last_modified_at), {
+      locale: DATETIME_LOCALES[locale.value],
+    });
+
+    return distanceToNow[0].toUpperCase() + distanceToNow.slice(1);
+  });
 </script>
 
 <template>
@@ -26,7 +39,13 @@
       </TooltipTrigger>
 
       <TooltipContent class="text-[12px]">
-        {{ currentProject.saved ? t('ALL_CHANGES_SAVED') : t('UNSAVED_CHANGES') }}
+        <div v-if="currentProject.saved" class="flex flex-col">
+          {{ t('ALL_CHANGES_SAVED') }}
+          <span class="italic">{{ t('TIME_AGO', { time: timeAgo }) }}</span>
+        </div>
+        <template v-else>
+          {{ t('UNSAVED_CHANGES') }}
+        </template>
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>

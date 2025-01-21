@@ -47,5 +47,6 @@
   "UNSAVED_CHANGES_WARNING": "You have unsaved changes. Do you want to leave the page?",
   "ADD_FIELD": "Add field",
   "NO_FIELD_TYPES_FOUND": "No field types found",
-  "SEARCH_FIELD_TYPES": "Search field types..."
+  "SEARCH_FIELD_TYPES": "Search field types...",
+  "TIME_AGO": "{time} ago"
 }

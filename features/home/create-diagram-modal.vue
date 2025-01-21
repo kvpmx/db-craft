@@ -3,17 +3,12 @@
   import { toTypedSchema } from '@vee-validate/zod';
   import { routes } from '@/lib/routes';
   import { ProjectsController } from '@/lib/controllers';
-  import { DatabaseType, DiagramVisibility } from '@/lib/constants/diagram';
+  import { DatabaseType, DiagramVisibility, DATABASES } from '@/lib/constants/diagram';
+
   import type { TablesInsert } from '@/types/database';
 
   const { t } = useI18n();
   const projectsApi = useApiController(ProjectsController);
-
-  const databases = [
-    { name: 'MySQL', value: DatabaseType.MySQL, icon: 'devicon:mysql' },
-    { name: 'PostgreSQL', value: DatabaseType.PostgreSQL, icon: 'devicon:postgresql' },
-    { name: 'SQL Server', value: DatabaseType.SQLServer, icon: 'devicon:microsoftsqlserver' },
-  ];
 
   const validationSchema = toTypedSchema(
     z.object({
@@ -123,7 +118,7 @@
                   :default-value="DatabaseType.MySQL"
                 >
                   <ToggleGroupItem
-                    v-for="db in databases"
+                    v-for="db in DATABASES"
                     :key="db.name"
                     :value="db.value"
                     class="hover:border-primary relative h-auto min-w-40 flex-1 cursor-pointer rounded-lg border p-4 transition-colors"
