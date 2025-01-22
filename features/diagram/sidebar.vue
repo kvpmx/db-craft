@@ -4,31 +4,14 @@
   import { DEFAULT_COLORS } from '@/lib/constants/colors';
   import { PRIMARY_KEY_DEFAULT_TYPES } from '@/lib/constants/diagram';
 
-  import type { TableWithVisibility } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
   const { t } = useI18n();
   const currentProject = useCurrentProject();
   const searchQuery = ref('');
 
-  // Get tables
-  const getFilteredTables = () => {
-    return currentProject.state?.schema.tables?.map((table) => {
-      const titleMatch = includesIgnoreCase(table.name, searchQuery.value);
-
-      const columnsMatch = table.fields.some((field) => {
-        return includesIgnoreCase(field.name, searchQuery.value);
-      });
-
-      return {
-        ...table,
-        visible: titleMatch || columnsMatch,
-      };
-    }) as TableWithVisibility<T>[];
-  };
-
   const tables = computed({
-    get: getFilteredTables,
+    get: () => currentProject.state?.schema.tables ?? [],
     set: (value) => currentProject.updateDiagramConfig({ tables: value }),
   });
 
@@ -98,7 +81,7 @@
           id="search-tables-or-columns"
           v-model="searchQuery"
           type="search"
-          :title="t('SEARCH_TABLE_OR_COLUMN')"
+          :title="t('SEARCH_TABLE')"
           :placeholder="t('SEARCH')"
           class="pl-10"
         />

@@ -4,22 +4,16 @@
   import { DEFAULT_COLORS } from '@/lib/constants/colors';
   import { DATABASE_FIELD_TYPES } from '@/lib/constants/diagram';
 
-  import type { TableWithVisibility } from '@/types/diagram';
+  import type { Table } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
   const props = defineProps<{
-    table: TableWithVisibility<T>;
-    searchQuery?: string;
+    table: Table<T>;
+    searchQuery: string;
   }>();
 
   const { t } = useI18n();
-
-  // Open collapsible on search
   const isOpen = ref(false);
-
-  watchEffect(() => {
-    isOpen.value = Boolean(props.searchQuery);
-  });
 
   // Update table fields
   const currentProject = useCurrentProject();
@@ -72,9 +66,11 @@
 
 <template>
   <Collapsible
-    v-if="table.visible"
     v-model:open="isOpen"
-    class="mb-2 w-full overflow-hidden rounded-md border-[1px] border-gray-500 bg-white"
+    :class="[
+      'mb-2 w-full overflow-hidden rounded-md border-[1px] border-gray-500 bg-white',
+      !includesIgnoreCase(table.name, searchQuery) && 'hidden',
+    ]"
   >
     <CollapsibleTrigger
       class="table-section-header hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 p-2 text-sm font-medium data-[state=closed]:rounded-md"

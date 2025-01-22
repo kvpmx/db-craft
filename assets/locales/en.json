@@ -39,7 +39,7 @@
   "TABLES": "Tables",
   "NEW_TABLE": "New table",
   "SEARCH": "Search...",
-  "SEARCH_TABLE_OR_COLUMN": "Search for a table or column name",
+  "SEARCH_TABLE": "Search for a table name",
   "DIAGRAM_PAGE_DESCRIPTION": "Easily modify and update your database diagram",
   "SAVE": "Save",
   "UNSAVED_CHANGES": "You have unsaved changes",

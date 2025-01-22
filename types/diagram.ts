@@ -14,10 +14,6 @@ export interface Table<T extends DatabaseType | unknown = unknown> {
   fields: TableField<T>[];
 }
 
-export type TableWithVisibility<T extends DatabaseType | unknown = unknown> = Table<T> & {
-  visible: boolean;
-};
-
 export interface Position {
   x: number;
   y: number;

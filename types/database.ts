@@ -13,7 +13,6 @@ export type Database = {
           last_modified_at: string;
           name: string;
           schema: DiagramConfig;
-          thumbnail: string | null;
           type: Database['public']['Enums']['database_type'];
           visibility: Database['public']['Enums']['diagram_visibility'];
         };
@@ -24,7 +23,6 @@ export type Database = {
           last_modified_at?: string;
           name?: string;
           schema?: DiagramConfig;
-          thumbnail?: string | null;
           type?: Database['public']['Enums']['database_type'];
           visibility?: Database['public']['Enums']['diagram_visibility'];
         };
@@ -35,7 +33,6 @@ export type Database = {
           last_modified_at?: string;
           name?: string;
           schema?: DiagramConfig;
-          thumbnail?: string | null;
           type?: Database['public']['Enums']['database_type'];
           visibility?: Database['public']['Enums']['diagram_visibility'];
         };
