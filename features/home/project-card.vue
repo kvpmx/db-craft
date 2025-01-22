@@ -1,10 +1,11 @@
 <script lang="ts" setup>
   import { routes } from '@/lib/routes';
+  import { ProjectsController } from '@/lib/controllers';
   import type { Tables } from '@/types/database';
 
   const { t } = useI18n();
 
-  defineProps<{
+  const props = defineProps<{
     project: Tables<'projects'>;
     searchQuery?: string;
   }>();
@@ -13,6 +14,13 @@
     (e: 'delete', id: number): void;
     (e: 'duplicate', project: Tables<'projects'>): void;
   }>();
+
+  const projectsApi = useApiController(ProjectsController);
+
+  const { data: thumbnailUrl } = useQuery({
+    queryKey: ['thumbnail', props.project.id],
+    queryFn: async () => await projectsApi.getThumbnailUrl(props.project?.id),
+  });
 </script>
 
 <template>
@@ -43,9 +51,9 @@
     </CardHeader>
     <CardContent class="pb-4">
       <NuxtImg
-        :src="project.thumbnail ?? '/images/thumbnail-placeholder.png'"
+        :src="thumbnailUrl ?? '/images/thumbnail-placeholder.png'"
         :alt="`Thumbnail for ${project.name}`"
-        class="h-auto w-full rounded-md object-cover"
+        class="h-auto w-full rounded-md border-[1px] border-slate-200 object-cover"
         style="aspect-ratio: 2 / 1"
         placeholder
       />

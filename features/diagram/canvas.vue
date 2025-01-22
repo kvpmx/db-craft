@@ -43,9 +43,9 @@
     }));
   });
 
-  // Update the node position
-  const { onNodeDragStop, onConnect, onEdgeUpdate, getSelectedEdges } = useVueFlow();
+  const { onNodeDragStop, onConnect, onEdgeUpdate, getSelectedEdges, vueFlowRef } = useVueFlow();
 
+  // Update the node position
   onNodeDragStop((event) => {
     currentProject.updateTableData(event.node.id, {
       position: event.node.position,
@@ -83,6 +83,14 @@
   const validateConnection: ValidConnectionFunc = (connection) => {
     return connection.source !== connection.target;
   };
+
+  // Save canvas ref to the global store
+  const canvas = useVueFlowCanvas();
+
+  watchEffect(() => {
+    if (!vueFlowRef.value) return;
+    canvas.set(vueFlowRef.value);
+  });
 </script>
 
 <template>

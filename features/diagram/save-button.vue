@@ -1,10 +1,13 @@
 <script lang="ts" setup>
   import { formatDistanceToNow } from 'date-fns';
+  import { ProjectsController } from '@/lib/controllers';
   import { DATETIME_LOCALES } from '@/lib/constants/locale';
 
   const { t, locale } = useI18n();
   const currentProject = useCurrentProject();
+  const projectsApi = useApiController(ProjectsController);
 
+  // Time of the last modification
   const timeAgo = computed(() => {
     if (!currentProject.state) return null;
 
@@ -13,6 +16,17 @@
     });
 
     return distanceToNow[0].toUpperCase() + distanceToNow.slice(1);
+  });
+
+  // Update the thumbnail
+  const canvas = useVueFlowCanvas();
+
+  const { mutateAsync: save, isPending } = useMutation({
+    mutationFn: async () => {
+      if (currentProject.saved) return;
+      await projectsApi.updateThumbnail(currentProject.state?.id, canvas.state);
+      await currentProject.saveConfigToDatabase();
+    },
   });
 </script>
 
@@ -27,13 +41,23 @@
             'flex gap-2 border-[1px] font-medium',
             !currentProject.saved && 'border-yellow-600',
           ]"
-          @click="currentProject.saveConfigToDatabase"
+          :disabled="isPending"
+          @click="save"
         >
-          <Icon
-            :name="currentProject.saved ? 'iconamoon:cloud-yes' : 'iconamoon:cloud-error'"
-            size="1rem"
-            :class="['h-4 w-4', currentProject.saved ? 'text-gray-600' : 'text-yellow-600']"
-          />
+          <template v-if="isPending">
+            <Icon
+              name="lucide:loader-circle"
+              size="1rem"
+              class="h-4 w-4 animate-spin text-gray-600"
+            />
+          </template>
+          <template v-else>
+            <Icon
+              :name="currentProject.saved ? 'iconamoon:cloud-yes' : 'iconamoon:cloud-error'"
+              size="1rem"
+              :class="['h-4 w-4', currentProject.saved ? 'text-gray-600' : 'text-yellow-600']"
+            />
+          </template>
           {{ t('SAVE') }}
         </Button>
       </TooltipTrigger>

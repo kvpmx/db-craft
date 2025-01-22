@@ -1,3 +1,4 @@
+import { toBlob } from 'html-to-image';
 import { ApiController } from './api-controller';
 import type { TablesInsert, TablesUpdate } from '@/types/database';
 
@@ -63,5 +64,41 @@ export class ProjectsController extends ApiController {
 
   async update(id: number, payload: TablesUpdate<'projects'>) {
     await this.supabase.from('projects').update(payload).eq('id', id).throwOnError();
+  }
+
+  async getThumbnailUrl(projectId: number | undefined) {
+    if (!projectId || !this.user) return null;
+
+    const { data } = await this.supabase.storage
+      .from('thumbnails')
+      .createSignedUrl(`${this.user.id}/${projectId}.png`, 24 * 60 * 60);
+
+    return data?.signedUrl ?? null;
+  }
+
+  async updateThumbnail(projectId: number | undefined, canvasRef: HTMLDivElement | null) {
+    if (!canvasRef || !projectId || !this.user) return;
+
+    const imageBlob = await toBlob(canvasRef, {
+      filter: (node) => {
+        return !(
+          node?.classList?.contains('vue-flow__minimap') ||
+          node?.classList?.contains('vue-flow__controls')
+        );
+      },
+    });
+
+    if (!imageBlob) return;
+    const file = new File([imageBlob], `${projectId}.png`, {
+      type: 'image/png',
+      lastModified: Date.now(),
+    });
+
+    if (file) {
+      await this.supabase.storage.from('thumbnails').upload(`${this.user.id}/${file.name}`, file, {
+        cacheControl: '3600',
+        upsert: true,
+      });
+    }
   }
 }
