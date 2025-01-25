@@ -72,7 +72,7 @@
   };
 
   // Remove selected edges using the 'delete' key
-  const { getSelectedEdges, vueFlowRef } = useVueFlow();
+  const { getSelectedEdges, vueFlowRef, fitView, onPaneReady } = useVueFlow();
   const { delete: deleteKey } = useMagicKeys();
 
   watch(deleteKey, () => {
@@ -94,6 +94,17 @@
   watchEffect(() => {
     if (!vueFlowRef.value) return;
     canvas.set(vueFlowRef.value);
+  });
+
+  // Register `fitView` function to the global store
+  onPaneReady(() => {
+    canvas.registerFitViewFunction((nodes) => {
+      fitView({
+        nodes,
+        duration: 1000,
+        padding: 0.5,
+      });
+    });
   });
 </script>
 

@@ -69,22 +69,23 @@
     <HomeCreateDiagramModal />
   </div>
 
-  <div v-if="isPending" class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
-    <Skeleton
-      v-for="index in 6"
-      :key="index"
-      class="h-[315px] rounded-lg border border-slate-200 bg-white shadow-sm"
-    />
-  </div>
-
-  <div v-else class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
-    <HomeProjectCard
-      v-for="project in filteredProjects"
-      :key="project.id"
-      :project="project"
-      :search-query="searchQuery"
-      @delete="deleteProject"
-      @duplicate="duplicateProject"
-    />
+  <div class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
+    <template v-if="isPending">
+      <Skeleton
+        v-for="index in 6"
+        :key="index"
+        class="h-[315px] rounded-lg border border-slate-200 bg-white shadow-sm"
+      />
+    </template>
+    <template v-else>
+      <HomeProjectCard
+        v-for="project in filteredProjects"
+        :key="project.id"
+        :project="project"
+        :search-query="searchQuery"
+        @delete="deleteProject"
+        @duplicate="duplicateProject"
+      />
+    </template>
   </div>
 </template>

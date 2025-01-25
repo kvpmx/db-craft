@@ -14,6 +14,7 @@
 
   const { t } = useI18n();
   const isOpen = ref(false);
+  const canvas = useVueFlowCanvas();
 
   // Update table fields
   const currentProject = useCurrentProject();
@@ -73,16 +74,30 @@
     ]"
   >
     <CollapsibleTrigger
-      class="table-section-header hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 p-2 text-sm font-medium data-[state=closed]:rounded-md"
+      class="table-section-header group flex w-full items-center justify-between gap-2 p-2 text-sm font-medium data-[state=closed]:rounded-md"
       :style="{ backgroundColor: table.color }"
     >
+      <div class="flex items-center gap-2">
+        <Icon
+          name="lucide:chevron-down"
+          size="1rem"
+          class="text-muted-foreground h-4 w-4"
+          :style="{ transform: `rotate(${isOpen ? '180deg' : '0deg'})` }"
+        />
+        <span v-html="highlightTextOccurrences(table.name, searchQuery)"></span>
+      </div>
+
       <Icon
-        name="lucide:chevron-down"
-        size="1rem"
-        class="text-muted-foreground h-4 w-4"
-        :style="{ transform: `rotate(${isOpen ? '180deg' : '0deg'})` }"
+        name="lucide:maximize"
+        size="0.75rem"
+        class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
+        @click="
+          (e) => {
+            e.stopPropagation();
+            canvas.fitView?.([props.table.id]);
+          }
+        "
       />
-      <span v-html="highlightTextOccurrences(table.name, searchQuery)"></span>
     </CollapsibleTrigger>
 
     <CollapsibleContent ref="columnsContainerRef" class="py-2">
