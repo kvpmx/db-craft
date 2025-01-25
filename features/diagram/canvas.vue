@@ -8,7 +8,14 @@
   import { MiniMap } from '@vue-flow/minimap';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
-  import type { Node, Edge, ValidConnectionFunc } from '@vue-flow/core';
+  import type {
+    Node,
+    Edge,
+    ValidConnectionFunc,
+    NodeDragEvent,
+    Connection,
+    EdgeUpdateEvent,
+  } from '@vue-flow/core';
 
   const currentProject = useCurrentProject();
 
@@ -43,32 +50,29 @@
     }));
   });
 
-  const { onNodeDragStop, onConnect, onEdgeUpdate, getSelectedEdges, vueFlowRef } = useVueFlow();
-
-  // Update the node position
-  onNodeDragStop((event) => {
+  // Handle Vue Flow events
+  const updateNodePosition = (event: NodeDragEvent) => {
     currentProject.updateTableData(event.node.id, {
       position: event.node.position,
     });
-  });
+  };
 
-  // Create new connection
-  onConnect((connection) => {
+  const createNewConnection = (connection: Connection) => {
     const tableRef = createOrUpdateConnection(uuidv4(), connection);
     if (!currentProject.state?.schema || !tableRef) return;
     currentProject.state.schema.refs.push(tableRef);
-  });
+  };
 
-  // Allow to update edges
-  onEdgeUpdate(({ edge, connection }) => {
+  const updateEdge = ({ edge, connection }: EdgeUpdateEvent) => {
     const tableRef = createOrUpdateConnection(edge.id, connection);
     if (!currentProject.state?.schema || !tableRef) return;
 
     const idx = currentProject.state.schema.refs.findIndex((item) => item.id === edge.id);
     currentProject.state.schema.refs[idx] = tableRef;
-  });
+  };
 
   // Remove selected edges using the 'delete' key
+  const { getSelectedEdges, vueFlowRef } = useVueFlow();
   const { delete: deleteKey } = useMagicKeys();
 
   watch(deleteKey, () => {
@@ -102,6 +106,9 @@
       :delete-key-code="null"
       :fit-view-on-init="true"
       :is-valid-connection="validateConnection"
+      @node-drag-stop="updateNodePosition"
+      @connect="createNewConnection"
+      @edge-update="updateEdge"
     >
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />

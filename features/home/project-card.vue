@@ -25,7 +25,7 @@
 
 <template>
   <Card>
-    <CardHeader class="pb-3">
+    <CardHeader class="p-4 pb-3">
       <div class="flex items-center justify-between">
         <CardTitle class="truncate text-lg font-semibold" :title="project.name">
           <span v-html="highlightTextOccurrences(project.name, searchQuery)"></span>
@@ -49,16 +49,16 @@
         </DropdownMenu>
       </div>
     </CardHeader>
-    <CardContent class="pb-4">
+    <CardContent class="px-4 py-0">
       <NuxtImg
         :src="thumbnailUrl ?? '/images/thumbnail-placeholder.png'"
         :alt="`Thumbnail for ${project.name}`"
-        class="h-auto w-full rounded-md border-[1px] border-slate-200 object-cover"
+        class="h-auto w-full rounded-md border-[1px] border-slate-200 bg-slate-200/20 object-cover"
         style="aspect-ratio: 2 / 1"
         placeholder
       />
     </CardContent>
-    <CardFooter class="flex items-center justify-between gap-2">
+    <CardFooter class="flex items-center justify-between gap-2 p-4">
       <span class="text-sm text-gray-500" :title="formatDateAndTime(project.last_modified_at)">
         {{ t('LAST_MODIFIED') }}: {{ formatDate(project.last_modified_at) }}
       </span>

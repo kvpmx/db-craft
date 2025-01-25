@@ -57,7 +57,6 @@ export const useCurrentProject = defineStore('current-project', () => {
       last_modified_at: state.value.last_modified_at,
       name: state.value.name,
       schema: state.value.schema,
-      thumbnail: state.value.thumbnail,
       visibility: state.value.visibility,
     });
 

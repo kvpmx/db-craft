@@ -83,7 +83,8 @@ export class ProjectsController extends ApiController {
       filter: (node) => {
         return !(
           node?.classList?.contains('vue-flow__minimap') ||
-          node?.classList?.contains('vue-flow__controls')
+          node?.classList?.contains('vue-flow__controls') ||
+          node?.classList?.contains('vue-flow__background')
         );
       },
     });
