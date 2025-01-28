@@ -1,5 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { v4 as uuidv4 } from 'uuid';
+  import { templateRef, useEventListener } from '@vueuse/core';
   import { useSortable } from '@vueuse/integrations/useSortable';
   import { DEFAULT_COLORS } from '@/lib/constants/colors';
   import { DATABASE_FIELD_TYPES } from '@/lib/constants/diagram';
@@ -63,15 +64,43 @@
       ],
     });
   };
+
+  // Scroll to the selected table section
+  const selectedTable = useSelectedTable();
+  const sectionRef = templateRef('sectionRef');
+
+  watch(
+    () => [selectedTable.id, selectedTable.flag],
+    () => {
+      if (selectedTable.id === props.table.id) {
+        sectionRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!isOpen.value) isOpen.value = true;
+      }
+    }
+  );
+
+  useEventListener(window, 'mouseup', () => {
+    if (!selectedTable.id) return;
+    selectedTable.setId(null);
+  });
 </script>
 
 <template>
   <Collapsible
+    ref="sectionRef"
     v-model:open="isOpen"
     :class="[
       'mb-2 w-full overflow-hidden rounded-md border-[1px] border-gray-500 bg-white',
       !includesIgnoreCase(table.name, searchQuery) && 'hidden',
+      selectedTable.id === props.table.id && 'ring-2 ring-rose-600 ring-offset-2',
     ]"
+    @update:open="
+      () => {
+        if (selectedTable.id) {
+          selectedTable.setId(null);
+        }
+      }
+    "
   >
     <CollapsibleTrigger
       class="table-section-header group flex w-full items-center justify-between gap-2 p-2 text-sm font-medium data-[state=closed]:rounded-md"

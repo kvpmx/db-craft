@@ -25,6 +25,9 @@
   onClickOutside(target, () => {
     selected.value = false;
   });
+
+  // Select the table section
+  const selectedTable = useSelectedTable();
 </script>
 
 <template>
@@ -38,10 +41,22 @@
     @click="selected = !selected"
   >
     <div
-      class="rounded-t-md border-b-[1px] border-solid border-slate-300 p-2 text-sm font-semibold"
+      class="flex items-center justify-between gap-2 rounded-t-md border-b-[1px] border-solid border-slate-300 p-2 text-sm font-semibold"
       :style="{ backgroundColor: data.color }"
     >
-      {{ data.name }}
+      <span>{{ data.name }}</span>
+      <Icon
+        name="lucide:maximize"
+        size="0.75rem"
+        class="h-3 w-3 cursor-pointer"
+        @click="
+          (e) => {
+            e.stopPropagation();
+            selectedTable.setId(data.id);
+            selectedTable.toggleFlag();
+          }
+        "
+      />
     </div>
     <div
       v-for="field in data.fields"
