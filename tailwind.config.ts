@@ -35,9 +35,6 @@ const config: Config = {
         'collapsible-down': 'collapsible-down 0.1s ease-in-out',
         'collapsible-up': 'collapsible-up 0.1s ease-in-out',
       },
-      backgroundImage: {
-        auth: 'url(/images/auth-page-background.png)',
-      },
       screens: {
         'sm-tablet': '670px',
       },

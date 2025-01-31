@@ -48,5 +48,13 @@
   "ADD_FIELD": "Додати поле",
   "NO_FIELD_TYPES_FOUND": "не знайдено жодного типу за вашим запитом",
   "SEARCH_FIELD_TYPES": "Шукайте типи поля...",
-  "TIME_AGO": "{time} тому"
+  "TIME_AGO": "{time} тому",
+  "REGISTER_PAGE_TITLE": "Реєстрація | DB Craft",
+  "REGISTER_PAGE_DESCRIPTION": "Зареєструйте новий обліковий запис",
+  "REGISTER_FORM_DESCRIPTION": "Введіть ваші дані нижче, щоб зареєструвати новий обліковий запис",
+  "FIRST_NAME": "Ім'я",
+  "LAST_NAME": "Прізвище",
+  "FIRST_NAME_REQUIRED": "Ім'я є обов'язковим",
+  "LAST_NAME_REQUIRED": "Прізвище є обов'язковим",
+  "ALREADY_HAVE_ACCOUNT": "Вже маєте обліковий запис?"
 }

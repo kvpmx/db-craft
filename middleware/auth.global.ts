@@ -1,5 +1,7 @@
 import { routes } from '@/lib/routes';
 
+const AUTH_ROUTES = [routes.login(), routes.register()];
+
 export default defineNuxtRouteMiddleware(async (to) => {
   const supabaseClient = useSupabaseClient();
   const session = useSupabaseSession();
@@ -8,11 +10,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     await supabaseClient.auth.exchangeCodeForSession(to.query.code as string);
   }
 
-  if (session.value && to.path === routes.login()) {
+  if (session.value && AUTH_ROUTES.some((route) => to.path === route)) {
     return navigateTo(routes.home());
-  }
-
-  if (!session.value && to.path !== routes.login()) {
-    return navigateTo(routes.login());
   }
 });

@@ -50,6 +50,11 @@ export default defineNuxtConfig({
   },
   supabase: {
     types: '@/types/database.ts',
+    redirectOptions: {
+      login: '/login',
+      callback: '/confirm',
+      exclude: ['/register'],
+    },
   },
   i18n: {
     defaultLocale: 'en',

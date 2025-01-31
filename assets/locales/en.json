@@ -48,5 +48,13 @@
   "ADD_FIELD": "Add field",
   "NO_FIELD_TYPES_FOUND": "No field types found",
   "SEARCH_FIELD_TYPES": "Search field types...",
-  "TIME_AGO": "{time} ago"
+  "TIME_AGO": "{time} ago",
+  "REGISTER_PAGE_TITLE": "Register | DB Craft",
+  "REGISTER_PAGE_DESCRIPTION": "Register for a new account",
+  "REGISTER_FORM_DESCRIPTION": "Enter your details below to register for a new account",
+  "FIRST_NAME": "First name",
+  "LAST_NAME": "Last name",
+  "FIRST_NAME_REQUIRED": "First name is required",
+  "LAST_NAME_REQUIRED": "Last name is required",
+  "ALREADY_HAVE_ACCOUNT": "Already have an account?"
 }

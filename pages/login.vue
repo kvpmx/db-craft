@@ -6,6 +6,8 @@
 
   import type { SignInWithPasswordCredentials } from '@supabase/supabase-js';
 
+  definePageMeta({ layout: 'auth' });
+
   const { t } = useI18n();
   const supabase = useSupabaseClient();
 
@@ -44,71 +46,67 @@
 <template>
   <PageMeta :title="t('LOGIN_PAGE_TITLE')" :description="t('LOGIN_PAGE_DESCRIPTION')" />
 
-  <main class="flex min-h-screen items-center justify-center bg-auth px-4 py-12 sm:px-6 lg:px-8">
-    <Card class="mx-auto w-full max-w-md rounded-xl">
-      <CardHeader>
-        <CardTitle class="text-2xl">{{ t('LOGIN') }}</CardTitle>
-        <CardDescription>{{ t('LOGIN_FORM_DESCRIPTION') }}</CardDescription>
-      </CardHeader>
+  <Card class="mx-auto w-full max-w-md rounded-xl">
+    <CardHeader>
+      <CardTitle class="text-2xl">{{ t('LOGIN') }}</CardTitle>
+      <CardDescription>{{ t('LOGIN_FORM_DESCRIPTION') }}</CardDescription>
+    </CardHeader>
 
-      <CardContent>
-        <form @submit="submitLoginForm">
-          <div class="space-y-4">
-            <FormField v-slot="{ componentField }" name="email">
-              <FormItem>
-                <FormLabel>{{ t('EMAIL') }}</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="user@example.com"
-                    v-bind="componentField"
-                    autocomplete="email"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
+    <CardContent>
+      <form @submit="submitLoginForm">
+        <div class="space-y-4">
+          <FormField v-slot="{ componentField }" name="email">
+            <FormItem>
+              <FormLabel>{{ t('EMAIL') }}</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="user@example.com"
+                  v-bind="componentField"
+                  autocomplete="email"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-            <FormField v-slot="{ componentField }" name="password">
-              <FormItem>
-                <FormLabel>{{ t('PASSWORD') }}</FormLabel>
-                <FormControl>
-                  <Input type="password" v-bind="componentField" autocomplete="current-password" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-          </div>
-
-          <div class="mt-6 grid gap-4">
-            <ButtonWithLoading type="submit" class="w-full" :loading="isPending">
-              {{ t('LOGIN') }}
-            </ButtonWithLoading>
-
-            <Button
-              type="button"
-              variant="outline"
-              class="w-full truncate"
-              :disabled="isPending"
-              @click="loginWithGoogle"
-            >
-              <Icon
-                name="flat-color-icons:google"
-                size="1.25rem"
-                class="mr-2 h-5 w-5 flex-shrink-0"
-              />
-              <span class="truncate">{{ t('LOGIN_WITH_GOOGLE') }}</span>
-            </Button>
-          </div>
-        </form>
-
-        <div class="mt-4 text-center text-sm">
-          {{ t('DO_NOT_HAVE_ACCOUNT') }}
-          <a href="#" class="underline">{{ t('SIGN_UP') }}</a>
+          <FormField v-slot="{ componentField }" name="password">
+            <FormItem>
+              <FormLabel>{{ t('PASSWORD') }}</FormLabel>
+              <FormControl>
+                <Input type="password" v-bind="componentField" autocomplete="current-password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
-      </CardContent>
-    </Card>
 
-    <Toaster />
-  </main>
+        <div class="mt-6 grid gap-4">
+          <ButtonWithLoading type="submit" class="w-full" :loading="isPending">
+            {{ t('LOGIN') }}
+          </ButtonWithLoading>
+
+          <Button
+            type="button"
+            variant="outline"
+            class="w-full truncate"
+            :disabled="isPending"
+            @click="loginWithGoogle"
+          >
+            <Icon
+              name="flat-color-icons:google"
+              size="1.25rem"
+              class="mr-2 h-5 w-5 flex-shrink-0"
+            />
+            <span class="truncate">{{ t('LOGIN_WITH_GOOGLE') }}</span>
+          </Button>
+        </div>
+      </form>
+
+      <div class="mt-4 text-center text-sm">
+        {{ t('DO_NOT_HAVE_ACCOUNT') }}
+        <a :href="routes.register()" class="underline">{{ t('SIGN_UP') }}</a>
+      </div>
+    </CardContent>
+  </Card>
 </template>
