@@ -56,5 +56,7 @@
   "LAST_NAME": "Прізвище",
   "FIRST_NAME_REQUIRED": "Ім'я є обов'язковим",
   "LAST_NAME_REQUIRED": "Прізвище є обов'язковим",
-  "ALREADY_HAVE_ACCOUNT": "Вже маєте обліковий запис?"
+  "ALREADY_HAVE_ACCOUNT": "Вже маєте обліковий запис?",
+  "CONFIRMATION_MESSAGE_TITLE": "Підтвердіть свою пошту!",
+  "CONFIRMATION_MESSAGE_DESCRIPTION": "Будь ласка, перевірте свою поштову скриньку. Ми надіслали вам лист для підтвердження."
 }

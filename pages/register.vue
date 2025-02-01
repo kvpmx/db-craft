@@ -32,6 +32,7 @@
   );
 
   const { handleSubmit } = useForm({ validationSchema });
+  const confirmEmailMessage = ref(false);
 
   const { mutateAsync: registerNewUser, isPending } = useMutation({
     mutationKey: ['registerNewUser'],
@@ -39,7 +40,7 @@
       await supabase.auth.signUp(data);
     },
     onError: (error: Error) => toast.error(error.toString()),
-    onSuccess: () => navigateTo(routes.home()),
+    onSuccess: () => (confirmEmailMessage.value = true),
   });
 
   const submitRegisterForm = handleSubmit(async (data) => {
@@ -59,7 +60,7 @@
 <template>
   <PageMeta :title="t('REGISTER_PAGE_TITLE')" :description="t('REGISTER_PAGE_DESCRIPTION')" />
 
-  <Card class="mx-auto w-full max-w-md rounded-xl">
+  <Card v-if="!confirmEmailMessage" class="mx-auto w-full max-w-md rounded-xl">
     <CardHeader>
       <CardTitle class="text-2xl">{{ t('SIGN_UP') }}</CardTitle>
       <CardDescription>{{ t('REGISTER_FORM_DESCRIPTION') }}</CardDescription>
@@ -104,7 +105,7 @@
             <FormItem>
               <FormLabel>{{ t('PASSWORD') }}</FormLabel>
               <FormControl>
-                <Input type="password" v-bind="componentField" autocomplete="current-password" />
+                <Input type="password" v-bind="componentField" autocomplete="new-password" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -123,5 +124,23 @@
         <a :href="routes.login()" class="underline">{{ t('LOGIN') }}</a>
       </div>
     </CardContent>
+  </Card>
+
+  <Card v-else class="mx-auto w-full max-w-md rounded-xl">
+    <CardHeader>
+      <CardTitle class="text-center">
+        {{ t('CONFIRMATION_MESSAGE_TITLE') }}
+      </CardTitle>
+    </CardHeader>
+    <CardContent class="flex justify-center">
+      <div class="rounded-full bg-gray-200 p-5">
+        <Icon name="lucide:mail-check" size="8rem" class="h-32 w-32 text-slate-800" />
+      </div>
+    </CardContent>
+    <CardFooter>
+      <CardDescription class="text-center">
+        {{ t('CONFIRMATION_MESSAGE_DESCRIPTION') }}
+      </CardDescription>
+    </CardFooter>
   </Card>
 </template>
