@@ -6,6 +6,7 @@
   import { MiniMap } from '@vue-flow/minimap';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
+  import type { HandlePlacement } from '@/types/diagram';
   import type {
     Node,
     Edge,
@@ -44,10 +45,12 @@
       sourceHandle: `${rel.source_handle_placement}:${rel.source}:${rel.source_field}`,
       targetHandle: `${rel.target_handle_placement}:${rel.target}:${rel.target_field}`,
       style: { strokeWidth: 3 },
+      type: 'smoothstep', // TODO: create a custom type for smoothstep
+      pathOptions: { borderRadius: 20 },
     }));
   });
 
-  // Handle Vue Flow events
+  // Handle table node events
   const updateNodePosition = (event: NodeDragEvent) => {
     currentProject.updateTableData(event.node.id, {
       position: event.node.position,
@@ -99,24 +102,50 @@
   });
 
   // Change handle placement based on the position of the nodes
-  const getHandlePlacement = (firstNode: Node, secondNode: Node) => {
-    return firstNode.position.x - secondNode.position.x < 0 ? 'right' : 'left';
+  const getHandlePlacement = (
+    sourceNode: Node,
+    targetNode: Node
+  ): Record<'source' | 'target', HandlePlacement | null> => {
+    const dist = sourceNode.position.x - targetNode.position.x;
+    const width = 300; // Node width + Edge offset
+
+    if (dist > width) return { source: 'left', target: 'right' };
+    if (dist >= 0) return { source: 'left', target: 'left' };
+    if (dist <= -width) return { source: 'right', target: 'left' };
+    if (dist < width / 2) return { source: 'right', target: 'right' };
+
+    // This line should never be reached!
+    return { source: null, target: null };
   };
 
   const updateHandlePlacement = (nodeId: string) => {
     const connectedEdges = getConnectedEdges(nodeId, edges.value) as GraphEdge[];
+
     connectedEdges.forEach((edge) => {
       const relation = currentProject.state?.schema.relations.find((rel) => rel.id === edge.id);
+      const placement = getHandlePlacement(edge.sourceNode, edge.targetNode);
 
-      if (relation) {
-        relation.source_handle_placement = getHandlePlacement(edge.sourceNode, edge.targetNode);
-        relation.target_handle_placement = getHandlePlacement(edge.targetNode, edge.sourceNode);
+      if (relation && placement.source && placement.target) {
+        relation.source_handle_placement = placement.source;
+        relation.target_handle_placement = placement.target;
       }
     });
   };
 
+  const updateConnectedEdges = (event: NodeDragEvent, animate: boolean) => {
+    const connectedEdges = getConnectedEdges(event.node.id, edges.value);
+    connectedEdges.forEach((edge) => (edge.animated = animate));
+  };
+
+  // Handle drag events
   const onNodeDrag = (event: NodeDragEvent) => {
     updateHandlePlacement(event.node.id);
+    updateConnectedEdges(event, true);
+  };
+
+  const onNodeDragStop = (event: NodeDragEvent) => {
+    updateNodePosition(event);
+    updateConnectedEdges(event, false);
   };
 </script>
 
@@ -130,7 +159,7 @@
       :delete-key-code="null"
       :fit-view-on-init="true"
       :is-valid-connection="validateConnection"
-      @node-drag-stop="updateNodePosition"
+      @node-drag-stop="onNodeDragStop"
       @connect="createNewConnection"
       @node-drag="onNodeDrag"
     >

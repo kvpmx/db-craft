@@ -29,7 +29,7 @@
 <template>
   <PageMeta
     v-if="currentProject.state?.name"
-    :title="currentProject.state.name"
+    :title="`${currentProject.state.name} - DB Craft`"
     :description="t('DIAGRAM_PAGE_DESCRIPTION')"
   />
   <div class="flex h-[100vh] flex-col overflow-hidden">
