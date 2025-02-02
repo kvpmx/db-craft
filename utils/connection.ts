@@ -1,10 +1,11 @@
+import { v4 as uuidv4 } from 'uuid';
 import type { Connection } from '@vue-flow/core';
 import type { HandlePlacement, TableReference } from '@/types/diagram';
 
 /**
  * Parse a handle ID string into placement and field values.
  *
- * @param {string} connectionHandle - A string that represents a unique identifier for a connection handle.
+ * @param connectionHandle - A string that represents a unique identifier for a connection handle.
  * It is expected to be in the format "placement:table:field", where each part is separated by a colon.
  * @returns A tuple containing the `placement` and `fieldId` values parsed from the `handleId`.
  */
@@ -14,17 +15,12 @@ export const parseConnectionData = (connectionHandle: string) => {
 };
 
 /**
- * Create or update a connection between two elements based
- * on the provided connection data.
+ * Create a relation between two tables based on the provided connection data.
  *
- * @param refId - The reference ID for the connection being created or updated.
  * @param connection - An object that represents a connection between two nodes.
  * @returns A `TableReference` object or `undefined` when connection is not valid.
  */
-export const createOrUpdateConnection = (
-  refId: string,
-  connection: Connection
-): TableReference | undefined => {
+export const createRelation = (connection: Connection): TableReference | undefined => {
   if (!connection.sourceHandle || !connection.targetHandle) {
     return;
   }
@@ -35,7 +31,7 @@ export const createOrUpdateConnection = (
   if (!sourceField || !targetField) return;
 
   return {
-    id: refId,
+    id: uuidv4(),
     source: connection.source,
     target: connection.target,
     source_field: sourceField,

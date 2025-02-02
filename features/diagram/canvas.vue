@@ -1,8 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
-  import { v4 as uuidv4 } from 'uuid';
   import { useMagicKeys } from '@vueuse/core';
-
-  import { useVueFlow, VueFlow } from '@vue-flow/core';
+  import { getConnectedEdges, useVueFlow, VueFlow } from '@vue-flow/core';
   import { Background } from '@vue-flow/background';
   import { Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
@@ -14,7 +12,7 @@
     ValidConnectionFunc,
     NodeDragEvent,
     Connection,
-    EdgeUpdateEvent,
+    GraphEdge,
   } from '@vue-flow/core';
 
   const currentProject = useCurrentProject();
@@ -45,8 +43,7 @@
       target: ref.target,
       sourceHandle: `${ref.source_handle_placement}:${ref.source}:${ref.source_field}`,
       targetHandle: `${ref.target_handle_placement}:${ref.target}:${ref.target_field}`,
-      style: { strokeWidth: 2 },
-      updatable: true,
+      style: { strokeWidth: 3 },
     }));
   });
 
@@ -58,17 +55,11 @@
   };
 
   const createNewConnection = (connection: Connection) => {
-    const tableRef = createOrUpdateConnection(uuidv4(), connection);
-    if (!currentProject.state?.schema || !tableRef) return;
-    currentProject.state.schema.refs.push(tableRef);
-  };
+    const relation = createRelation(connection);
+    if (!currentProject.state?.schema || !relation) return;
+    currentProject.state.schema.refs.push(relation);
 
-  const updateEdge = ({ edge, connection }: EdgeUpdateEvent) => {
-    const tableRef = createOrUpdateConnection(edge.id, connection);
-    if (!currentProject.state?.schema || !tableRef) return;
-
-    const idx = currentProject.state.schema.refs.findIndex((item) => item.id === edge.id);
-    currentProject.state.schema.refs[idx] = tableRef;
+    nextTick(() => updateHandlePlacement(relation.source));
   };
 
   // Remove selected edges using the 'delete' key
@@ -106,6 +97,27 @@
       });
     });
   });
+
+  // Change handle placement based on the position of the nodes
+  const getHandlePlacement = (firstNode: Node, secondNode: Node) => {
+    return firstNode.position.x - secondNode.position.x < 0 ? 'right' : 'left';
+  };
+
+  const updateHandlePlacement = (nodeId: string) => {
+    const connectedEdges = getConnectedEdges(nodeId, edges.value) as GraphEdge[];
+    connectedEdges.forEach((edge) => {
+      const ref = currentProject.state?.schema.refs.find((ref) => ref.id === edge.id);
+
+      if (ref) {
+        ref.source_handle_placement = getHandlePlacement(edge.sourceNode, edge.targetNode);
+        ref.target_handle_placement = getHandlePlacement(edge.targetNode, edge.sourceNode);
+      }
+    });
+  };
+
+  const onNodeDrag = (event: NodeDragEvent) => {
+    updateHandlePlacement(event.node.id);
+  };
 </script>
 
 <template>
@@ -114,12 +126,13 @@
       v-model:nodes="nodes"
       v-model:edges="edges"
       style="height: 100%; width: 100%"
+      :min-zoom="0.1"
       :delete-key-code="null"
       :fit-view-on-init="true"
       :is-valid-connection="validateConnection"
       @node-drag-stop="updateNodePosition"
       @connect="createNewConnection"
-      @edge-update="updateEdge"
+      @node-drag="onNodeDrag"
     >
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />
