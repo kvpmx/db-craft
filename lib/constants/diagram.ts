@@ -13,7 +13,7 @@ export enum DatabaseType {
 
 export const DEFAULT_DIAGRAM_CONFIG = {
   tables: [],
-  refs: [],
+  relations: [],
 } as DiagramConfig;
 
 export const DATABASE_FIELD_TYPES = {

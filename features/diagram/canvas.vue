@@ -31,18 +31,18 @@
     }));
   });
 
-  // Convert refs to edges
+  // Convert relations to edges
   const edges = ref<Edge[]>([]);
 
   watchEffect(() => {
     if (!currentProject.state?.schema) return;
 
-    edges.value = currentProject.state.schema.refs.map((ref) => ({
-      id: ref.id,
-      source: ref.source,
-      target: ref.target,
-      sourceHandle: `${ref.source_handle_placement}:${ref.source}:${ref.source_field}`,
-      targetHandle: `${ref.target_handle_placement}:${ref.target}:${ref.target_field}`,
+    edges.value = currentProject.state.schema.relations.map((rel) => ({
+      id: rel.id,
+      source: rel.source,
+      target: rel.target,
+      sourceHandle: `${rel.source_handle_placement}:${rel.source}:${rel.source_field}`,
+      targetHandle: `${rel.target_handle_placement}:${rel.target}:${rel.target_field}`,
       style: { strokeWidth: 3 },
     }));
   });
@@ -57,7 +57,7 @@
   const createNewConnection = (connection: Connection) => {
     const relation = createRelation(connection);
     if (!currentProject.state?.schema || !relation) return;
-    currentProject.state.schema.refs.push(relation);
+    currentProject.state.schema.relations.push(relation);
 
     nextTick(() => updateHandlePlacement(relation.source));
   };
@@ -69,8 +69,8 @@
   watch(deleteKey, () => {
     getSelectedEdges.value.forEach((edge) => {
       if (!currentProject.state?.schema) return;
-      const idx = currentProject.state.schema.refs.findIndex((item) => item.id === edge.id);
-      currentProject.state.schema.refs.splice(idx, 1);
+      const idx = currentProject.state.schema.relations.findIndex((rel) => rel.id === edge.id);
+      currentProject.state.schema.relations.splice(idx, 1);
     });
   });
 
@@ -106,11 +106,11 @@
   const updateHandlePlacement = (nodeId: string) => {
     const connectedEdges = getConnectedEdges(nodeId, edges.value) as GraphEdge[];
     connectedEdges.forEach((edge) => {
-      const ref = currentProject.state?.schema.refs.find((ref) => ref.id === edge.id);
+      const relation = currentProject.state?.schema.relations.find((rel) => rel.id === edge.id);
 
-      if (ref) {
-        ref.source_handle_placement = getHandlePlacement(edge.sourceNode, edge.targetNode);
-        ref.target_handle_placement = getHandlePlacement(edge.targetNode, edge.sourceNode);
+      if (relation) {
+        relation.source_handle_placement = getHandlePlacement(edge.sourceNode, edge.targetNode);
+        relation.target_handle_placement = getHandlePlacement(edge.targetNode, edge.sourceNode);
       }
     });
   };

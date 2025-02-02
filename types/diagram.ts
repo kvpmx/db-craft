@@ -3,7 +3,7 @@ import type { DATABASE_FIELD_TYPES, DatabaseType } from '@/lib/constants/diagram
 
 export interface DiagramConfig<T extends DatabaseType | unknown = unknown> {
   tables: Table<T>[];
-  refs: TableReference[];
+  relations: TableRelation[];
 }
 
 export interface Table<T extends DatabaseType | unknown = unknown> {
@@ -32,7 +32,7 @@ export interface TableField<T extends DatabaseType | unknown = unknown> {
 
 export type HandlePlacement = 'left' | 'right';
 
-export interface TableReference {
+export interface TableRelation {
   id: string;
   source: string;
   target: string;

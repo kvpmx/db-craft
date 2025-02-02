@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { Connection } from '@vue-flow/core';
-import type { HandlePlacement, TableReference } from '@/types/diagram';
+import type { HandlePlacement, TableRelation } from '@/types/diagram';
 
 /**
  * Parse a handle ID string into placement and field values.
@@ -18,9 +18,9 @@ export const parseConnectionData = (connectionHandle: string) => {
  * Create a relation between two tables based on the provided connection data.
  *
  * @param connection - An object that represents a connection between two nodes.
- * @returns A `TableReference` object or `undefined` when connection is not valid.
+ * @returns A `TablesRelation` object or `undefined` when connection is not valid.
  */
-export const createRelation = (connection: Connection): TableReference | undefined => {
+export const createRelation = (connection: Connection): TableRelation | undefined => {
   if (!connection.sourceHandle || !connection.targetHandle) {
     return;
   }
