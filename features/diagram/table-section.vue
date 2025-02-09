@@ -5,7 +5,7 @@
   import { DEFAULT_COLORS } from '@/lib/constants/colors';
   import { DATABASE_FIELD_TYPES } from '@/lib/constants/diagram';
 
-  import type { Table } from '@/types/diagram';
+  import type { Table, TableField } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
   const props = defineProps<{
@@ -18,18 +18,21 @@
 
   // Update table fields
   const currentProject = useCurrentProject();
+  const fields = ref<TableField<T>[]>([]);
 
-  watch(
-    props.table.fields,
-    () => currentProject.updateTableData(props.table.id, { fields: props.table.fields }),
-    { deep: true }
-  );
+  watchEffect(() => {
+    fields.value = props.table.fields;
+  });
+
+  watch(fields, () => currentProject.updateTableData(props.table.id, { fields: fields.value }), {
+    deep: true,
+  });
 
   // Make a column list sortable
   const columnsContainerRef = useTemplateRef<HTMLElement>('columnsContainerRef');
   const isDragging = ref(false);
 
-  useSortable(columnsContainerRef, props.table.fields, {
+  useSortable(columnsContainerRef, fields, {
     handle: '.sortable-handle',
     animation: 150,
     forceFallback: true,
@@ -119,7 +122,7 @@
 
     <AccordionContent ref="columnsContainerRef" class="py-2">
       <div
-        v-for="column in table.fields"
+        v-for="column in fields"
         :key="column.id"
         class="column-item transition-color flex items-center justify-between gap-2 p-3 py-1 pl-1"
         :data-dragging="isDragging"
