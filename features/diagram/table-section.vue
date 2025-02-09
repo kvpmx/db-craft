@@ -1,6 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { v4 as uuidv4 } from 'uuid';
-  import { templateRef, useEventListener } from '@vueuse/core';
+  import { useEventListener } from '@vueuse/core';
   import { useSortable } from '@vueuse/integrations/useSortable';
   import { DEFAULT_COLORS } from '@/lib/constants/colors';
   import { DATABASE_FIELD_TYPES } from '@/lib/constants/diagram';
@@ -14,7 +14,6 @@
   }>();
 
   const { t } = useI18n();
-  const isOpen = ref(false);
   const canvas = useVueFlowCanvas();
 
   // Update table fields
@@ -27,7 +26,7 @@
   );
 
   // Make a column list sortable
-  const columnsContainerRef = ref<HTMLElement | null>(null);
+  const columnsContainerRef = useTemplateRef<HTMLElement>('columnsContainerRef');
   const isDragging = ref(false);
 
   useSortable(columnsContainerRef, props.table.fields, {
@@ -67,15 +66,16 @@
 
   // Scroll to the selected table section
   const selectedTable = useSelectedTable();
-  const sectionRef = templateRef('sectionRef');
+  const sectionRef = useTemplateRef('sectionRef');
 
   watch(
     () => [selectedTable.id, selectedTable.flag],
     () => {
-      if (selectedTable.id === props.table.id) {
-        sectionRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if (!isOpen.value) isOpen.value = true;
-      }
+      nextTick(() => {
+        if (selectedTable.id === props.table.id) {
+          sectionRef.value?.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
     }
   );
 
@@ -86,35 +86,23 @@
 </script>
 
 <template>
-  <Collapsible
+  <AccordionItem
     ref="sectionRef"
-    v-model:open="isOpen"
+    :value="table.id"
     :class="[
       'mb-2 w-full overflow-hidden rounded-md border-[1px] border-gray-500 bg-white',
       !includesIgnoreCase(table.name, searchQuery) && 'hidden',
-      selectedTable.id === props.table.id && 'ring-2 ring-rose-600 ring-offset-2',
+      selectedTable.id === table.id && 'ring-2 ring-rose-600 ring-offset-2',
     ]"
-    @update:open="
-      () => {
-        if (selectedTable.id) {
-          selectedTable.setId(null);
-        }
-      }
-    "
   >
-    <CollapsibleTrigger
+    <AccordionTrigger
       class="table-section-header group flex w-full items-center justify-between gap-2 p-2 text-sm font-medium data-[state=closed]:rounded-md"
       :style="{ backgroundColor: table.color }"
     >
-      <div class="flex items-center gap-2">
-        <Icon
-          name="lucide:chevron-down"
-          size="1rem"
-          class="text-muted-foreground h-4 w-4"
-          :style="{ transform: `rotate(${isOpen ? '180deg' : '0deg'})` }"
-        />
-        <span v-html="highlightTextOccurrences(table.name, searchQuery)"></span>
-      </div>
+      <div
+        class="flex-1 text-left"
+        v-html="highlightTextOccurrences(table.name, searchQuery)"
+      ></div>
 
       <Icon
         name="lucide:maximize"
@@ -123,13 +111,13 @@
         @click="
           (e) => {
             e.stopPropagation();
-            canvas.fitView?.([props.table.id]);
+            canvas.fitView?.([table.id]);
           }
         "
       />
-    </CollapsibleTrigger>
+    </AccordionTrigger>
 
-    <CollapsibleContent ref="columnsContainerRef" class="py-2">
+    <AccordionContent ref="columnsContainerRef" class="py-2">
       <div
         v-for="column in table.fields"
         :key="column.id"
@@ -179,8 +167,8 @@
           </Button>
         </div>
       </div>
-    </CollapsibleContent>
-  </Collapsible>
+    </AccordionContent>
+  </AccordionItem>
 </template>
 
 <style scoped>

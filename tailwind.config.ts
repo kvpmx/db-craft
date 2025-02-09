@@ -30,10 +30,20 @@ const config: Config = {
           from: { height: 'var(--radix-collapsible-content-height)' },
           to: { height: '0' },
         },
+        'accordion-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
       },
       animation: {
         'collapsible-down': 'collapsible-down 0.1s ease-in-out',
         'collapsible-up': 'collapsible-up 0.1s ease-in-out',
+        'accordion-down': 'accordion-down 0.1s ease-out',
+        'accordion-up': 'accordion-up 0.1s ease-out',
       },
       screens: {
         'sm-tablet': '670px',

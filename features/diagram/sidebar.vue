@@ -46,6 +46,15 @@
       position: { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
     });
   };
+
+  // Open the selected table section
+  const openedTableId = ref<string>();
+  const selectedTable = useSelectedTable();
+
+  watch(
+    () => [selectedTable.id, selectedTable.flag],
+    () => (openedTableId.value = selectedTable.id ?? openedTableId.value)
+  );
 </script>
 
 <template>
@@ -61,14 +70,27 @@
       </Button>
     </div>
 
-    <div id="tables-sortable-container" class="flex-1 overflow-y-scroll p-2">
+    <Accordion
+      id="tables-sortable-container"
+      v-model:model-value="openedTableId"
+      type="single"
+      :collapsible="true"
+      class="flex-1 overflow-y-scroll p-2"
+      @update:model-value="
+        () => {
+          if (selectedTable.id) {
+            selectedTable.setId(null);
+          }
+        }
+      "
+    >
       <DiagramTableSection
         v-for="table in tables"
         :key="table.id"
         :table="table"
         :search-query="searchQuery"
       />
-    </div>
+    </Accordion>
 
     <div class="border-t p-3">
       <div class="relative">

@@ -34,8 +34,8 @@
   <div
     ref="target"
     :class="[
-      'w-60 rounded-[8px] border-2 border-solid bg-white font-mono text-xs',
-      selected ? 'border-rose-600' : 'border-slate-600',
+      'w-60 rounded-md bg-white font-mono text-xs ring-2',
+      selected ? 'ring-rose-600' : 'ring-slate-600',
     ]"
     :style="{ fontFamily: 'JetBrains Mono, monospace' }"
     @click="selected = !selected"
@@ -49,9 +49,8 @@
         name="lucide:maximize"
         size="0.75rem"
         class="h-3 w-3 cursor-pointer"
-        @click="
-          (e) => {
-            e.stopPropagation();
+        @click.stop="
+          () => {
             selectedTable.setId(data.id);
             selectedTable.toggleFlag();
           }
