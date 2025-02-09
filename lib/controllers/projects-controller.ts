@@ -79,7 +79,14 @@ export class ProjectsController extends ApiController {
   async updateThumbnail(projectId: number | undefined, canvasRef: HTMLDivElement | null) {
     if (!canvasRef || !projectId || !this.user) return;
 
+    const width = 600;
+    const ratio = canvasRef.clientWidth / canvasRef.clientHeight;
+
+    // TODO: fit view to all nodes before taking the screenshot
     const imageBlob = await toBlob(canvasRef, {
+      type: 'image/png',
+      canvasWidth: width,
+      canvasHeight: ratio * width,
       filter: (node) => {
         return !(
           node?.classList?.contains('vue-flow__minimap') ||

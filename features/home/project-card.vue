@@ -51,12 +51,25 @@
     </CardHeader>
     <CardContent class="px-4 py-0">
       <NuxtImg
-        :src="thumbnailUrl ?? '/images/thumbnail-placeholder.png'"
-        :alt="`Thumbnail for ${project.name}`"
+        v-if="!thumbnailUrl"
+        src="/images/thumbnail-placeholder.png"
+        :alt="`Thumbnail for '${project.name}'`"
         class="h-auto w-full rounded-md border-[1px] border-slate-200 bg-slate-200/20 object-cover"
         style="aspect-ratio: 2 / 1"
         placeholder
       />
+      <div
+        v-else
+        class="flex justify-center rounded-md border-[1px] border-slate-200 bg-slate-200/20 py-1"
+        style="aspect-ratio: 2 / 1"
+      >
+        <NuxtImg
+          :src="thumbnailUrl"
+          :alt="`Thumbnail for '${project.name}'`"
+          class="h-full w-auto"
+          placeholder
+        />
+      </div>
     </CardContent>
     <CardFooter class="flex items-center justify-between gap-2 p-4">
       <span class="text-sm text-gray-500" :title="formatDateAndTime(project.last_modified_at)">
