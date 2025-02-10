@@ -67,6 +67,7 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <DiagramAiGeneration />
         <DiagramSaveButton />
         <UserButton />
       </div>

@@ -58,5 +58,8 @@
   "LAST_NAME_REQUIRED": "Last name is required",
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",
   "CONFIRMATION_MESSAGE_TITLE": "Confirm your email!",
-  "CONFIRMATION_MESSAGE_DESCRIPTION": "Please check your inbox. We have sent you a confirmation email."
+  "CONFIRMATION_MESSAGE_DESCRIPTION": "Please check your inbox. We have sent you a confirmation email.",
+  "GENERATE_WITH_AI": "Generate with AI",
+  "DESCRIBE_YOUR_DIAGRAM": "Describe your diagram in detail...",
+  "GENERATE": "Generate"
 }

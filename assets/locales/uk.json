@@ -58,5 +58,8 @@
   "LAST_NAME_REQUIRED": "Прізвище є обов'язковим",
   "ALREADY_HAVE_ACCOUNT": "Вже маєте обліковий запис?",
   "CONFIRMATION_MESSAGE_TITLE": "Підтвердіть свою пошту!",
-  "CONFIRMATION_MESSAGE_DESCRIPTION": "Будь ласка, перевірте свою поштову скриньку. Ми надіслали вам лист для підтвердження."
+  "CONFIRMATION_MESSAGE_DESCRIPTION": "Будь ласка, перевірте свою поштову скриньку. Ми надіслали вам лист для підтвердження.",
+  "GENERATE_WITH_AI": "Згенерувати за допомогою AI",
+  "DESCRIBE_YOUR_DIAGRAM": "Детально опишіть свою діаграму...",
+  "GENERATE": "Згенерувати"
 }
