@@ -17,4 +17,4 @@ export const DEFAULT_COLORS = [
   '#fdba74',
   '#fca5a5',
   '#cbd5e1',
-];
+] as const;

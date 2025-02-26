@@ -158,6 +158,12 @@ export const PRIMARY_KEY_DEFAULT_TYPES = {
   [DatabaseType.SQLServer]: 'serial',
 } as const;
 
+export const NAMING_CONVENTIONS = {
+  [DatabaseType.MySQL]: 'snake',
+  [DatabaseType.PostgreSQL]: 'snake',
+  [DatabaseType.SQLServer]: 'pascal',
+} as const;
+
 export const DATABASES = [
   {
     name: 'MySQL',
