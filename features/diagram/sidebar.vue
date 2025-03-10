@@ -18,6 +18,8 @@
   // Make a table list sortable
   useSortable('#tables-sortable-container', tables, {
     handle: '.table-section-header',
+    filter: '.edit-table-name-input',
+    preventOnFilter: false,
     animation: 150,
     forceFallback: true,
     fallbackTolerance: 5,
@@ -42,7 +44,7 @@
           primary_key: true,
         },
       ],
-      color: chooseRandom(DEFAULT_COLORS),
+      color: chooseRandom(DEFAULT_COLORS as string[]),
       position: { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
     });
   };

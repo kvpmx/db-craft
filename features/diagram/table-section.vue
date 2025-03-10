@@ -86,6 +86,20 @@
     if (!selectedTable.id) return;
     selectedTable.setId(null);
   });
+
+  // Edit table name
+  const editingTableName = ref(false);
+  const newTableName = ref(props.table.name);
+
+  const saveNewTableName = () => {
+    editingTableName.value = false;
+
+    if (newTableName.value) {
+      currentProject.updateTableData(props.table.id, {
+        name: newTableName.value,
+      });
+    }
+  };
 </script>
 
 <template>
@@ -102,22 +116,43 @@
       class="table-section-header group flex w-full items-center justify-between gap-2 p-2 text-sm font-medium data-[state=closed]:rounded-md"
       :style="{ backgroundColor: table.color }"
     >
-      <div
-        class="flex-1 text-left"
-        v-html="highlightTextOccurrences(table.name, searchQuery)"
-      ></div>
+      <template v-if="editingTableName">
+        <Input
+          v-model.trim="newTableName"
+          :name="`tableName${table.id}`"
+          class="edit-table-name-input h-6 flex-1 bg-gray-50/50 p-2 focus-visible:ring-transparent focus-visible:ring-offset-transparent"
+          :placeholder="table.name"
+          autocomplete="off"
+          @keyup.enter="saveNewTableName"
+        />
 
-      <Icon
-        name="lucide:maximize"
-        size="0.75rem"
-        class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
-        @click="
-          (e) => {
-            e.stopPropagation();
-            canvas.fitView?.([table.id]);
-          }
-        "
-      />
+        <div
+          class="flex h-6 w-6 items-center justify-center rounded-md border-[1px] border-slate-200 bg-gray-50/50"
+        >
+          <Icon name="lucide:check" size="0.75rem" class="h-3 w-3" @click.stop="saveNewTableName" />
+        </div>
+      </template>
+
+      <template v-else>
+        <div
+          class="flex-1 truncate text-left"
+          v-html="highlightTextOccurrences(table.name, searchQuery)"
+        ></div>
+
+        <Icon
+          name="lucide:pencil"
+          size="0.75rem"
+          class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
+          @click.stop="editingTableName = true"
+        />
+
+        <Icon
+          name="lucide:maximize"
+          size="0.75rem"
+          class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
+          @click.stop="canvas.fitView?.([table.id])"
+        />
+      </template>
     </AccordionTrigger>
 
     <AccordionContent ref="columnsContainerRef" class="py-2">

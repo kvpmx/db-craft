@@ -44,11 +44,11 @@
       class="flex items-center justify-between gap-2 rounded-t-md border-b-[1px] border-solid border-slate-300 p-2 text-sm font-semibold"
       :style="{ backgroundColor: data.color }"
     >
-      <span>{{ data.name }}</span>
+      <span class="truncate">{{ data.name }}</span>
       <Icon
         name="lucide:maximize"
         size="0.75rem"
-        class="h-3 w-3 cursor-pointer"
+        class="h-3 min-h-3 w-3 min-w-3 cursor-pointer"
         @click.stop="
           () => {
             selectedTable.setId(data.id);

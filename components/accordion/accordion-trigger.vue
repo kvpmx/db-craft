@@ -18,7 +18,7 @@
       v-bind="delegatedProps"
       :class="
         cn(
-          'flex flex-1 items-center justify-between py-4 font-medium transition-all [&[data-state=open]>.iconify]:rotate-180',
+          'flex flex-1 items-center justify-between py-4 font-medium transition-all [&[data-state=open]>.accordion-trigger-icon]:rotate-180',
           props.class
         )
       "
@@ -27,7 +27,7 @@
         <Icon
           name="lucide:chevron-down"
           size="1rem"
-          class="h-4 w-4 shrink-0 transition-transform duration-200"
+          class="accordion-trigger-icon h-4 w-4 shrink-0 transition-transform duration-200"
         />
       </slot>
       <slot />
