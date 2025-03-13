@@ -44,7 +44,7 @@
           primary_key: true,
         },
       ],
-      color: chooseRandom(DEFAULT_COLORS as string[]),
+      color: chooseRandom(DEFAULT_COLORS),
       position: { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
     });
   };

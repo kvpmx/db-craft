@@ -61,5 +61,8 @@
   "CONFIRMATION_MESSAGE_DESCRIPTION": "Please check your inbox. We have sent you a confirmation email.",
   "GENERATE_WITH_AI": "Generate with AI",
   "DESCRIBE_YOUR_DIAGRAM": "Describe your diagram in detail...",
-  "GENERATE": "Generate"
+  "GENERATE": "Generate",
+  "RENAME": "Rename",
+  "REMOVE": "Remove",
+  "FIT_TO_SCREEN": "Fit to screen"
 }

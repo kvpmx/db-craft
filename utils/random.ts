@@ -15,6 +15,6 @@ export const getRandomNumber = (min: number, max: number) => {
  * @param array - An array of elements from which a random element will be chosen.
  * @returns An element from the input array.
  */
-export const chooseRandom = <T>(array: T[]) => {
+export const chooseRandom = <T>(array: readonly T[]) => {
   return array[getRandomNumber(0, array.length - 1)];
 };
