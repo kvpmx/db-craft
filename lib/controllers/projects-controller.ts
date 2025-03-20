@@ -82,7 +82,6 @@ export class ProjectsController extends ApiController {
     const width = 600;
     const ratio = canvasRef.clientHeight / canvasRef.clientWidth;
 
-    // TODO: fit view to all nodes before taking the screenshot
     const imageBlob = await toBlob(canvasRef, {
       type: 'image/png',
       canvasWidth: width,

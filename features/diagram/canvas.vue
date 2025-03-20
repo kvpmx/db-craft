@@ -1,6 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { useMagicKeys } from '@vueuse/core';
-  import { getConnectedEdges, useVueFlow, VueFlow } from '@vue-flow/core';
+  import { getConnectedEdges, VueFlow } from '@vue-flow/core';
   import { Background } from '@vue-flow/background';
   import { Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
@@ -66,7 +66,7 @@
   };
 
   // Remove selected edges using the 'delete' key
-  const { getSelectedEdges, vueFlowRef, fitView, onPaneReady } = useVueFlow();
+  const { getSelectedEdges } = useCanvas();
   const { delete: deleteKey } = useMagicKeys();
 
   watch(deleteKey, () => {
@@ -81,25 +81,6 @@
   const validateConnection: ValidConnectionFunc = (connection) => {
     return connection.source !== connection.target;
   };
-
-  // Save canvas ref to the global store
-  const canvas = useVueFlowCanvas();
-
-  watchEffect(() => {
-    if (!vueFlowRef.value) return;
-    canvas.set(vueFlowRef.value);
-  });
-
-  // Register `fitView` function to the global store
-  onPaneReady(() => {
-    canvas.registerFitViewFunction((nodes) => {
-      fitView({
-        nodes,
-        duration: 1000,
-        padding: 0.5,
-      });
-    });
-  });
 
   // Change handle placement based on the position of the nodes
   const getHandlePlacement = (
@@ -152,6 +133,7 @@
 <template>
   <ClientOnly>
     <VueFlow
+      id="main-canvas"
       v-model:nodes="nodes"
       v-model:edges="edges"
       style="height: 100%; width: 100%"

@@ -19,12 +19,16 @@
   });
 
   // Update the thumbnail
-  const canvas = useVueFlowCanvas();
+  const { fitView, vueFlowRef } = useCanvas();
 
   const { mutateAsync: save, isPending } = useMutation({
     mutationFn: async () => {
       if (currentProject.saved) return;
-      await projectsApi.updateThumbnail(currentProject.state?.id, canvas.state);
+
+      fitView();
+      await sleep(0);
+
+      await projectsApi.updateThumbnail(currentProject.state?.id, vueFlowRef.value);
       await currentProject.saveConfigToDatabase();
     },
   });

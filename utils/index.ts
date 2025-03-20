@@ -15,3 +15,13 @@ import type { ClassValue } from 'clsx';
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };
+
+/**
+ * Pause execution for a specified number of milliseconds.
+ *
+ * @param ms - The number of milliseconds to wait before resolving.
+ * @returns A promise that resolves after the specified delay.
+ */
+export const sleep = (ms: number) => {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+};

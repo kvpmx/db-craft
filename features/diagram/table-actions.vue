@@ -8,7 +8,7 @@
   }>();
 
   const { t } = useI18n();
-  const canvas = useVueFlowCanvas();
+  const { fitView } = useCanvas();
   const currentProject = useCurrentProject();
 
   // Edit table name
@@ -63,7 +63,7 @@
       size="0.75rem"
       class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
       :title="t('REMOVE')"
-      @click.stop="/* TODO */"
+      @click.stop=""
     />
 
     <Icon
@@ -71,7 +71,13 @@
       size="0.75rem"
       class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
       :title="t('FIT_TO_SCREEN')"
-      @click.stop="canvas.fitView?.([table.id])"
+      @click.stop="
+        fitView({
+          nodes: [table.id],
+          duration: 1000,
+          padding: 0.5,
+        })
+      "
     />
   </template>
 </template>
