@@ -63,7 +63,7 @@
       size="0.75rem"
       class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
       :title="t('REMOVE')"
-      @click.stop=""
+      @click.stop="currentProject.deleteTable(table.id)"
     />
 
     <Icon
@@ -71,13 +71,7 @@
       size="0.75rem"
       class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
       :title="t('FIT_TO_SCREEN')"
-      @click.stop="
-        fitView({
-          nodes: [table.id],
-          duration: 1000,
-          padding: 0.5,
-        })
-      "
+      @click.stop="fitView({ nodes: [table.id], duration: 1000, padding: 0.5 })"
     />
   </template>
 </template>

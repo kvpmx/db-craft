@@ -43,6 +43,18 @@ export const useCurrentProject = defineStore('current-project', () => {
     }
   };
 
+  const deleteTable = async (id: string) => {
+    if (!state.value) return;
+
+    state.value.schema.tables = state.value.schema.tables.filter((table) => {
+      return table.id !== id;
+    });
+
+    state.value.schema.relations = state.value.schema.relations.filter((rel) => {
+      return rel.source !== id && rel.target !== id;
+    });
+  };
+
   const reset = () => {
     state.value = null;
     saved.value = true;
@@ -78,6 +90,7 @@ export const useCurrentProject = defineStore('current-project', () => {
     fetch,
     updateDiagramConfig,
     updateTableData,
+    deleteTable,
     reset,
     saveConfigToDatabase,
   };
