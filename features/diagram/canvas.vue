@@ -67,7 +67,7 @@
 
   // Remove selected edges using the 'delete' key
   const { getSelectedEdges } = useCanvas();
-  const { delete: deleteKey } = useMagicKeys();
+  const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
 
   watch(deleteKey, () => {
     getSelectedEdges.value.forEach((edge) => {
@@ -75,6 +75,25 @@
       const idx = currentProject.state.schema.relations.findIndex((rel) => rel.id === edge.id);
       currentProject.state.schema.relations.splice(idx, 1);
     });
+  });
+
+  watch(ctrl_z, (pressed) => {
+    // The first value is the default value (null), and the second value is the value
+    // retrieved from the database. We can't remove these two values, so we set a condition
+    // that checks if the history length is greater than 2.
+    if (
+      pressed &&
+      currentProject.changesHistory.canUndo &&
+      currentProject.changesHistory.history.length > 2
+    ) {
+      currentProject.changesHistory.undo();
+    }
+  });
+
+  watch(ctrl_y, (pressed) => {
+    if (pressed && currentProject.changesHistory.canRedo) {
+      currentProject.changesHistory.redo();
+    }
   });
 
   // Do not allow to connect two field in the same table

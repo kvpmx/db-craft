@@ -1,3 +1,4 @@
+import { useRefHistory } from '@vueuse/core';
 import { ProjectsController } from '@/lib/controllers';
 
 import type { Simplify } from 'type-fest';
@@ -9,6 +10,7 @@ export const useCurrentProject = defineStore('current-project', () => {
   const saved = ref(true);
 
   const projectsApi = useApiController(ProjectsController);
+  const changesHistory = useRefHistory(state, { deep: true, capacity: 20, flush: 'sync' });
 
   const fetch = async (id: number) => {
     try {
@@ -58,6 +60,7 @@ export const useCurrentProject = defineStore('current-project', () => {
   const reset = () => {
     state.value = null;
     saved.value = true;
+    changesHistory.clear();
   };
 
   const saveConfigToDatabase = async () => {
@@ -92,6 +95,7 @@ export const useCurrentProject = defineStore('current-project', () => {
     updateTableData,
     deleteTable,
     reset,
+    changesHistory,
     saveConfigToDatabase,
   };
 });
