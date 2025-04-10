@@ -28,6 +28,9 @@ export interface TableField<T extends DatabaseType | unknown = unknown> {
   name: string;
   type: ColumnType<T>;
   primary_key?: boolean;
+  nullable?: boolean;
+  unique?: boolean;
+  auto_increment?: boolean;
 }
 
 export type HandlePlacement = 'left' | 'right';

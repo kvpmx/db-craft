@@ -10,7 +10,7 @@ export const useCurrentProject = defineStore('current-project', () => {
   const saved = ref(true);
 
   const projectsApi = useApiController(ProjectsController);
-  const changesHistory = useRefHistory(state, { deep: true, capacity: 20, flush: 'sync' });
+  const changesHistory = useRefHistory(state, { deep: true, capacity: 20 });
 
   const fetch = async (id: number) => {
     try {
@@ -57,6 +57,24 @@ export const useCurrentProject = defineStore('current-project', () => {
     });
   };
 
+  const deleteField = async (tableId: string, fieldId: string) => {
+    if (!state.value) return;
+
+    const table = state.value.schema.tables.find((table) => {
+      return table.id === tableId;
+    });
+
+    if (!table) return;
+
+    table.fields = table.fields.filter((field) => {
+      return field.id !== fieldId;
+    });
+
+    state.value.schema.relations = state.value.schema.relations.filter((rel) => {
+      return rel.source_field !== fieldId && rel.target_field !== fieldId;
+    });
+  };
+
   const reset = () => {
     state.value = null;
     saved.value = true;
@@ -94,6 +112,7 @@ export const useCurrentProject = defineStore('current-project', () => {
     updateDiagramConfig,
     updateTableData,
     deleteTable,
+    deleteField,
     reset,
     changesHistory,
     saveConfigToDatabase,

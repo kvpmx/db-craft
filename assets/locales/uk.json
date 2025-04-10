@@ -46,7 +46,7 @@
   "ALL_CHANGES_SAVED": "Всі зміни збережено",
   "UNSAVED_CHANGES_WARNING": "У вас є незбережені зміни. Бажаєте залишити сторінку?",
   "ADD_FIELD": "Додати поле",
-  "NO_FIELD_TYPES_FOUND": "Не знайдено жодного типу за вашим запитом",
+  "NO_FIELD_TYPES_FOUND": "Не знайдено жодного типу",
   "SEARCH_FIELD_TYPES": "Шукайте типи поля...",
   "TIME_AGO": "{time} тому",
   "REGISTER_PAGE_TITLE": "Реєстрація | DB Craft",
@@ -64,5 +64,10 @@
   "GENERATE": "Згенерувати",
   "RENAME": "Перейменувати",
   "REMOVE": "Видалити",
-  "FIT_TO_SCREEN": "Вмістити на екран"
+  "FIT_TO_SCREEN": "Вмістити на екран",
+  "PRIMARY_KEY": "Первинний ключ",
+  "NULLABLE": "Дозволити NULL",
+  "UNIQUE": "Унікальне значення",
+  "AUTO_INCREMENT": "Автоінкремент",
+  "MORE_OPTIONS": "Більше опцій"
 }

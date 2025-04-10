@@ -78,7 +78,7 @@
             class="h-2.5 w-2.5 flex-shrink-0 text-yellow-600"
           />
 
-          <span class="text-gray-500">{{ field.type }}</span>
+          <span class="text-gray-500">{{ field.type + (field.nullable ? '?' : '') }}</span>
         </div>
       </div>
       <Handle

@@ -64,5 +64,10 @@
   "GENERATE": "Generate",
   "RENAME": "Rename",
   "REMOVE": "Remove",
-  "FIT_TO_SCREEN": "Fit to screen"
+  "FIT_TO_SCREEN": "Fit to screen",
+  "PRIMARY_KEY": "Primary Key",
+  "NULLABLE": "Nullable",
+  "UNIQUE": "Unique",
+  "AUTO_INCREMENT": "Auto Increment",
+  "MORE_OPTIONS": "More options"
 }

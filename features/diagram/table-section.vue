@@ -124,19 +124,7 @@
         />
 
         <DiagramFieldTypeSelector v-model="column.type" />
-
-        <Toggle
-          v-model:pressed="column.primary_key"
-          variant="outline"
-          size="sm"
-          :class="['h-7 px-1.5', column.primary_key && 'border-yellow-600']"
-        >
-          <Icon
-            name="lucide:key-round"
-            size="0.75rem"
-            :class="['h-3 w-3', column.primary_key && 'text-yellow-600']"
-          />
-        </Toggle>
+        <DiagramTableFieldOptions :table-id="table.id" :field="column" />
       </div>
 
       <div class="collapsible-footer">
