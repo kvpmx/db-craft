@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import { routes } from '@/lib/routes';
   import { ProjectsController } from '@/lib/controllers';
+  import { DATABASES } from '@/lib/constants/diagram';
   import type { Tables } from '@/types/database';
 
   const { t } = useI18n();
@@ -21,14 +22,23 @@
     queryKey: ['thumbnail', props.project.id],
     queryFn: async () => await projectsApi.getThumbnailUrl(props.project?.id),
   });
+
+  const db = computed(() => {
+    return DATABASES.find((db) => db.value === props.project.type);
+  });
 </script>
 
 <template>
   <Card>
     <CardHeader class="p-4 pb-3">
       <div class="flex items-center justify-between">
-        <CardTitle class="truncate text-lg font-semibold" :title="project.name">
-          <span v-html="highlightTextOccurrences(project.name, searchQuery)"></span>
+        <CardTitle class="flex w-[90%] items-center gap-2" :title="project.name">
+          <div class="rounded-md border-[1px] border-slate-200 bg-slate-200/20 p-1">
+            <Icon v-if="db" :name="db.icon" :title="db.name" size="1rem" class="block h-4 w-4" />
+          </div>
+          <div class="truncate text-lg font-semibold">
+            <span v-html="highlightTextOccurrences(project.name, searchQuery)"></span>
+          </div>
         </CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
@@ -53,7 +63,7 @@
       <NuxtImg
         v-if="!thumbnailUrl"
         src="/images/thumbnail-placeholder.png"
-        :alt="`Thumbnail for '${project.name}'`"
+        :alt="project.name"
         class="h-auto w-full rounded-md border-[1px] border-slate-200 bg-slate-200/20 object-cover"
         style="aspect-ratio: 2 / 1"
         placeholder
@@ -63,12 +73,7 @@
         class="flex justify-center rounded-md border-[1px] border-slate-200 bg-slate-200/20 py-1"
         style="aspect-ratio: 2 / 1"
       >
-        <NuxtImg
-          :src="thumbnailUrl"
-          :alt="`Thumbnail for '${project.name}'`"
-          class="h-full w-auto"
-          placeholder
-        />
+        <NuxtImg :src="thumbnailUrl" :alt="project.name" class="h-full w-auto" placeholder />
       </div>
     </CardContent>
     <CardFooter class="flex items-center justify-between gap-2 p-4">

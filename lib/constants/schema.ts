@@ -13,6 +13,9 @@ export const TableFieldSchema = z.object({
   name: z.string(),
   type: z.string(),
   primary_key: z.boolean().optional(),
+  nullable: z.boolean().optional(),
+  unique: z.boolean().optional(),
+  auto_increment: z.boolean().optional(),
 });
 
 export const TableSchema = z.object({

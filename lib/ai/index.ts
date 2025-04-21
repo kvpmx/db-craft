@@ -33,10 +33,13 @@ export const getSystemPrompt = (type: DatabaseType | undefined = DatabaseType.My
     The diagram should be generated based on the given prompt.
     Names of the tables in fields should be in ${NAMING_CONVENTIONS[type]} case.
     Primary key field of the table should just have 'id' name (in proper case).
+    Do not prefix field names with the table name.
+    If the specified prompt has a SQL script, then use the names from this script, ignoring the naming conventions.
+
     Tables should not be very close to each other.
     Width of the table is 200px, so the distance between the tables should be at least 300px (+100px for space between tables).
-    The relations between the tables wille be represented as smoothstep lines. If you can figure it out,
-    choose the position of the tables in such a way to not cross lines between each other.
+    The relations between the tables will be represented as smoothstep lines. 
+    If you can figure it out, choose the position of the tables in such a way to not cross lines between each other.
   `);
 };
 

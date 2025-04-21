@@ -32,7 +32,7 @@
       <div
         v-if="currentProject.state"
         :class="[
-          'absolute left-[50%] hidden w-fit translate-x-[-50%] cursor-pointer select-none items-center gap-2 rounded-lg p-1 text-sm sm:flex',
+          'absolute left-[50%] hidden w-fit translate-x-[-50%] cursor-pointer select-none items-center gap-2 rounded-lg p-1 text-sm md:flex',
           !editMode && 'hover:border-2 hover:border-blue-700/50 hover:bg-blue-200/50',
         ]"
         @dblclick="editMode = true"

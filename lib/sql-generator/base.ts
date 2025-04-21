@@ -59,6 +59,7 @@ export abstract class BaseSQLGenerator {
     let line = `${name} ${type}`;
 
     if (field.primary_key) line += ' PRIMARY KEY';
+    if (field.unique && !field.primary_key) line += ' UNIQUE';
     if (!field.nullable && !field.primary_key) line += ' NOT NULL';
 
     if (field.auto_increment) line += ` ${options.autoIncrement ?? 'AUTO INCREMENT'}`;
