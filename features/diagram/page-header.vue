@@ -22,14 +22,17 @@
 <template>
   <header class="border-b-[1px] bg-white">
     <div class="flex items-center justify-between px-3 py-2">
-      <NuxtLink :to="routes.home()" class="select-none">
-        <NuxtImg src="/images/logo.png" class="w-28" alt="DB Craft" />
-      </NuxtLink>
+      <div class="flex items-center justify-start gap-4">
+        <NuxtLink :to="routes.home()" class="select-none">
+          <NuxtImg src="/images/logo.png" class="w-28" alt="DB Craft" />
+        </NuxtLink>
+        <DiagramSqlCodeDialog />
+      </div>
 
       <div
         v-if="currentProject.state"
         :class="[
-          'hidden cursor-pointer select-none items-center gap-2 rounded-lg p-1 text-sm sm:flex',
+          'absolute left-[50%] hidden w-fit translate-x-[-50%] cursor-pointer select-none items-center gap-2 rounded-lg p-1 text-sm sm:flex',
           !editMode && 'hover:border-2 hover:border-blue-700/50 hover:bg-blue-200/50',
         ]"
         @dblclick="editMode = true"

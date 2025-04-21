@@ -69,5 +69,12 @@
   "NULLABLE": "Дозволити NULL",
   "UNIQUE": "Унікальне значення",
   "AUTO_INCREMENT": "Автоінкремент",
-  "MORE_OPTIONS": "Більше опцій"
+  "MORE_OPTIONS": "Більше опцій",
+  "DOWNLOAD_AS_FILE": "Завантажити як файл",
+  "COPY_TO_CLIPBOARD": "Скоріювати в буфер обміну",
+  "EXPORT": "Експортувати",
+  "EXPORT_AS_SQL": "Експортувати як SQL",
+  "FILE_DOWNLOADED_SUCCESSFULLY": "Файл успішно завантажено!",
+  "COPIED_TO_CLIPBOARD": "Скопійовано в буфер обміну!",
+  "CANCEL": "Скасувати"
 }

@@ -69,5 +69,12 @@
   "NULLABLE": "Nullable",
   "UNIQUE": "Unique",
   "AUTO_INCREMENT": "Auto Increment",
-  "MORE_OPTIONS": "More options"
+  "MORE_OPTIONS": "More options",
+  "DOWNLOAD_AS_FILE": "Download as a file",
+  "COPY_TO_CLIPBOARD": "Copy to clipboard",
+  "EXPORT": "Export",
+  "EXPORT_AS_SQL": "Export as SQL",
+  "FILE_DOWNLOADED_SUCCESSFULLY": "File downloaded successfully!",
+  "COPIED_TO_CLIPBOARD": "Copied to clipboard!",
+  "CANCEL": "Cancel"
 }

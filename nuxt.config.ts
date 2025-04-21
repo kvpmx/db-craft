@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@hebilicious/vue-query-nuxt',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
+    'nuxt-monaco-editor',
   ],
   components: [
     { path: '@/features', pathPrefix: true },

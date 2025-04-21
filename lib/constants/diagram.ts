@@ -181,3 +181,22 @@ export const DATABASES = [
     icon: 'devicon:microsoftsqlserver',
   },
 ];
+
+export const EDITOR_LANGUAGES = {
+  [DatabaseType.MySQL]: 'mysql',
+  [DatabaseType.PostgreSQL]: 'pgsql',
+  [DatabaseType.SQLServer]: 'sql',
+} as const;
+
+export const DEFAULT_TYPE_NORMALIZATIONS: Record<string, string> = {
+  varchar: 'varchar(255)',
+  nvarchar: 'nvarchar(255)',
+  char: 'char(1)',
+  nchar: 'nchar(1)',
+  binary: 'binary(255)',
+  varbinary: 'varbinary(255)',
+  decimal: 'decimal(10,2)',
+  numeric: 'numeric(10,2)',
+  dec: 'dec(10,2)',
+  fixed: 'fixed(10,2)',
+};
