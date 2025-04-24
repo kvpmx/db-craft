@@ -54,7 +54,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: ['/register'],
+      exclude: ['/register', '/diagram/share/**'],
     },
   },
   i18n: {

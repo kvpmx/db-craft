@@ -31,6 +31,19 @@ export class ProjectsController extends ApiController {
     return data;
   }
 
+  async getPublic(uuid: string) {
+    const { data } = await this.supabase
+      .from('projects')
+      .select('*')
+      .eq('share_id', uuid)
+      .eq('visibility', 'public')
+      .limit(1)
+      .maybeSingle()
+      .throwOnError();
+
+    return data;
+  }
+
   async create(newProject: Omit<TablesInsert<'projects'>, 'author'>) {
     if (!this.user) return;
 

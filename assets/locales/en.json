@@ -76,5 +76,10 @@
   "EXPORT_AS_SQL": "Export as SQL",
   "FILE_DOWNLOADED_SUCCESSFULLY": "File downloaded successfully!",
   "COPIED_TO_CLIPBOARD": "Copied to clipboard!",
-  "CANCEL": "Cancel"
+  "CANCEL": "Cancel",
+  "UNEXPECTED_ERROR": "An unexpected error occurred",
+  "GO_BACK_HOME": "Go back home",
+  "PAGE_NOT_FOUND": "Page not found",
+  "PAGE_NOT_FOUND_DESCRIPTION": "It seems that the page you are looking for doesn’t exist or has moved",
+  "SOMETHING_WENT_WRONG": "Something went wrong"
 }

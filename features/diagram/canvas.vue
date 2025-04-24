@@ -16,6 +16,10 @@
     GraphEdge,
   } from '@vue-flow/core';
 
+  const props = withDefaults(defineProps<{ readonly?: boolean }>(), {
+    readonly: false,
+  });
+
   const currentProject = useCurrentProject();
 
   // Convert tables to nodes
@@ -65,11 +69,18 @@
     nextTick(() => updateHandlePlacement(relation.source));
   };
 
-  // Remove selected edges using the 'delete' key
-  const { getSelectedEdges } = useCanvas();
+  const { getSelectedEdges, setInteractive } = useCanvas();
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
 
+  // Set interactive to false when the canvas is readonly
+  watchEffect(() => {
+    setInteractive(!props.readonly);
+  });
+
+  // Remove selected edges using the 'delete' key
   watch(deleteKey, () => {
+    if (props.readonly) return;
+
     getSelectedEdges.value.forEach((edge) => {
       if (!currentProject.state?.schema) return;
       const idx = currentProject.state.schema.relations.findIndex((rel) => rel.id === edge.id);
@@ -78,6 +89,8 @@
   });
 
   watch(ctrl_z, (pressed) => {
+    if (props.readonly) return;
+
     // The first value is the default value (null), and the second value is the value
     // retrieved from the database. We can't remove these two values, so we set a condition
     // that checks if the history length is greater than 2.
@@ -91,6 +104,8 @@
   });
 
   watch(ctrl_y, (pressed) => {
+    if (props.readonly) return;
+
     if (pressed && currentProject.changesHistory.canRedo) {
       currentProject.changesHistory.redo();
     }
@@ -139,11 +154,13 @@
 
   // Handle drag events
   const onNodeDrag = (event: NodeDragEvent) => {
+    if (props.readonly) return;
     updateHandlePlacement(event.node.id);
     updateConnectedEdges(event, true);
   };
 
   const onNodeDragStop = (event: NodeDragEvent) => {
+    if (props.readonly) return;
     updateNodePosition(event);
     updateConnectedEdges(event, false);
   };
@@ -169,7 +186,7 @@
       </template>
 
       <Background />
-      <Controls />
+      <Controls :show-interactive="!readonly" />
       <MiniMap :pannable="true" :zoomable="true" :width="150" :height="100" />
     </VueFlow>
   </ClientOnly>

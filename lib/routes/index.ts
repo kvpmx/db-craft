@@ -3,4 +3,5 @@ export const routes = {
   login: () => '/login',
   register: () => '/register',
   diagram: (id: number) => `/diagram/${id}`,
+  sharedDiagram: (uuid: string) => `/diagram/share/${uuid}`,
 };

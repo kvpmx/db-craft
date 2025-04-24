@@ -76,5 +76,10 @@
   "EXPORT_AS_SQL": "Експортувати як SQL",
   "FILE_DOWNLOADED_SUCCESSFULLY": "Файл успішно завантажено!",
   "COPIED_TO_CLIPBOARD": "Скопійовано в буфер обміну!",
-  "CANCEL": "Скасувати"
+  "CANCEL": "Скасувати",
+  "UNEXPECTED_ERROR": "Виникла неочікувана помилка",
+  "GO_BACK_HOME": "Повернутися до головної",
+  "PAGE_NOT_FOUND": "Сторінка не знайдена",
+  "PAGE_NOT_FOUND_DESCRIPTION": "Схоже, що сторінка, яку ви шукаєте, не існує або її було перенесено",
+  "SOMETHING_WENT_WRONG": "Щось пішло не так"
 }

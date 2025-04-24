@@ -4,13 +4,13 @@ import { ProjectsController } from '@/lib/controllers';
 export default defineNuxtRouteMiddleware(async (to) => {
   try {
     const projectsApi = useApiController(ProjectsController);
-    const project = await projectsApi.getById(getRouteParamValue(to.params.id));
+    const project = await projectsApi.getPublic(getRouteParamValue(to.params.uuid));
 
-    if (!project) {
+    if (!project || project.visibility !== 'public') {
       return createError({ statusCode: 404 });
     }
 
-    if (to.path !== routes.diagram(project.id)) {
+    if (to.path !== routes.sharedDiagram(project.share_id)) {
       return navigateTo(to);
     }
   } catch (err) {

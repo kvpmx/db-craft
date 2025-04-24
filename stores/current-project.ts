@@ -21,6 +21,15 @@ export const useCurrentProject = defineStore('current-project', () => {
     }
   };
 
+  const fetchPublic = async (uuid: string) => {
+    try {
+      state.value = await projectsApi.getPublic(uuid);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const updateDiagramConfig = async (payload: Partial<DiagramConfig>) => {
     if (!state.value) return;
 
@@ -109,6 +118,7 @@ export const useCurrentProject = defineStore('current-project', () => {
     state,
     saved,
     fetch,
+    fetchPublic,
     updateDiagramConfig,
     updateTableData,
     deleteTable,
