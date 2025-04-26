@@ -81,5 +81,11 @@
   "GO_BACK_HOME": "Go back home",
   "PAGE_NOT_FOUND": "Page not found",
   "PAGE_NOT_FOUND_DESCRIPTION": "It seems that the page you are looking for doesn’t exist or has moved",
-  "SOMETHING_WENT_WRONG": "Something went wrong"
+  "SOMETHING_WENT_WRONG": "Something went wrong",
+  "CLOSE": "Close",
+  "SHARE": "Share",
+  "SHARE_LINK": "Share link",
+  "SHARE_LINK_DESCRIPTION": "Anyone who has this link will be able to view your diagram",
+  "LINK": "Link",
+  "COPY": "Copy"
 }

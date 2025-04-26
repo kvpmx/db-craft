@@ -19,6 +19,7 @@
     return delegated;
   });
 
+  const { t } = useI18n();
   const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
 
@@ -43,7 +44,7 @@
         style="line-height: 0.7"
       >
         <Icon name="lucide:x" size="1rem" class="h-4 w-4" />
-        <span class="sr-only">Close</span>
+        <span class="sr-only">{{ t('CLOSE') }}</span>
       </DialogClose>
     </DialogContent>
   </DialogPortal>

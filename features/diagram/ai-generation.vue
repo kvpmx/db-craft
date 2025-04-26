@@ -1,5 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { toast } from 'vue-sonner';
+  import type { NuxtError } from 'nuxt/app';
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { DiagramConfig } from '@/types/diagram';
 
@@ -23,8 +24,10 @@
         relations: result.relations,
       });
     },
-    onError: (error: Error & { statusMessage: string }) => {
-      toast.error(error.statusMessage);
+    onError: (err: NuxtError) => {
+      toast.error(
+        import.meta.dev && err.statusMessage ? err.statusMessage : t('SOMETHING_WENT_WRONG')
+      );
     },
   });
 </script>

@@ -49,7 +49,7 @@
       sourceHandle: `${rel.source_handle_placement}:${rel.source}:${rel.source_field}`,
       targetHandle: `${rel.target_handle_placement}:${rel.target}:${rel.target_field}`,
       style: { strokeWidth: 3 },
-      type: 'smoothstep', // TODO: create a custom type for smoothstep
+      type: 'smoothstep',
       pathOptions: { borderRadius: 20 },
     }));
   });

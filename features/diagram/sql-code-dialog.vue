@@ -42,12 +42,12 @@
 <template>
   <Dialog>
     <DialogTrigger as-child>
-      <Button size="sm" variant="link">
+      <Button size="sm" variant="link" class="px-0">
         {{ t('EXPORT_AS_SQL') }}
       </Button>
     </DialogTrigger>
 
-    <DialogScrollContent class="max-w-[95%] lg:max-w-[900px]" @interact-outside.prevent>
+    <DialogContent class="max-w-[95%] lg:max-w-[900px]">
       <DialogHeader>
         <DialogTitle class="text-xl font-semibold">
           {{ t('EXPORT') }}
@@ -72,8 +72,8 @@
         </Button>
       </div>
 
-      <DialogFooter>
-        <DialogClose>
+      <DialogFooter class="gap-y-2">
+        <DialogClose as-child>
           <Button variant="secondary">
             {{ t('CANCEL') }}
           </Button>
@@ -82,6 +82,6 @@
           {{ t('DOWNLOAD_AS_FILE') }}
         </Button>
       </DialogFooter>
-    </DialogScrollContent>
+    </DialogContent>
   </Dialog>
 </template>

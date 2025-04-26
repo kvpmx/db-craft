@@ -23,10 +23,14 @@
   <header class="border-b-[1px] bg-white">
     <div class="flex items-center justify-between px-3 py-2">
       <div class="flex items-center justify-start gap-4">
-        <NuxtLink :to="routes.home()" class="select-none">
+        <NuxtLink :to="routes.home()" class="shrink-0 select-none">
           <NuxtImg src="/images/logo.png" class="w-28" alt="DB Craft" />
         </NuxtLink>
-        <DiagramSqlCodeDialog />
+        <!-- TODO: Move buttons to the burger menu -->
+        <div class="hidden lg:contents">
+          <DiagramSqlCodeDialog />
+          <DiagramShareDialog v-if="currentProject.state?.visibility === 'public'" />
+        </div>
       </div>
 
       <div
