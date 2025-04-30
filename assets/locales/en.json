@@ -87,5 +87,7 @@
   "SHARE_LINK": "Share link",
   "SHARE_LINK_DESCRIPTION": "Anyone who has this link will be able to view your diagram",
   "LINK": "Link",
-  "COPY": "Copy"
+  "COPY": "Copy",
+  "SIGN_OUT": "Sign out",
+  "SETTINGS": "Settings"
 }
