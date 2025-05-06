@@ -18,13 +18,17 @@
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button variant="ghost" size="icon" class="rounded-full">
-        <NuxtImg
-          v-if="user.user_metadata.avatar_url"
-          :src="user.user_metadata.avatar_url"
-          class="h-full w-full rounded-full border-2 border-slate-200"
-        />
-        <Icon v-else name="lucide:user-circle" size="1.5rem" class="h-6 w-6" />
+      <Button
+        variant="ghost"
+        size="icon"
+        class="rounded-full border-2 border-slate-200 bg-slate-100"
+      >
+        <Avatar>
+          <AvatarImage :src="user.user_metadata.avatar_url" :alt="username" />
+          <AvatarFallback class="flex items-center justify-center">
+            <Icon name="lucide:user" size="1.5rem" class="h-6 w-6 text-slate-400" />
+          </AvatarFallback>
+        </Avatar>
       </Button>
     </DropdownMenuTrigger>
 
