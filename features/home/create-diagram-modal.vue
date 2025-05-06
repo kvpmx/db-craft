@@ -14,7 +14,7 @@
     z.object({
       name: z
         .string({ required_error: t('NAME_REQUIRED') })
-        .min(1, { message: t('NAME_REQUIRED') }),
+        .nonempty({ message: t('NAME_REQUIRED') }),
 
       visibility: z.nativeEnum(DiagramVisibility).default(DiagramVisibility.Public),
       type: z.nativeEnum(DatabaseType).default(DatabaseType.MySQL),
@@ -121,7 +121,7 @@
                     v-for="db in DATABASES"
                     :key="db.name"
                     :value="db.value"
-                    class="hover:border-primary relative h-auto min-w-40 flex-1 cursor-pointer rounded-lg border p-4 transition-colors"
+                    class="relative h-auto min-w-40 flex-1 cursor-pointer rounded-lg border p-4 transition-colors"
                   >
                     <div class="flex flex-col items-center gap-2">
                       <Icon :name="db.icon" :alt="db.name" size="2rem" class="h-8 w-8" />

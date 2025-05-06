@@ -45,7 +45,7 @@
 
     <div class="flex max-h-[calc(100vh-58px)] flex-1">
       <DiagramSidebar />
-      <main class="bg-muted/10 w-full flex-1">
+      <main class="w-full flex-1 bg-neutral-100/10">
         <DiagramCanvas />
       </main>
     </div>

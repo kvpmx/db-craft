@@ -15,7 +15,7 @@ const keysOf = <T extends ZodRawShape>(obj: ZodObject<T>) => {
 };
 
 const minify = (str: string) => {
-  return str.replace(/\s+/g, '');
+  return str.replace(/\s+/g, ' ').trim();
 };
 
 export const getSystemPrompt = (type: DatabaseType | undefined = DatabaseType.MySQL) => {
@@ -38,7 +38,7 @@ export const getSystemPrompt = (type: DatabaseType | undefined = DatabaseType.My
 
     Tables should not be very close to each other.
     Width of the table is 200px, so the distance between the tables should be at least 300px (+100px for space between tables).
-    The relations between the tables will be represented as smoothstep lines. 
+    The relations between the tables will be represented as smoothstep lines.
     If you can figure it out, choose the position of the tables in such a way to not cross lines between each other.
   `);
 };
