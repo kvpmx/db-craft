@@ -21,6 +21,14 @@
     return window.confirm(t('UNSAVED_CHANGES_WARNING'));
   });
 
+  onMounted(() => {
+    window.addEventListener('beforeunload', (e) => {
+      if (!currentProject.saved) {
+        e.preventDefault();
+      }
+    });
+  });
+
   onUnmounted(() => {
     currentProject.reset();
   });
