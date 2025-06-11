@@ -69,7 +69,13 @@
     <HomeCreateDiagramModal />
   </div>
 
-  <div class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
+  <div
+    v-if="!isPending && !filteredProjects?.length"
+    class="my-40 flex flex-1 items-center justify-center text-center text-xl font-medium italic text-gray-600"
+  >
+    {{ t('NO_PROJECTS_FOUND') }}
+  </div>
+  <div v-else class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
     <template v-if="isPending">
       <Skeleton
         v-for="index in 6"

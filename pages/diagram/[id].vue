@@ -11,7 +11,7 @@
   const currentProject = useCurrentProject();
 
   // Fetch the project data
-  useAsyncData(`project-${projectId.value}`, async () => {
+  const { status } = useAsyncData(`project-${projectId.value}`, async () => {
     return await currentProject.fetch(projectId.value);
   });
 
@@ -44,7 +44,7 @@
     <DiagramPageHeader />
 
     <div class="flex max-h-[calc(100vh-58px)] flex-1">
-      <DiagramSidebar />
+      <DiagramSidebar :pending="status === 'pending'" />
       <main class="w-full flex-1 bg-neutral-100/10">
         <DiagramCanvas />
       </main>

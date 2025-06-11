@@ -92,5 +92,7 @@
   "SETTINGS": "Settings",
   "LANGUAGE": "Language",
   "ENGLISH": "English",
-  "UKRAINIAN": "Ukrainian"
+  "UKRAINIAN": "Ukrainian",
+  "NO_TABLES_FOUND": "No tables found",
+  "NO_PROJECTS_FOUND": "No projects found"
 }

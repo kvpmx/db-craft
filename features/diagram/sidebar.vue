@@ -6,6 +6,10 @@
 
   import type { DatabaseType } from '@/lib/constants/diagram';
 
+  const props = defineProps<{
+    pending: boolean;
+  }>();
+
   const { t } = useI18n();
   const currentProject = useCurrentProject();
   const searchQuery = ref('');
@@ -72,7 +76,15 @@
       </Button>
     </div>
 
+    <div
+      v-if="tables.every((table) => !includesIgnoreCase(table.name, searchQuery)) && !pending"
+      class="flex flex-1 items-center justify-center gap-4 overflow-y-scroll text-center text-xl font-medium italic text-gray-600"
+    >
+      {{ t('NO_TABLES_FOUND') }}
+    </div>
+
     <Accordion
+      v-else
       id="tables-sortable-container"
       v-model:model-value="openedTableId"
       type="single"

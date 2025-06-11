@@ -92,5 +92,7 @@
   "SETTINGS": "Налаштування",
   "LANGUAGE": "Мова",
   "ENGLISH": "Англійська",
-  "UKRAINIAN": "Українська"
+  "UKRAINIAN": "Українська",
+  "NO_TABLES_FOUND": "Таблиць не знайдено",
+  "NO_PROJECTS_FOUND": "Не знайдено жодного проєкту"
 }
