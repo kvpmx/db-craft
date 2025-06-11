@@ -63,8 +63,8 @@ export default defineNuxtConfig({
     langDir: '../../assets/locales',
     strategy: 'no_prefix',
     locales: [
-      { code: 'en', file: 'en.json' },
-      { code: 'uk', file: 'uk.json' },
+      { code: 'en', name: 'ENGLISH', file: 'en.json' },
+      { code: 'uk', name: 'UKRAINIAN', file: 'uk.json' },
     ],
     experimental: {
       localeDetector: 'locale-detector.ts',

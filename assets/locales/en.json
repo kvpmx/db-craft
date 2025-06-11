@@ -89,5 +89,8 @@
   "LINK": "Link",
   "COPY": "Copy",
   "SIGN_OUT": "Sign out",
-  "SETTINGS": "Settings"
+  "SETTINGS": "Settings",
+  "LANGUAGE": "Language",
+  "ENGLISH": "English",
+  "UKRAINIAN": "Ukrainian"
 }

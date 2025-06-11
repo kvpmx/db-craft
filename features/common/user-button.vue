@@ -1,13 +1,11 @@
 <script lang="ts" setup>
   const { t } = useI18n();
 
-  const supabase = useSupabaseClient();
   const user = useSupabaseUser();
+  const supabase = useSupabaseClient();
+  const username = computed(() => getFullUserName(user.value));
 
-  const username = computed(() => {
-    const { full_name, first_name, last_name } = user.value.user_metadata;
-    return full_name || `${first_name} ${last_name}`;
-  });
+  const settingsOpened = ref(false);
 
   const onSignOut = async () => {
     await supabase.auth.signOut();
@@ -35,11 +33,12 @@
     <DropdownMenuContent>
       <DropdownMenuLabel>{{ username ?? user.user_metadata.email }}</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>{{ t('USER_PROFILE') }}</DropdownMenuItem>
-      <DropdownMenuItem>{{ t('SETTINGS') }}</DropdownMenuItem>
+      <DropdownMenuItem @click="settingsOpened = true">{{ t('USER_PROFILE') }}</DropdownMenuItem>
       <DropdownMenuItem class="text-red-600" @click="onSignOut">
         {{ t('SIGN_OUT') }}
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
+
+  <SettingsDialog v-model="settingsOpened" />
 </template>
