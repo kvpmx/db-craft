@@ -106,12 +106,8 @@ export const DATABASE_FIELD_TYPES = {
     'tstzrange',
     'daterange',
     'array',
-    'serial',
-    'bigserial',
     'tsvector',
     'tsquery',
-    'uuid',
-    'xml',
   ],
   [DatabaseType.SQLServer]: [
     'bigint',
