@@ -8,6 +8,20 @@ export const PositionSchema = z.object({
 
 export const HandlePlacementSchema = z.enum(['left', 'right']);
 
+export const RelationEndpointCardinalitySchema = z.enum([
+  'zero-or-one',
+  'many',
+  'one',
+  'one-and-only-one',
+  'zero-or-many',
+  'one-or-many',
+]);
+
+export const RelationCardinalitySchema = z.object({
+  source: RelationEndpointCardinalitySchema,
+  target: RelationEndpointCardinalitySchema,
+});
+
 export const TableFieldSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -34,6 +48,7 @@ export const TableRelationSchema = z.object({
   target_field: z.string().describe('Target field ID'),
   source_handle_placement: HandlePlacementSchema,
   target_handle_placement: HandlePlacementSchema,
+  cardinality: RelationCardinalitySchema.optional(),
 });
 
 export const DiagramConfigSchema = z.object({

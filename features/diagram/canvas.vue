@@ -4,6 +4,7 @@
   import { Background } from '@vue-flow/background';
   import { Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
+  import { DEFAULT_RELATION_CARDINALITY } from '@/lib/constants/diagram';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { HandlePlacement } from '@/types/diagram';
@@ -48,9 +49,12 @@
       target: rel.target,
       sourceHandle: `${rel.source_handle_placement}:${rel.source}:${rel.source_field}`,
       targetHandle: `${rel.target_handle_placement}:${rel.target}:${rel.target_field}`,
-      style: { strokeWidth: 3 },
-      type: 'smoothstep',
-      pathOptions: { borderRadius: 20 },
+      type: 'relation',
+      data: {
+        ...DEFAULT_RELATION_CARDINALITY,
+        ...rel.cardinality,
+        readonly: props.readonly,
+      },
     }));
   });
 
@@ -69,8 +73,19 @@
     nextTick(() => updateHandlePlacement(relation.source));
   };
 
-  const { getSelectedEdges, setInteractive } = useCanvas();
+  const { fitView, getSelectedEdges, setInteractive } = useCanvas();
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
+
+  const fitViewParams = useDiagramFitViewParams();
+  const initialViewFitted = ref(false);
+
+  const fitInitialView = async () => {
+    if (initialViewFitted.value || !nodes.value.length) return;
+
+    initialViewFitted.value = true;
+    await nextTick();
+    fitView(fitViewParams.value);
+  };
 
   // Set interactive to false when the canvas is readonly
   watchEffect(() => {
@@ -175,18 +190,23 @@
       style="height: 100%; width: 100%"
       :min-zoom="0.1"
       :delete-key-code="null"
-      :fit-view-on-init="true"
+      :fit-view-on-init="false"
       :is-valid-connection="validateConnection"
       @node-drag-stop="onNodeDragStop"
       @connect="createNewConnection"
       @node-drag="onNodeDrag"
+      @nodes-initialized="fitInitialView"
     >
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />
       </template>
 
+      <template #edge-relation="relationEdgeProps">
+        <DiagramRelationEdge v-bind="relationEdgeProps" />
+      </template>
+
       <Background />
-      <Controls :show-interactive="!readonly" />
+      <Controls :show-interactive="!readonly" :fit-view-params="fitViewParams" />
       <MiniMap :pannable="true" :zoomable="true" :width="150" :height="100" />
     </VueFlow>
   </ClientOnly>

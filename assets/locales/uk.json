@@ -94,5 +94,14 @@
   "ENGLISH": "Англійська",
   "UKRAINIAN": "Українська",
   "NO_TABLES_FOUND": "Таблиць не знайдено",
-  "NO_PROJECTS_FOUND": "Не знайдено жодного проєкту"
+  "NO_PROJECTS_FOUND": "Не знайдено жодного проєкту",
+  "RELATION_CARDINALITY": "Кардинальність зв'язку",
+  "SOURCE_END": "Початок",
+  "TARGET_END": "Кінець",
+  "RELATION_CARDINALITY_ZERO_OR_ONE": "Нуль або один",
+  "RELATION_CARDINALITY_MANY": "Багато",
+  "RELATION_CARDINALITY_ONE": "Рівно один",
+  "RELATION_CARDINALITY_ONE_AND_ONLY_ONE": "Один і лише один",
+  "RELATION_CARDINALITY_ZERO_OR_MANY": "Нуль або багато",
+  "RELATION_CARDINALITY_ONE_OR_MANY": "Один або багато"
 }

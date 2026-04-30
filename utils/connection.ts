@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
+import { DEFAULT_RELATION_CARDINALITY } from '@/lib/constants/diagram';
+
 import type { Connection } from '@vue-flow/core';
 import type { HandlePlacement, TableRelation } from '@/types/diagram';
 
@@ -38,5 +40,6 @@ export const createRelation = (connection: Connection): TableRelation | undefine
     target_field: targetField,
     source_handle_placement: sourcePlacement,
     target_handle_placement: targetPlacement,
+    cardinality: { ...DEFAULT_RELATION_CARDINALITY },
   };
 };

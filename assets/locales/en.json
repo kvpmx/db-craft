@@ -94,5 +94,14 @@
   "ENGLISH": "English",
   "UKRAINIAN": "Ukrainian",
   "NO_TABLES_FOUND": "No tables found",
-  "NO_PROJECTS_FOUND": "No projects found"
+  "NO_PROJECTS_FOUND": "No projects found",
+  "RELATION_CARDINALITY": "Relation cardinality",
+  "SOURCE_END": "Source end",
+  "TARGET_END": "Target end",
+  "RELATION_CARDINALITY_ZERO_OR_ONE": "Zero or one",
+  "RELATION_CARDINALITY_MANY": "Many",
+  "RELATION_CARDINALITY_ONE": "Exactly one",
+  "RELATION_CARDINALITY_ONE_AND_ONLY_ONE": "One (and only one)",
+  "RELATION_CARDINALITY_ZERO_OR_MANY": "Zero or many",
+  "RELATION_CARDINALITY_ONE_OR_MANY": "One or many"
 }

@@ -20,12 +20,13 @@
 
   // Update the thumbnail
   const { fitView, vueFlowRef } = useCanvas();
+  const fitViewParams = useDiagramFitViewParams();
 
   const { mutateAsync: save, isPending } = useMutation({
     mutationFn: async () => {
       if (currentProject.saved) return;
 
-      fitView();
+      fitView(fitViewParams.value);
       await sleep(0);
 
       await projectsApi.updateThumbnail(currentProject.state?.id, vueFlowRef.value);

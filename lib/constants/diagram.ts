@@ -1,4 +1,4 @@
-import type { DiagramConfig } from '@/types/diagram';
+import type { DiagramConfig, RelationCardinality } from '@/types/diagram';
 
 export enum DiagramVisibility {
   Public = 'public',
@@ -15,6 +15,44 @@ export const DEFAULT_DIAGRAM_CONFIG = {
   tables: [],
   relations: [],
 } as DiagramConfig;
+
+export const DEFAULT_RELATION_CARDINALITY = {
+  source: 'one',
+  target: 'zero-or-many',
+} as const satisfies RelationCardinality;
+
+export const RELATION_CARDINALITY_OPTIONS = [
+  {
+    value: 'zero-or-one',
+    labelKey: 'RELATION_CARDINALITY_ZERO_OR_ONE',
+    notation: '0..1',
+  },
+  {
+    value: 'many',
+    labelKey: 'RELATION_CARDINALITY_MANY',
+    notation: '*',
+  },
+  {
+    value: 'one',
+    labelKey: 'RELATION_CARDINALITY_ONE',
+    notation: '1',
+  },
+  {
+    value: 'one-and-only-one',
+    labelKey: 'RELATION_CARDINALITY_ONE_AND_ONLY_ONE',
+    notation: '1..1',
+  },
+  {
+    value: 'zero-or-many',
+    labelKey: 'RELATION_CARDINALITY_ZERO_OR_MANY',
+    notation: '0..*',
+  },
+  {
+    value: 'one-or-many',
+    labelKey: 'RELATION_CARDINALITY_ONE_OR_MANY',
+    notation: '1..*',
+  },
+] as const;
 
 export const DATABASE_FIELD_TYPES = {
   [DatabaseType.MySQL]: [
