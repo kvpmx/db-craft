@@ -15,9 +15,14 @@
   const props = defineProps<EdgeProps<RelationCardinality & { readonly?: boolean }>>();
 
   const { t } = useI18n();
+  const { settings } = useUserSettings();
 
   const currentProject = useCurrentProject();
   const open = ref(false);
+
+  const showRelationCardinality = computed(() => {
+    return settings.value.diagram_settings.show_relation_cardinality;
+  });
 
   const edgePathParams = computed(() =>
     getSmoothStepPath({
@@ -121,6 +126,7 @@
   <BaseEdge :id="id" :path="edgePath" :style="{ strokeWidth: 3, stroke: edgeStroke }" />
 
   <path
+    v-if="showRelationCardinality"
     :d="edgePath"
     fill="none"
     stroke="transparent"
@@ -130,6 +136,7 @@
   />
 
   <g
+    v-if="showRelationCardinality"
     class="pointer-events-none"
     :style="{ color: edgeStroke }"
     :transform="getEndpointTransform(sourceX, sourceY, sourcePosition)"
@@ -195,6 +202,7 @@
   </g>
 
   <g
+    v-if="showRelationCardinality"
     class="pointer-events-none"
     :style="{ color: edgeStroke }"
     :transform="getEndpointTransform(targetX, targetY, targetPosition)"
@@ -259,7 +267,7 @@
     </g>
   </g>
 
-  <EdgeLabelRenderer>
+  <EdgeLabelRenderer v-if="showRelationCardinality">
     <Popover v-model:open="open">
       <PopoverTrigger as-child>
         <button
@@ -278,7 +286,7 @@
         </button>
       </PopoverTrigger>
 
-      <PopoverContent class="nodrag nopan w-60 space-y-2.5" @click.stop>
+      <PopoverContent class="nodrag nopan w-60 space-y-2.5" @click.stop @open-auto-focus.prevent>
         <div class="space-y-1">
           <h3 class="text-sm font-semibold text-slate-900">{{ t('RELATION_CARDINALITY') }}</h3>
         </div>

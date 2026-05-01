@@ -1,11 +1,21 @@
 <script lang="ts" setup>
-  const { t, locale, locales, setLocale } = useI18n();
+  import type { ProfileSettings } from '@/types/user-settings';
+
+  const { t, locales } = useI18n();
+
+  const emit = defineEmits<{ submit: [] }>();
+  const settings = defineModel<ProfileSettings>({ required: true });
+
   const user = useSupabaseUser();
   const username = computed(() => getFullUserName(user.value));
+
+  const submitSettingsForm = () => {
+    emit('submit');
+  };
 </script>
 
 <template>
-  <div class="space-y-6 pt-4">
+  <form class="space-y-6 pt-4" @submit.prevent="submitSettingsForm">
     <div class="flex items-center gap-4">
       <Avatar class="h-20 w-20">
         <AvatarImage :src="user.user_metadata.avatar_url" :alt="username" />
@@ -20,11 +30,8 @@
     </div>
 
     <div class="space-y-2">
-      <Label for="language" class="font-semibold">{{ t('LANGUAGE') }}</Label>
-      <Select
-        :default-value="locale"
-        @update:model-value="(value) => setLocale(value as typeof locale)"
-      >
+      <Label for="language">{{ t('LANGUAGE') }}</Label>
+      <Select v-model="settings.language">
         <SelectTrigger id="language">
           <SelectValue :placeholder="t('LANGUAGE')" />
         </SelectTrigger>
@@ -35,5 +42,9 @@
         </SelectContent>
       </Select>
     </div>
-  </div>
+
+    <div class="flex items-center justify-end gap-3 border-t border-slate-200 pt-6">
+      <slot name="actions" />
+    </div>
+  </form>
 </template>

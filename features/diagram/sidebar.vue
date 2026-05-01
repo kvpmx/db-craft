@@ -6,9 +6,7 @@
 
   import type { DatabaseType } from '@/lib/constants/diagram';
 
-  const props = defineProps<{
-    pending: boolean;
-  }>();
+  defineProps<{ pending: boolean }>();
 
   const { t } = useI18n();
   const currentProject = useCurrentProject();
