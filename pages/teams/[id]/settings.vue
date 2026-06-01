@@ -13,6 +13,7 @@
   });
 
   const route = useRoute();
+  const router = useRouter();
   const teamId = computed(() => getRouteParamValue(route.params.id));
 
   const { t } = useI18n();
@@ -48,8 +49,60 @@
 
   const latestInviteCode = ref<string | null>(null);
 
+  const teamName = ref('');
+
+  watch(
+    () => team.value?.name,
+    (name) => {
+      if (name !== undefined) {
+        teamName.value = name;
+      }
+    },
+    { immediate: true }
+  );
+
+  const isTeamNameValid = computed(() => teamName.value.trim().length > 0);
+
+  const isTeamNameDirty = computed(() => {
+    const currentName = team.value?.name?.trim() ?? '';
+    return teamName.value.trim() !== currentName;
+  });
+
+  const invalidateTeam = () => {
+    queryClient.invalidateQueries({ queryKey: ['teams', teamId] });
+    queryClient.invalidateQueries({ queryKey: ['teams'] });
+  };
+
   const invalidateMembers = () => {
     queryClient.invalidateQueries({ queryKey: ['team-members', teamId] });
+  };
+
+  const { mutateAsync: updateTeam, isPending: isUpdatingTeam } = useAdvancedMutation({
+    mutationKey: ['updateTeam'],
+    mutationFn: async (name: string) => await teamsApi.update(teamId.value, { name }),
+    successMessage: t('TEAM_UPDATED'),
+    onSuccess: invalidateTeam,
+  });
+
+  const { mutateAsync: deleteTeam, isPending: isDeletingTeam } = useAdvancedMutation({
+    mutationKey: ['deleteTeam'],
+    mutationFn: async () => await teamsApi.delete(teamId.value),
+    successMessage: t('TEAM_DELETED'),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['teams'] });
+      await router.push(routes.home());
+    },
+  });
+
+  const submitTeamName = async (event: Event) => {
+    event.preventDefault();
+    if (!isTeamNameValid.value || !isTeamNameDirty.value) return;
+    await updateTeam(teamName.value.trim());
+  };
+
+  const confirmDeleteTeam = async () => {
+    if (!window.confirm(t('DELETE_TEAM_CONFIRM'))) return;
+    await deleteTeam();
   };
 
   const { mutateAsync: createInvite, isPending: isCreatingInvite } = useAdvancedMutation({
@@ -126,6 +179,32 @@
   </div>
 
   <section class="mb-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+    <h2 class="mb-2 text-lg font-semibold">{{ t('TEAM_DETAILS') }}</h2>
+    <p class="mb-4 text-sm text-slate-500">{{ t('TEAM_DETAILS_DESCRIPTION') }}</p>
+
+    <form class="flex flex-wrap items-end gap-4" @submit="submitTeamName">
+      <div class="min-w-48 flex-1 space-y-2">
+        <Label for="team-name">{{ t('TEAM_NAME') }}</Label>
+        <Input
+          id="team-name"
+          v-model="teamName"
+          type="text"
+          autocomplete="off"
+          :disabled="isUpdatingTeam"
+        />
+      </div>
+
+      <ButtonWithLoading
+        type="submit"
+        :loading="isUpdatingTeam"
+        :disabled="!isTeamNameValid || !isTeamNameDirty"
+      >
+        {{ t('SAVE') }}
+      </ButtonWithLoading>
+    </form>
+  </section>
+
+  <section class="mb-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
     <h2 class="mb-2 text-lg font-semibold">{{ t('CREATE_INVITE_CODE') }}</h2>
     <p class="mb-4 text-sm text-slate-500">{{ t('CREATE_INVITE_CODE_DESCRIPTION') }}</p>
 
@@ -173,7 +252,7 @@
     </div>
   </section>
 
-  <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+  <section class="mb-8 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
     <h2 class="mb-4 text-lg font-semibold">{{ t('TEAM_MEMBERS') }}</h2>
 
     <div class="overflow-x-auto">
@@ -254,5 +333,19 @@
         </tbody>
       </table>
     </div>
+  </section>
+
+  <section class="rounded-lg border border-red-200 bg-white p-6 shadow-sm">
+    <h2 class="mb-2 text-lg font-semibold text-red-700">{{ t('DELETE_TEAM') }}</h2>
+    <p class="mb-4 text-sm text-slate-500">{{ t('DELETE_TEAM_DESCRIPTION') }}</p>
+
+    <ButtonWithLoading
+      variant="destructive"
+      :loading="isDeletingTeam"
+      :disabled="isDeletingTeam"
+      @click="confirmDeleteTeam"
+    >
+      {{ t('DELETE_TEAM') }}
+    </ButtonWithLoading>
   </section>
 </template>
