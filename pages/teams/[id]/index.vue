@@ -1,35 +1,49 @@
 <script lang="ts" setup>
-  import { ProjectsController } from '@/lib/controllers';
+  import { ProjectsController, TeamsController } from '@/lib/controllers';
+  import { routes } from '@/lib/routes';
   import type { TablesInsert } from '@/types/database';
 
-  definePageMeta({ layout: 'main' });
+  definePageMeta({
+    layout: 'main',
+    middleware: ['team-validate'],
+  });
 
-  const queryClient = useQueryClient();
-  const projectsApi = useApiController(ProjectsController);
+  const route = useRoute();
+  const teamId = computed(() => getRouteParamValue(route.params.id));
 
   const { t } = useI18n();
+  const queryClient = useQueryClient();
+  const projectsApi = useApiController(ProjectsController);
+  const teamsApi = useApiController(TeamsController);
 
-  const invalidateProjectsQuery = () => {
-    queryClient.invalidateQueries({ queryKey: ['projects'] });
-  };
+  const { data: team, suspense: teamSuspense } = useQuery({
+    queryKey: ['teams', teamId],
+    queryFn: async () => await teamsApi.getById(teamId.value),
+  });
 
   const { data, suspense, isPending } = useQuery({
-    queryKey: ['projects', 'personal'],
-    queryFn: async () => await projectsApi.getPersonal(),
+    queryKey: ['projects', 'team', teamId],
+    queryFn: async () => await projectsApi.getByTeam(teamId.value),
   });
 
   onServerPrefetch(async () => {
-    await suspense();
+    await Promise.all([teamSuspense(), suspense()]);
   });
 
-  // Search projects
   const searchQuery = ref('');
 
   const filteredProjects = computed(() => {
     return data.value?.filter((project) => includesIgnoreCase(project.name, searchQuery.value));
   });
 
-  // Delete project
+  const canCreateProject = computed(() => {
+    return team.value?.role === 'admin' || team.value?.role === 'editor';
+  });
+
+  const invalidateProjectsQuery = () => {
+    queryClient.invalidateQueries({ queryKey: ['projects'] });
+  };
+
   const { mutateAsync: deleteProject } = useAdvancedMutation({
     mutationKey: ['deleteProject'],
     mutationFn: async (id: number) => await projectsApi.delete(id),
@@ -37,7 +51,6 @@
     onSuccess: invalidateProjectsQuery,
   });
 
-  // Duplicate project
   const { mutateAsync: duplicateProject } = useAdvancedMutation({
     mutationKey: ['duplicateProject'],
     mutationFn: async (project: TablesInsert<'projects'>) => await projectsApi.duplicate(project),
@@ -47,7 +60,23 @@
 </script>
 
 <template>
-  <PageMeta :title="t('HOME_PAGE_TITLE')" :description="t('HOME_PAGE_DESCRIPTION')" />
+  <PageMeta :title="team?.name ?? t('TEAMS')" :description="t('TEAM_PROJECTS_DESCRIPTION')" />
+
+  <div class="mb-4 flex items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">{{ team?.name }}</h1>
+      <p class="text-sm text-slate-500">{{ t('TEAM_PROJECTS_DESCRIPTION') }}</p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <NuxtLink v-if="team?.role === 'admin'" :to="routes.teamSettings(teamId)">
+        <Button variant="outline" size="sm">
+          <Icon name="lucide:settings" size="1rem" class="mr-2 h-4 w-4" />
+          {{ t('TEAM_SETTINGS') }}
+        </Button>
+      </NuxtLink>
+    </div>
+  </div>
 
   <div class="mb-6 flex items-center justify-between gap-2">
     <div class="relative w-full max-w-md">
@@ -57,7 +86,7 @@
         class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400"
       />
       <Input
-        id="search-projects"
+        id="search-team-projects"
         v-model="searchQuery"
         type="search"
         :placeholder="t('SEARCH_PROJECTS')"
@@ -65,7 +94,7 @@
       />
     </div>
 
-    <HomeCreateDiagramModal />
+    <HomeCreateDiagramModal v-if="canCreateProject" :team-id="teamId" />
   </div>
 
   <div
@@ -88,6 +117,7 @@
         :key="project.id"
         :project="project"
         :search-query="searchQuery"
+        :can-edit="canCreateProject"
         @delete="deleteProject"
         @duplicate="duplicateProject"
       />

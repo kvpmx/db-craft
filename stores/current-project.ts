@@ -8,13 +8,20 @@ import type { DiagramConfig, Table } from '@/types/diagram';
 export const useCurrentProject = defineStore('current-project', () => {
   const state = ref<Tables<'projects'> | null>(null);
   const saved = ref(true);
+  const canEdit = ref(true);
 
   const projectsApi = useApiController(ProjectsController);
   const changesHistory = useRefHistory(state, { deep: true, capacity: 20 });
 
+  const updateCanEdit = async () => {
+    if (!state.value) return;
+    canEdit.value = await projectsApi.canEdit(state.value);
+  };
+
   const fetch = async (id: number) => {
     try {
       state.value = await projectsApi.getById(id);
+      if (state.value) await updateCanEdit();
       return true;
     } catch {
       return false;
@@ -87,6 +94,7 @@ export const useCurrentProject = defineStore('current-project', () => {
   const reset = () => {
     state.value = null;
     saved.value = true;
+    canEdit.value = true;
     changesHistory.clear();
   };
 
@@ -117,6 +125,7 @@ export const useCurrentProject = defineStore('current-project', () => {
   return {
     state,
     saved,
+    canEdit,
     fetch,
     fetchPublic,
     updateDiagramConfig,

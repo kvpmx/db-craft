@@ -4,6 +4,8 @@
   import type { ColumnType } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
 
+  const props = defineProps<{ disabled?: boolean }>();
+
   const value = defineModel<ColumnType<T>>({ required: true });
   const open = ref(false);
 
@@ -23,6 +25,7 @@
         size="xs"
         role="combobox"
         :aria-expanded="open"
+        :disabled="props.disabled"
         class="w-[120px] justify-between text-xs"
       >
         <span class="truncate">{{ value }}</span>

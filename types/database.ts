@@ -20,6 +20,7 @@ export type Database = {
           name: string;
           schema: DiagramConfig;
           share_id: string;
+          team_id: string | null;
           type: Database['public']['Enums']['database_type'];
           visibility: Database['public']['Enums']['diagram_visibility'];
         };
@@ -31,6 +32,7 @@ export type Database = {
           name?: string;
           schema?: DiagramConfig;
           share_id?: string;
+          team_id?: string | null;
           type?: Database['public']['Enums']['database_type'];
           visibility?: Database['public']['Enums']['diagram_visibility'];
         };
@@ -42,8 +44,146 @@ export type Database = {
           name?: string;
           schema?: DiagramConfig;
           share_id?: string;
+          team_id?: string | null;
           type?: Database['public']['Enums']['database_type'];
           visibility?: Database['public']['Enums']['diagram_visibility'];
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'projects_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      team_invites: {
+        Row: {
+          code: string;
+          created_at: string;
+          expires_at: string;
+          id: string;
+          invited_by: string | null;
+          role: Database['public']['Enums']['team_role'] | null;
+          team_id: string;
+          team_member_id: string | null;
+          token: string;
+        };
+        Insert: {
+          code: string;
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          invited_by?: string | null;
+          role?: Database['public']['Enums']['team_role'] | null;
+          team_id: string;
+          team_member_id?: string | null;
+          token?: string;
+        };
+        Update: {
+          code?: string;
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          invited_by?: string | null;
+          role?: Database['public']['Enums']['team_role'] | null;
+          team_id?: string;
+          team_member_id?: string | null;
+          token?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'team_invites_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'team_invites_team_member_id_fkey';
+            columns: ['team_member_id'];
+            isOneToOne: false;
+            referencedRelation: 'team_members';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      team_members: {
+        Row: {
+          email: string | null;
+          id: string;
+          invite_id: string | null;
+          invited_at: string;
+          invited_by: string | null;
+          joined_at: string | null;
+          role: Database['public']['Enums']['team_role'];
+          status: Database['public']['Enums']['team_member_status'];
+          team_id: string;
+          user_id: string | null;
+        };
+        Insert: {
+          email?: string | null;
+          id?: string;
+          invite_id?: string | null;
+          invited_at?: string;
+          invited_by?: string | null;
+          joined_at?: string | null;
+          role?: Database['public']['Enums']['team_role'];
+          status?: Database['public']['Enums']['team_member_status'];
+          team_id: string;
+          user_id?: string | null;
+        };
+        Update: {
+          email?: string | null;
+          id?: string;
+          invite_id?: string | null;
+          invited_at?: string;
+          invited_by?: string | null;
+          joined_at?: string | null;
+          role?: Database['public']['Enums']['team_role'];
+          status?: Database['public']['Enums']['team_member_status'];
+          team_id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'team_members_invite_id_fkey';
+            columns: ['invite_id'];
+            isOneToOne: false;
+            referencedRelation: 'team_invites';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'team_members_team_id_fkey';
+            columns: ['team_id'];
+            isOneToOne: false;
+            referencedRelation: 'teams';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      teams: {
+        Row: {
+          created_at: string;
+          created_by: string;
+          id: string;
+          name: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by: string;
+          id?: string;
+          name: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string;
+          id?: string;
+          name?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -79,11 +219,34 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      accept_team_invite: { Args: { p_token: string }; Returns: string };
+      accept_team_invite_by_code: { Args: { p_code: string }; Returns: string };
+      auth_user_email: { Args: never; Returns: string };
+      can_edit_team_project: {
+        Args: { p_team_id: string; p_user_id: string };
+        Returns: boolean;
+      };
+      generate_invite_code: { Args: never; Returns: string };
+      get_team_invite_by_code: { Args: { p_code: string }; Returns: Json };
+      get_team_invite_info: { Args: { p_token: string }; Returns: Json };
+      is_team_admin: {
+        Args: { p_team_id: string; p_user_id: string };
+        Returns: boolean;
+      };
+      is_team_member: {
+        Args: { p_team_id: string; p_user_id: string };
+        Returns: boolean;
+      };
+      team_role: {
+        Args: { p_team_id: string; p_user_id: string };
+        Returns: Database['public']['Enums']['team_role'];
+      };
     };
     Enums: {
       database_type: 'mysql' | 'postgres' | 'sqlserver';
       diagram_visibility: 'public' | 'private';
+      team_member_status: 'pending' | 'active';
+      team_role: 'admin' | 'editor' | 'viewer';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -211,6 +374,8 @@ export const Constants = {
     Enums: {
       database_type: ['mysql', 'postgres', 'sqlserver'],
       diagram_visibility: ['public', 'private'],
+      team_member_status: ['pending', 'active'],
+      team_role: ['admin', 'editor', 'viewer'],
     },
   },
 } as const;

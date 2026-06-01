@@ -26,10 +26,10 @@
     mutationFn: async () => {
       if (currentProject.saved) return;
 
-      fitView(fitViewParams.value);
+      void fitView(fitViewParams.value);
       await sleep(0);
 
-      await projectsApi.updateThumbnail(currentProject.state?.id, vueFlowRef.value);
+      await projectsApi.updateThumbnail(currentProject.state, vueFlowRef.value);
       await currentProject.saveConfigToDatabase();
     },
   });
@@ -46,7 +46,7 @@
             'flex gap-2 border-[1px] font-medium',
             !currentProject.saved && 'border-yellow-600',
           ]"
-          :disabled="isPending"
+          :disabled="isPending || !currentProject.canEdit"
           @click="save"
         >
           <template v-if="isPending">

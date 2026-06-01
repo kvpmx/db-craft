@@ -9,7 +9,10 @@
   const props = defineProps<{
     project: Tables<'projects'>;
     searchQuery?: string;
+    canEdit?: boolean;
   }>();
+
+  const canEditProject = computed(() => props.canEdit ?? true);
 
   const emit = defineEmits<{
     (e: 'delete', id: number): void;
@@ -19,8 +22,8 @@
   const projectsApi = useApiController(ProjectsController);
 
   const { data: thumbnailUrl } = useQuery({
-    queryKey: ['thumbnail', props.project.id],
-    queryFn: async () => await projectsApi.getThumbnailUrl(props.project?.id),
+    queryKey: ['thumbnail', props.project.id, props.project.team_id],
+    queryFn: async () => await projectsApi.getThumbnailUrl(props.project),
   });
 
   const db = computed(() => {
@@ -40,7 +43,7 @@
             <span v-html="highlightTextOccurrences(project.name, searchQuery)"></span>
           </div>
         </CardTitle>
-        <DropdownMenu>
+        <DropdownMenu v-if="canEditProject">
           <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon" class="h-7 w-7">
               <Icon name="lucide:more-vertical" size="1rem" class="h-4 w-4" />

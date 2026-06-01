@@ -7519,10 +7519,10 @@ queue@6.0.2:
   dependencies:
     inherits "~2.0.3"
 
-radix-vue@^1.9.7:
-  version "1.9.11"
-  resolved "https://registry.yarnpkg.com/radix-vue/-/radix-vue-1.9.11.tgz#d49abb54c234e685e80d463ddf8dcd656be1c291"
-  integrity sha512-C+MtJ66jf8J28DO5bKgNwhGCi6WQYuEosD/tY/Orry9BTDcuF/Mps4HlFd2Tq4YlXF44BEPLQ2Paz89Mz70ZgA==
+radix-vue@^1.9.17:
+  version "1.9.17"
+  resolved "https://registry.yarnpkg.com/radix-vue/-/radix-vue-1.9.17.tgz#d6aec1727148e21cfb105c46a4c20bf100c8eee7"
+  integrity sha512-mVCu7I2vXt1L2IUYHTt0sZMz7s1K2ZtqKeTIxG3yC5mMFfLBG4FtE1FDeRMpDd+Hhg/ybi9+iXmAP1ISREndoQ==
   dependencies:
     "@floating-ui/dom" "^1.6.7"
     "@floating-ui/vue" "^1.1.0"
