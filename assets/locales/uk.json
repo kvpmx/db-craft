@@ -164,5 +164,19 @@
   "ROLE_EDITOR": "Редактор",
   "ROLE_VIEWER": "Глядач",
   "MEMBER_PENDING": "Очікує",
-  "MEMBER_ACTIVE": "Активний"
+  "MEMBER_ACTIVE": "Активний",
+  "SCHEMA_VERSION_HISTORY": "Історія версій",
+  "SCHEMA_VERSION_HISTORY_DESCRIPTION": "Зберігайте знімки схеми та відновлюйте попередню версію за потреби.",
+  "SCHEMA_VERSION_MESSAGE": "Повідомлення коміту",
+  "SCHEMA_VERSION_MESSAGE_PLACEHOLDER": "Опишіть, що змінилося в цій версії...",
+  "SCHEMA_VERSION_COMMIT": "Зберегти версію",
+  "SCHEMA_VERSION_COMMITTING": "Збереження версії...",
+  "SCHEMA_VERSION_COMMITTED": "Версію збережено",
+  "SCHEMA_VERSION_TIMELINE": "Хронологія",
+  "SCHEMA_VERSION_EMPTY": "Ще немає версій. Збережіть першу версію схеми вище.",
+  "SCHEMA_VERSION_ROLLBACK": "Відновити обрану",
+  "SCHEMA_VERSION_ROLLBACK_CONFIRM": "Відновити обрану версію схеми? Незбережені зміни буде втрачено.",
+  "SCHEMA_VERSION_ROLLING_BACK": "Відновлення версії...",
+  "SCHEMA_VERSION_ROLLED_BACK": "Схему відновлено",
+  "UNKNOWN_USER": "Невідомий користувач"
 }

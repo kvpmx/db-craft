@@ -1,4 +1,5 @@
 import { useRefHistory } from '@vueuse/core';
+import { cloneDeep } from 'es-toolkit';
 import { ProjectsController } from '@/lib/controllers';
 
 import type { Simplify } from 'type-fest';
@@ -113,6 +114,13 @@ export const useCurrentProject = defineStore('current-project', () => {
     saved.value = true;
   };
 
+  const restoreSchema = (schema: DiagramConfig) => {
+    if (!state.value) return;
+
+    state.value.schema = cloneDeep(schema);
+    changesHistory.clear();
+  };
+
   watch(
     state,
     (currentValue, previousValue) => {
@@ -135,5 +143,6 @@ export const useCurrentProject = defineStore('current-project', () => {
     reset,
     changesHistory,
     saveConfigToDatabase,
+    restoreSchema,
   };
 });

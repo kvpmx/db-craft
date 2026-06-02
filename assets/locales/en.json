@@ -164,5 +164,19 @@
   "ROLE_EDITOR": "Editor",
   "ROLE_VIEWER": "Viewer",
   "MEMBER_PENDING": "Pending",
-  "MEMBER_ACTIVE": "Active"
+  "MEMBER_ACTIVE": "Active",
+  "SCHEMA_VERSION_HISTORY": "Version history",
+  "SCHEMA_VERSION_HISTORY_DESCRIPTION": "Save snapshots of your schema and restore a previous version when needed.",
+  "SCHEMA_VERSION_MESSAGE": "Commit message",
+  "SCHEMA_VERSION_MESSAGE_PLACEHOLDER": "Describe what changed in this version...",
+  "SCHEMA_VERSION_COMMIT": "Commit version",
+  "SCHEMA_VERSION_COMMITTING": "Saving version...",
+  "SCHEMA_VERSION_COMMITTED": "Version saved",
+  "SCHEMA_VERSION_TIMELINE": "Timeline",
+  "SCHEMA_VERSION_EMPTY": "No versions yet. Commit your first schema version above.",
+  "SCHEMA_VERSION_ROLLBACK": "Rollback to selected",
+  "SCHEMA_VERSION_ROLLBACK_CONFIRM": "Restore the selected schema version? Unsaved changes will be lost.",
+  "SCHEMA_VERSION_ROLLING_BACK": "Restoring version...",
+  "SCHEMA_VERSION_ROLLED_BACK": "Schema restored",
+  "UNKNOWN_USER": "Unknown user"
 }

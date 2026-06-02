@@ -76,6 +76,7 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <DiagramVersionHistorySheet v-if="currentProject.canEdit" />
         <DiagramAiGeneration v-if="currentProject.canEdit" />
         <DiagramSaveButton />
         <UserButton />

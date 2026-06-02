@@ -58,6 +58,41 @@ export type Database = {
           },
         ];
       };
+      schema_versions: {
+        Row: {
+          author_id: string;
+          created_at: string;
+          id: string;
+          message: string;
+          project_id: number;
+          schema: DiagramConfig;
+        };
+        Insert: {
+          author_id: string;
+          created_at?: string;
+          id?: string;
+          message: string;
+          project_id: number;
+          schema: DiagramConfig;
+        };
+        Update: {
+          author_id?: string;
+          created_at?: string;
+          id?: string;
+          message?: string;
+          project_id?: number;
+          schema?: DiagramConfig;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'schema_versions_project_id_fkey';
+            columns: ['project_id'];
+            isOneToOne: false;
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       team_invites: {
         Row: {
           code: string;
@@ -229,6 +264,10 @@ export type Database = {
       generate_invite_code: { Args: never; Returns: string };
       get_team_invite_by_code: { Args: { p_code: string }; Returns: Json };
       get_team_invite_info: { Args: { p_token: string }; Returns: Json };
+      get_user_display_names: {
+        Args: { p_user_ids: string[] };
+        Returns: { display_name: string; id: string }[];
+      };
       is_team_admin: {
         Args: { p_team_id: string; p_user_id: string };
         Returns: boolean;
