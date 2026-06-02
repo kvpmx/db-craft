@@ -65,6 +65,7 @@ export default defineNuxtConfig({
     locales: [
       { code: 'en', name: 'ENGLISH', file: 'en.json' },
       { code: 'uk', name: 'UKRAINIAN', file: 'uk.json' },
+      { code: 'pl', name: 'POLISH', file: 'pl.json' },
     ],
     experimental: {
       localeDetector: 'locale-detector.ts',
