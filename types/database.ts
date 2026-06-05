@@ -282,7 +282,7 @@ export type Database = {
       };
     };
     Enums: {
-      database_type: 'mysql' | 'postgres' | 'sqlserver';
+      database_type: 'mysql' | 'postgres' | 'sqlserver' | 'sqlite' | 'mariadb' | 'oracle';
       diagram_visibility: 'public' | 'private';
       team_member_status: 'pending' | 'active';
       team_role: 'admin' | 'editor' | 'viewer';
@@ -411,7 +411,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      database_type: ['mysql', 'postgres', 'sqlserver'],
+      database_type: ['mysql', 'postgres', 'sqlserver', 'sqlite', 'mariadb', 'oracle'],
       diagram_visibility: ['public', 'private'],
       team_member_status: ['pending', 'active'],
       team_role: ['admin', 'editor', 'viewer'],
