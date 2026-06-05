@@ -88,6 +88,7 @@
         :key="project.id"
         :project="project"
         :search-query="searchQuery"
+        :can-edit="true"
         @delete="deleteProject"
         @duplicate="duplicateProject"
       />

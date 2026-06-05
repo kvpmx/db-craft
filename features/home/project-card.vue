@@ -6,13 +6,14 @@
 
   const { t } = useI18n();
 
-  const props = defineProps<{
-    project: Tables<'projects'>;
-    searchQuery?: string;
-    canEdit?: boolean;
-  }>();
-
-  const canEditProject = computed(() => props.canEdit ?? true);
+  const props = withDefaults(
+    defineProps<{
+      project: Tables<'projects'>;
+      searchQuery?: string;
+      canEdit?: boolean;
+    }>(),
+    { canEdit: true }
+  );
 
   const emit = defineEmits<{
     (e: 'delete', id: number): void;
@@ -34,8 +35,8 @@
 <template>
   <Card>
     <CardHeader class="p-4 pb-3">
-      <div class="flex items-center justify-between">
-        <CardTitle class="flex w-[90%] items-center gap-2" :title="project.name">
+      <div class="flex items-center gap-2">
+        <CardTitle class="flex min-w-0 flex-1 items-center gap-2" :title="project.name">
           <div class="rounded-md border-[1px] border-slate-200 bg-slate-200/20 p-1">
             <Icon v-if="db" :name="db.icon" :title="db.name" size="1rem" class="block h-4 w-4" />
           </div>
@@ -43,19 +44,19 @@
             <span v-html="highlightTextOccurrences(project.name, searchQuery)"></span>
           </div>
         </CardTitle>
-        <DropdownMenu v-if="canEditProject">
+        <DropdownMenu v-if="props.canEdit" class="shrink-0">
           <DropdownMenuTrigger as-child>
-            <Button variant="ghost" size="icon" class="h-7 w-7">
+            <Button variant="ghost" size="icon" class="h-7 w-7 shrink-0">
               <Icon name="lucide:more-vertical" size="1rem" class="h-4 w-4" />
               <span class="sr-only">{{ t('OPEN_MENU') }}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem @click="emit('duplicate', project)">{{
+            <DropdownMenuItem @click.stop="emit('duplicate', project)">{{
               t('DUPLICATE')
             }}</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem class="text-red-600" @click="emit('delete', project.id)">
+            <DropdownMenuItem class="text-red-600" @click.stop="emit('delete', project.id)">
               {{ t('DELETE') }}
             </DropdownMenuItem>
           </DropdownMenuContent>
