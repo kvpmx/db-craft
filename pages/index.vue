@@ -76,11 +76,17 @@
   </div>
   <div v-else class="grid grid-cols-1 gap-6 sm-tablet:grid-cols-2 lg:grid-cols-3">
     <template v-if="isPending">
-      <Skeleton
+      <div
         v-for="index in 6"
         :key="index"
-        class="h-[315px] rounded-lg border border-slate-200 bg-white shadow-sm"
-      />
+        class="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm"
+      >
+        <Skeleton class="aspect-[16/9] w-full rounded-none" />
+        <div class="flex flex-col gap-3 p-4">
+          <Skeleton class="h-5 w-3/4" />
+          <Skeleton class="h-4 w-1/2" />
+        </div>
+      </div>
     </template>
     <template v-else>
       <HomeProjectCard
