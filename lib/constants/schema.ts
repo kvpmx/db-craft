@@ -51,7 +51,18 @@ export const TableRelationSchema = z.object({
   cardinality: RelationCardinalitySchema.optional(),
 });
 
+export const NoteSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  position: PositionSchema,
+  color: z.string().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
+  rotation: z.number().optional(),
+});
+
 export const DiagramConfigSchema = z.object({
   tables: z.array(TableSchema),
   relations: z.array(TableRelationSchema),
+  notes: z.array(NoteSchema).optional(),
 });

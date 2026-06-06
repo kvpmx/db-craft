@@ -1,10 +1,16 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useRefHistory } from '@vueuse/core';
 import { cloneDeep } from 'es-toolkit';
 import { ProjectsController } from '@/lib/controllers';
+import {
+  DEFAULT_NOTE_HEIGHT,
+  DEFAULT_NOTE_WIDTH,
+  STICKY_NOTE_COLORS,
+} from '@/lib/constants/note';
 
 import type { Simplify } from 'type-fest';
 import type { Tables } from '@/types/database';
-import type { DiagramConfig, Table } from '@/types/diagram';
+import type { DiagramConfig, Note, Position, Table } from '@/types/diagram';
 
 export const useCurrentProject = defineStore('current-project', () => {
   const state = ref<Tables<'projects'> | null>(null);
@@ -74,6 +80,41 @@ export const useCurrentProject = defineStore('current-project', () => {
     });
   };
 
+  const addNote = (position?: Position) => {
+    if (!state.value || !canEdit.value) return;
+
+    if (!state.value.schema.notes) {
+      state.value.schema.notes = [];
+    }
+
+    state.value.schema.notes.push({
+      id: uuidv4(),
+      content: '',
+      position: position ?? { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
+      color: chooseRandom(STICKY_NOTE_COLORS),
+      width: DEFAULT_NOTE_WIDTH,
+      height: DEFAULT_NOTE_HEIGHT,
+      rotation: getRandomNumber(-2, 2),
+    });
+  };
+
+  const updateNoteData = (id: string, payload: Partial<Note>) => {
+    if (!state.value?.schema.notes) return;
+
+    const note = state.value.schema.notes.find((note) => note.id === id);
+    if (!note) return;
+
+    for (const [key, value] of Object.entries(payload)) {
+      type Key = Simplify<keyof Note>;
+      (note[key as Key] as Note[Key]) = value;
+    }
+  };
+
+  const deleteNote = (id: string) => {
+    if (!state.value?.schema.notes) return;
+    state.value.schema.notes = state.value.schema.notes.filter((note) => note.id !== id);
+  };
+
   const deleteField = async (tableId: string, fieldId: string) => {
     if (!state.value) return;
 
@@ -138,6 +179,9 @@ export const useCurrentProject = defineStore('current-project', () => {
     fetchPublic,
     updateDiagramConfig,
     updateTableData,
+    addNote,
+    updateNoteData,
+    deleteNote,
     deleteTable,
     deleteField,
     reset,

@@ -17,6 +17,7 @@ export enum DatabaseType {
 export const DEFAULT_DIAGRAM_CONFIG = {
   tables: [],
   relations: [],
+  notes: [],
 } as DiagramConfig;
 
 export const DEFAULT_RELATION_CARDINALITY = {

@@ -4,6 +4,17 @@ import type { DATABASE_FIELD_TYPES, DatabaseType } from '@/lib/constants/diagram
 export interface DiagramConfig<T extends DatabaseType | unknown = unknown> {
   tables: Table<T>[];
   relations: TableRelation[];
+  notes?: Note[];
+}
+
+export interface Note {
+  id: string;
+  content: string;
+  position: Position;
+  color?: string;
+  width?: number;
+  height?: number;
+  rotation?: number;
 }
 
 export interface Table<T extends DatabaseType | unknown = unknown> {

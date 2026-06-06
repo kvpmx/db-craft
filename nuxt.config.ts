@@ -38,6 +38,12 @@ export default defineNuxtConfig({
         display: 'swap',
         subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
       },
+      {
+        name: 'Caveat',
+        provider: 'google',
+        display: 'swap',
+        weights: [400, 500],
+      },
     ],
   },
   veeValidate: {

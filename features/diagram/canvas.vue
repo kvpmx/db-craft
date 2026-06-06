@@ -2,9 +2,10 @@
   import { useMagicKeys } from '@vueuse/core';
   import { getConnectedEdges, VueFlow } from '@vue-flow/core';
   import { Background } from '@vue-flow/background';
-  import { Controls } from '@vue-flow/controls';
+  import { ControlButton, Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
   import { DEFAULT_RELATION_CARDINALITY } from '@/lib/constants/diagram';
+  import { DEFAULT_NOTE_HEIGHT, DEFAULT_NOTE_WIDTH } from '@/lib/constants/note';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { HandlePlacement } from '@/types/diagram';
@@ -21,20 +22,35 @@
     readonly: false,
   });
 
+  const { t } = useI18n();
   const currentProject = useCurrentProject();
 
-  // Convert tables to nodes
+  // Convert tables and notes to nodes
   const nodes = ref<Node[]>([]);
 
   watchEffect(() => {
     if (!currentProject.state?.schema) return;
 
-    nodes.value = currentProject.state.schema.tables.map((table) => ({
+    const tableNodes = currentProject.state.schema.tables.map((table) => ({
       id: table.id,
       type: 'table',
       position: table.position,
       data: table,
     }));
+
+    const noteNodes = (currentProject.state.schema.notes ?? []).map((note) => ({
+      id: note.id,
+      type: 'note',
+      position: note.position,
+      data: note,
+      connectable: false,
+      style: {
+        width: `${note.width ?? DEFAULT_NOTE_WIDTH}px`,
+        height: `${note.height ?? DEFAULT_NOTE_HEIGHT}px`,
+      },
+    }));
+
+    nodes.value = [...tableNodes, ...noteNodes];
   });
 
   // Convert relations to edges
@@ -58,8 +74,14 @@
     }));
   });
 
-  // Handle table node events
   const updateNodePosition = (event: NodeDragEvent) => {
+    if (event.node.type === 'note') {
+      currentProject.updateNoteData(event.node.id, {
+        position: event.node.position,
+      });
+      return;
+    }
+
     currentProject.updateTableData(event.node.id, {
       position: event.node.position,
     });
@@ -73,7 +95,7 @@
     nextTick(() => updateHandlePlacement(relation.source));
   };
 
-  const { fitView, getSelectedEdges, setInteractive } = useCanvas();
+  const { fitView, getSelectedEdges, getSelectedNodes, setInteractive } = useCanvas();
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
 
   const fitViewParams = useDiagramFitViewParams();
@@ -92,7 +114,7 @@
     setInteractive(!props.readonly);
   });
 
-  // Remove selected edges using the 'delete' key
+  // Remove selected edges and notes using the 'delete' key
   watch(deleteKey, () => {
     if (props.readonly) return;
 
@@ -100,6 +122,12 @@
       if (!currentProject.state?.schema) return;
       const idx = currentProject.state.schema.relations.findIndex((rel) => rel.id === edge.id);
       currentProject.state.schema.relations.splice(idx, 1);
+    });
+
+    getSelectedNodes.value.forEach((node) => {
+      if (node.type === 'note') {
+        currentProject.deleteNote(node.id);
+      }
     });
   });
 
@@ -169,7 +197,7 @@
 
   // Handle drag events
   const onNodeDrag = (event: NodeDragEvent) => {
-    if (props.readonly) return;
+    if (props.readonly || event.node.type !== 'table') return;
     updateHandlePlacement(event.node.id);
     updateConnectedEdges(event, true);
   };
@@ -177,7 +205,10 @@
   const onNodeDragStop = (event: NodeDragEvent) => {
     if (props.readonly) return;
     updateNodePosition(event);
-    updateConnectedEdges(event, false);
+
+    if (event.node.type === 'table') {
+      updateConnectedEdges(event, false);
+    }
   };
 </script>
 
@@ -201,12 +232,25 @@
         <DiagramTableNode v-bind="tableNodeProps" />
       </template>
 
+      <template #node-note="noteNodeProps">
+        <DiagramNoteNode v-bind="noteNodeProps" />
+      </template>
+
       <template #edge-relation="relationEdgeProps">
         <DiagramRelationEdge v-bind="relationEdgeProps" />
       </template>
 
       <Background />
-      <Controls :show-interactive="!readonly" :fit-view-params="fitViewParams" />
+      <Controls :show-interactive="!readonly" :fit-view-params="fitViewParams">
+        <ControlButton
+          v-if="!readonly"
+          class="vue-flow__controls-add-note"
+          :title="t('NEW_NOTE')"
+          @click="currentProject.addNote()"
+        >
+          <Icon name="lucide:sticky-note" size="1rem" class="h-4 w-4" />
+        </ControlButton>
+      </Controls>
       <MiniMap :pannable="true" :zoomable="true" :width="150" :height="100" />
     </VueFlow>
   </ClientOnly>
