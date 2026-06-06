@@ -6,6 +6,10 @@
   import { MiniMap } from '@vue-flow/minimap';
   import { DEFAULT_RELATION_CARDINALITY } from '@/lib/constants/diagram';
   import { DEFAULT_NOTE_HEIGHT, DEFAULT_NOTE_WIDTH } from '@/lib/constants/note';
+  import {
+    DEFAULT_TABLE_GROUP_HEIGHT,
+    DEFAULT_TABLE_GROUP_WIDTH,
+  } from '@/lib/constants/table-group';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { HandlePlacement } from '@/types/diagram';
@@ -22,20 +26,39 @@
     readonly: false,
   });
 
+  const GROUP_Z_INDEX = 0;
+  const EDGE_Z_INDEX = 5;
+  const TABLE_Z_INDEX = 10;
+  const NOTE_Z_INDEX = 15;
+
   const { t } = useI18n();
   const currentProject = useCurrentProject();
 
-  // Convert tables and notes to nodes
+  // Convert table groups, tables, and notes to nodes
   const nodes = ref<Node[]>([]);
 
   watchEffect(() => {
     if (!currentProject.state?.schema) return;
+
+    const groupNodes = (currentProject.state.schema.tableGroups ?? []).map((group) => ({
+      id: group.id,
+      type: 'group',
+      position: group.position,
+      data: group,
+      connectable: false,
+      zIndex: GROUP_Z_INDEX,
+      style: {
+        width: `${group.width ?? DEFAULT_TABLE_GROUP_WIDTH}px`,
+        height: `${group.height ?? DEFAULT_TABLE_GROUP_HEIGHT}px`,
+      },
+    }));
 
     const tableNodes = currentProject.state.schema.tables.map((table) => ({
       id: table.id,
       type: 'table',
       position: table.position,
       data: table,
+      zIndex: TABLE_Z_INDEX,
     }));
 
     const noteNodes = (currentProject.state.schema.notes ?? []).map((note) => ({
@@ -44,13 +67,14 @@
       position: note.position,
       data: note,
       connectable: false,
+      zIndex: NOTE_Z_INDEX,
       style: {
         width: `${note.width ?? DEFAULT_NOTE_WIDTH}px`,
         height: `${note.height ?? DEFAULT_NOTE_HEIGHT}px`,
       },
     }));
 
-    nodes.value = [...tableNodes, ...noteNodes];
+    nodes.value = [...groupNodes, ...tableNodes, ...noteNodes];
   });
 
   // Convert relations to edges
@@ -66,6 +90,7 @@
       sourceHandle: `${rel.source_handle_placement}:${rel.source}:${rel.source_field}`,
       targetHandle: `${rel.target_handle_placement}:${rel.target}:${rel.target_field}`,
       type: 'relation',
+      zIndex: EDGE_Z_INDEX,
       data: {
         ...DEFAULT_RELATION_CARDINALITY,
         ...rel.cardinality,
@@ -77,6 +102,13 @@
   const updateNodePosition = (event: NodeDragEvent) => {
     if (event.node.type === 'note') {
       currentProject.updateNoteData(event.node.id, {
+        position: event.node.position,
+      });
+      return;
+    }
+
+    if (event.node.type === 'group') {
+      currentProject.updateTableGroupData(event.node.id, {
         position: event.node.position,
       });
       return;
@@ -127,6 +159,10 @@
     getSelectedNodes.value.forEach((node) => {
       if (node.type === 'note') {
         currentProject.deleteNote(node.id);
+      }
+
+      if (node.type === 'group') {
+        currentProject.deleteTableGroup(node.id);
       }
     });
   });
@@ -232,6 +268,10 @@
         <DiagramTableNode v-bind="tableNodeProps" />
       </template>
 
+      <template #node-group="groupNodeProps">
+        <DiagramGroupNode v-bind="groupNodeProps" />
+      </template>
+
       <template #node-note="noteNodeProps">
         <DiagramNoteNode v-bind="noteNodeProps" />
       </template>
@@ -261,6 +301,14 @@
         <template #icon-lock>
           <Icon name="lucide:lock" size="1rem" class="h-4 w-4" />
         </template>
+        <ControlButton
+          v-if="!readonly"
+          class="vue-flow__controls-add-group"
+          :title="t('NEW_TABLE_GROUP')"
+          @click="currentProject.addTableGroup()"
+        >
+          <Icon name="lucide:group" size="1rem" class="h-4 w-4" />
+        </ControlButton>
         <ControlButton
           v-if="!readonly"
           class="vue-flow__controls-add-note"
@@ -335,5 +383,10 @@
     width: auto;
     max-width: none;
     max-height: none;
+  }
+
+  /* Groups stay behind tables and edges even when selected (Vue Flow adds +1000 on select) */
+  .vue-flow__node-group {
+    z-index: 0 !important;
   }
 </style>

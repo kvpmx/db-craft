@@ -7,10 +7,15 @@ import {
   DEFAULT_NOTE_WIDTH,
   STICKY_NOTE_COLORS,
 } from '@/lib/constants/note';
+import {
+  DEFAULT_TABLE_GROUP_HEIGHT,
+  DEFAULT_TABLE_GROUP_WIDTH,
+  TABLE_GROUP_COLORS,
+} from '@/lib/constants/table-group';
 
 import type { Simplify } from 'type-fest';
 import type { Tables } from '@/types/database';
-import type { DiagramConfig, Note, Position, Table } from '@/types/diagram';
+import type { DiagramConfig, Note, Position, Table, TableGroup } from '@/types/diagram';
 
 export const useCurrentProject = defineStore('current-project', () => {
   const state = ref<Tables<'projects'> | null>(null);
@@ -115,6 +120,42 @@ export const useCurrentProject = defineStore('current-project', () => {
     state.value.schema.notes = state.value.schema.notes.filter((note) => note.id !== id);
   };
 
+  const addTableGroup = (position?: Position) => {
+    if (!state.value || !canEdit.value) return;
+
+    if (!state.value.schema.tableGroups) {
+      state.value.schema.tableGroups = [];
+    }
+
+    const count = state.value.schema.tableGroups.length;
+
+    state.value.schema.tableGroups.push({
+      id: uuidv4(),
+      name: `Group ${count + 1}`,
+      position: position ?? { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
+      color: chooseRandom(TABLE_GROUP_COLORS),
+      width: DEFAULT_TABLE_GROUP_WIDTH,
+      height: DEFAULT_TABLE_GROUP_HEIGHT,
+    });
+  };
+
+  const updateTableGroupData = (id: string, payload: Partial<TableGroup>) => {
+    if (!state.value?.schema.tableGroups) return;
+
+    const group = state.value.schema.tableGroups.find((group) => group.id === id);
+    if (!group) return;
+
+    for (const [key, value] of Object.entries(payload)) {
+      type Key = Simplify<keyof TableGroup>;
+      (group[key as Key] as TableGroup[Key]) = value;
+    }
+  };
+
+  const deleteTableGroup = (id: string) => {
+    if (!state.value?.schema.tableGroups) return;
+    state.value.schema.tableGroups = state.value.schema.tableGroups.filter((group) => group.id !== id);
+  };
+
   const deleteField = async (tableId: string, fieldId: string) => {
     if (!state.value) return;
 
@@ -182,6 +223,9 @@ export const useCurrentProject = defineStore('current-project', () => {
     addNote,
     updateNoteData,
     deleteNote,
+    addTableGroup,
+    updateTableGroupData,
+    deleteTableGroup,
     deleteTable,
     deleteField,
     reset,

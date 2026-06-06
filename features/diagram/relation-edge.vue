@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-  import { BaseEdge, EdgeLabelRenderer, Position, getSmoothStepPath } from '@vue-flow/core';
+  import {
+    BaseEdge,
+    EdgeLabelRenderer,
+    Position,
+    getSmoothStepPath,
+    useEdge,
+  } from '@vue-flow/core';
+
   import {
     DEFAULT_RELATION_CARDINALITY,
     RELATION_CARDINALITY_OPTIONS,
@@ -15,6 +22,7 @@
   const props = defineProps<EdgeProps<RelationCardinality & { readonly?: boolean }>>();
 
   const { t } = useI18n();
+  const { edge } = useEdge();
   const { settings } = useUserSettings();
 
   const currentProject = useCurrentProject();
@@ -278,6 +286,7 @@
             data?.readonly ? 'cursor-default' : 'cursor-pointer hover:border-rose-600',
           ]"
           :style="{
+            zIndex: edge.zIndex,
             pointerEvents: data?.readonly ? 'none' : 'all',
             transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
           }"

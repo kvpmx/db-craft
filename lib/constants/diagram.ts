@@ -18,6 +18,7 @@ export const DEFAULT_DIAGRAM_CONFIG = {
   tables: [],
   relations: [],
   notes: [],
+  tableGroups: [],
 } as DiagramConfig;
 
 export const DEFAULT_RELATION_CARDINALITY = {

@@ -61,8 +61,18 @@ export const NoteSchema = z.object({
   rotation: z.number().optional(),
 });
 
+export const TableGroupSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  position: PositionSchema,
+  color: z.string().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
+});
+
 export const DiagramConfigSchema = z.object({
   tables: z.array(TableSchema),
   relations: z.array(TableRelationSchema),
   notes: z.array(NoteSchema).optional(),
+  tableGroups: z.array(TableGroupSchema).optional(),
 });

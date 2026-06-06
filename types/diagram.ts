@@ -5,6 +5,16 @@ export interface DiagramConfig<T extends DatabaseType | unknown = unknown> {
   tables: Table<T>[];
   relations: TableRelation[];
   notes?: Note[];
+  tableGroups?: TableGroup[];
+}
+
+export interface TableGroup {
+  id: string;
+  name: string;
+  position: Position;
+  color?: string;
+  width?: number;
+  height?: number;
 }
 
 export interface Note {
