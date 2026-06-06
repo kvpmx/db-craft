@@ -22,6 +22,9 @@
   const selected = ref(false);
   const target = ref<HTMLDivElement | null>(null);
 
+  const { nodesConnectable } = useCanvas();
+  const highlight = computed(() => selected.value && nodesConnectable.value);
+
   onClickOutside(target, () => {
     selected.value = false;
   });
@@ -35,7 +38,7 @@
     ref="target"
     :class="[
       'w-60 rounded-md bg-white font-mono text-xs ring-2',
-      selected ? 'ring-rose-600' : 'ring-slate-600',
+      highlight ? 'ring-rose-600' : 'ring-slate-600',
     ]"
     :style="{ fontFamily: 'JetBrains Mono, monospace' }"
     @click="selected = !selected"
@@ -65,7 +68,7 @@
       <Handle
         :id="`left:${data.id}:${field.id}`"
         :position="Position.Left"
-        :class="!selected && 'invisible'"
+        :class="!highlight && 'invisible'"
       />
       <div class="flex items-center justify-between gap-4">
         <span class="flex-grow truncate" :title="field.name">{{ field.name }}</span>
@@ -84,7 +87,7 @@
       <Handle
         :id="`right:${data.id}:${field.id}`"
         :position="Position.Right"
-        :class="!selected && 'invisible'"
+        :class="!highlight && 'invisible'"
       />
     </div>
   </div>

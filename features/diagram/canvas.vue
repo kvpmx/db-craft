@@ -241,7 +241,26 @@
       </template>
 
       <Background />
-      <Controls :show-interactive="!readonly" :fit-view-params="fitViewParams">
+      <Controls
+        position="bottom-left"
+        :show-interactive="!readonly"
+        :fit-view-params="fitViewParams"
+      >
+        <template #icon-zoom-in>
+          <Icon name="lucide:plus" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-zoom-out>
+          <Icon name="lucide:minus" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-fit-view>
+          <Icon name="lucide:maximize" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-unlock>
+          <Icon name="lucide:unlock" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-lock>
+          <Icon name="lucide:lock" size="1rem" class="h-4 w-4" />
+        </template>
         <ControlButton
           v-if="!readonly"
           class="vue-flow__controls-add-note"
@@ -264,4 +283,57 @@
   /* Additional component styles */
   @import '@vue-flow/controls/dist/style.css';
   @import '@vue-flow/minimap/dist/style.css';
+</style>
+
+<style>
+  .vue-flow__panel {
+    margin-bottom: 1.25rem;
+    background: rgb(255 255 255 / 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.08),
+      0 2px 4px -2px rgb(0 0 0 / 0.06);
+  }
+
+  .vue-flow__panel.vue-flow__controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.375rem;
+  }
+
+  .vue-flow__panel .vue-flow__controls-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: none;
+    border-bottom: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: rgb(55 65 81);
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .vue-flow__panel .vue-flow__controls-button:hover:not(:disabled) {
+    background: rgb(243 244 246);
+  }
+
+  .vue-flow__panel .vue-flow__controls-button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .vue-flow__panel .vue-flow__controls-button svg {
+    width: auto;
+    max-width: none;
+    max-height: none;
+  }
 </style>
