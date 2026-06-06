@@ -15,6 +15,7 @@ export interface TableGroup {
   color?: string;
   width?: number;
   height?: number;
+  zIndex?: number;
 }
 
 export interface Note {
@@ -25,6 +26,7 @@ export interface Note {
   width?: number;
   height?: number;
   rotation?: number;
+  zIndex?: number;
 }
 
 export interface Table<T extends DatabaseType | unknown = unknown> {
@@ -33,6 +35,7 @@ export interface Table<T extends DatabaseType | unknown = unknown> {
   position: Position;
   color: string;
   fields: TableField<T>[];
+  zIndex?: number;
 }
 
 export interface Position {

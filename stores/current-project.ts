@@ -2,11 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useRefHistory } from '@vueuse/core';
 import { cloneDeep } from 'es-toolkit';
 import { ProjectsController } from '@/lib/controllers';
-import {
-  DEFAULT_NOTE_HEIGHT,
-  DEFAULT_NOTE_WIDTH,
-  STICKY_NOTE_COLORS,
-} from '@/lib/constants/note';
+import { DEFAULT_NOTE_HEIGHT, DEFAULT_NOTE_WIDTH, STICKY_NOTE_COLORS } from '@/lib/constants/note';
 import {
   DEFAULT_TABLE_GROUP_HEIGHT,
   DEFAULT_TABLE_GROUP_WIDTH,
@@ -153,7 +149,9 @@ export const useCurrentProject = defineStore('current-project', () => {
 
   const deleteTableGroup = (id: string) => {
     if (!state.value?.schema.tableGroups) return;
-    state.value.schema.tableGroups = state.value.schema.tableGroups.filter((group) => group.id !== id);
+    state.value.schema.tableGroups = state.value.schema.tableGroups.filter(
+      (group) => group.id !== id
+    );
   };
 
   const deleteField = async (tableId: string, fieldId: string) => {

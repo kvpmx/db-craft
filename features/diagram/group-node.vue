@@ -66,8 +66,8 @@
   });
 
   const groupStyle = computed(() => ({
-    width: `${localWidth.value}px`,
-    height: `${localHeight.value}px`,
+    'width': `${localWidth.value}px`,
+    'height': `${localHeight.value}px`,
     '--group-color': color.value,
   }));
 
@@ -141,7 +141,9 @@
         class="name-input nodrag nowheel nopan"
         @click.stop
       />
-      <span v-else class="name-readonly truncate">{{ data.name || t('TABLE_GROUP_PLACEHOLDER') }}</span>
+      <span v-else class="name-readonly truncate">{{
+        data.name || t('TABLE_GROUP_PLACEHOLDER')
+      }}</span>
 
       <button
         v-if="currentProject.canEdit"

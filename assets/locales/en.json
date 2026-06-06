@@ -187,5 +187,7 @@
   "SCHEMA_VERSION_ROLLBACK_CONFIRM": "Restore the selected schema version? Unsaved changes will be lost.",
   "SCHEMA_VERSION_ROLLING_BACK": "Restoring version...",
   "SCHEMA_VERSION_ROLLED_BACK": "Schema restored",
-  "UNKNOWN_USER": "Unknown user"
+  "UNKNOWN_USER": "Unknown user",
+  "BRING_TO_FRONT": "Bring to front",
+  "SEND_TO_BACK": "Send to back"
 }

@@ -90,8 +90,14 @@
     const deltaX = (event.clientX - resizeStart.x) / zoom;
     const deltaY = (event.clientY - resizeStart.y) / zoom;
 
-    localWidth.value = Math.min(NOTE_MAX_WIDTH, Math.max(NOTE_MIN_WIDTH, resizeStart.width + deltaX));
-    localHeight.value = Math.min(NOTE_MAX_HEIGHT, Math.max(NOTE_MIN_HEIGHT, resizeStart.height + deltaY));
+    localWidth.value = Math.min(
+      NOTE_MAX_WIDTH,
+      Math.max(NOTE_MIN_WIDTH, resizeStart.width + deltaX)
+    );
+    localHeight.value = Math.min(
+      NOTE_MAX_HEIGHT,
+      Math.max(NOTE_MIN_HEIGHT, resizeStart.height + deltaY)
+    );
   };
 
   const stopResize = () => {

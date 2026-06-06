@@ -187,5 +187,7 @@
   "SCHEMA_VERSION_ROLLBACK_CONFIRM": "Przywrócić wybraną wersję schematu? Niezapisane zmiany zostaną utracone.",
   "SCHEMA_VERSION_ROLLING_BACK": "Przywracanie wersji...",
   "SCHEMA_VERSION_ROLLED_BACK": "Schemat przywrócony",
-  "UNKNOWN_USER": "Nieznany użytkownik"
+  "UNKNOWN_USER": "Nieznany użytkownik",
+  "BRING_TO_FRONT": "Przenieś na wierzch",
+  "SEND_TO_BACK": "Przenieś na spód"
 }
