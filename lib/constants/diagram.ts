@@ -1,4 +1,4 @@
-import type { DiagramConfig } from '@/types/diagram';
+import type { DiagramConfig, RelationCardinality } from '@/types/diagram';
 
 export enum DiagramVisibility {
   Public = 'public',
@@ -9,12 +9,55 @@ export enum DatabaseType {
   MySQL = 'mysql',
   PostgreSQL = 'postgres',
   SQLServer = 'sqlserver',
+  SQLite = 'sqlite',
+  MariaDB = 'mariadb',
+  Oracle = 'oracle',
 }
 
 export const DEFAULT_DIAGRAM_CONFIG = {
   tables: [],
   relations: [],
+  notes: [],
+  tableGroups: [],
 } as DiagramConfig;
+
+export const DEFAULT_RELATION_CARDINALITY = {
+  source: 'one',
+  target: 'zero-or-many',
+} as const satisfies RelationCardinality;
+
+export const RELATION_CARDINALITY_OPTIONS = [
+  {
+    value: 'zero-or-one',
+    labelKey: 'RELATION_CARDINALITY_ZERO_OR_ONE',
+    notation: '0..1',
+  },
+  {
+    value: 'many',
+    labelKey: 'RELATION_CARDINALITY_MANY',
+    notation: '*',
+  },
+  {
+    value: 'one',
+    labelKey: 'RELATION_CARDINALITY_ONE',
+    notation: '1',
+  },
+  {
+    value: 'one-and-only-one',
+    labelKey: 'RELATION_CARDINALITY_ONE_AND_ONLY_ONE',
+    notation: '1..1',
+  },
+  {
+    value: 'zero-or-many',
+    labelKey: 'RELATION_CARDINALITY_ZERO_OR_MANY',
+    notation: '0..*',
+  },
+  {
+    value: 'one-or-many',
+    labelKey: 'RELATION_CARDINALITY_ONE_OR_MANY',
+    notation: '1..*',
+  },
+] as const;
 
 export const DATABASE_FIELD_TYPES = {
   [DatabaseType.MySQL]: [
@@ -146,18 +189,123 @@ export const DATABASE_FIELD_TYPES = {
     'geography',
     'geometry',
   ],
+  [DatabaseType.SQLite]: [
+    'integer',
+    'int',
+    'tinyint',
+    'smallint',
+    'mediumint',
+    'bigint',
+    'unsigned big int',
+    'int2',
+    'int8',
+    'real',
+    'double',
+    'double precision',
+    'float',
+    'numeric',
+    'decimal',
+    'boolean',
+    'date',
+    'datetime',
+    'text',
+    'blob',
+    'char',
+    'varchar',
+    'clob',
+    'json',
+  ],
+  [DatabaseType.MariaDB]: [
+    'tinyint',
+    'smallint',
+    'mediumint',
+    'int',
+    'integer',
+    'bigint',
+    'decimal',
+    'dec',
+    'numeric',
+    'fixed',
+    'float',
+    'double',
+    'real',
+    'date',
+    'datetime',
+    'timestamp',
+    'time',
+    'year',
+    'char',
+    'varchar',
+    'binary',
+    'varbinary',
+    'tinyblob',
+    'blob',
+    'mediumblob',
+    'longblob',
+    'tinytext',
+    'text',
+    'mediumtext',
+    'longtext',
+    'enum',
+    'set',
+    'json',
+    'uuid',
+    'inet4',
+    'inet6',
+    'geometry',
+    'point',
+    'linestring',
+    'polygon',
+    'multipoint',
+    'multilinestring',
+    'multipolygon',
+    'geometrycollection',
+  ],
+  [DatabaseType.Oracle]: [
+    'number',
+    'float',
+    'binary_float',
+    'binary_double',
+    'varchar2',
+    'nvarchar2',
+    'char',
+    'nchar',
+    'clob',
+    'nclob',
+    'long',
+    'date',
+    'timestamp',
+    'timestamp with time zone',
+    'timestamp with local time zone',
+    'interval year to month',
+    'interval day to second',
+    'raw',
+    'long raw',
+    'blob',
+    'bfile',
+    'rowid',
+    'urowid',
+    'xmltype',
+    'boolean',
+  ],
 } as const;
 
 export const PRIMARY_KEY_DEFAULT_TYPES = {
   [DatabaseType.MySQL]: 'int',
   [DatabaseType.PostgreSQL]: 'serial',
   [DatabaseType.SQLServer]: 'serial',
+  [DatabaseType.SQLite]: 'integer',
+  [DatabaseType.MariaDB]: 'int',
+  [DatabaseType.Oracle]: 'number',
 } as const;
 
 export const NAMING_CONVENTIONS = {
   [DatabaseType.MySQL]: 'snake',
   [DatabaseType.PostgreSQL]: 'snake',
   [DatabaseType.SQLServer]: 'pascal',
+  [DatabaseType.SQLite]: 'snake',
+  [DatabaseType.MariaDB]: 'snake',
+  [DatabaseType.Oracle]: 'snake',
 } as const;
 
 export const DATABASES = [
@@ -176,17 +324,37 @@ export const DATABASES = [
     value: DatabaseType.SQLServer,
     icon: 'devicon:microsoftsqlserver',
   },
+  {
+    name: 'SQLite',
+    value: DatabaseType.SQLite,
+    icon: 'devicon:sqlite',
+  },
+  {
+    name: 'MariaDB',
+    value: DatabaseType.MariaDB,
+    icon: 'devicon:mariadb',
+  },
+  {
+    name: 'Oracle',
+    value: DatabaseType.Oracle,
+    icon: 'devicon:oracle',
+  },
 ];
 
 export const EDITOR_LANGUAGES = {
   [DatabaseType.MySQL]: 'mysql',
   [DatabaseType.PostgreSQL]: 'pgsql',
   [DatabaseType.SQLServer]: 'sql',
+  [DatabaseType.SQLite]: 'sql',
+  [DatabaseType.MariaDB]: 'mysql',
+  [DatabaseType.Oracle]: 'sql',
 } as const;
 
 export const DEFAULT_TYPE_NORMALIZATIONS: Record<string, string> = {
   varchar: 'varchar(255)',
+  varchar2: 'varchar2(255)',
   nvarchar: 'nvarchar(255)',
+  nvarchar2: 'nvarchar2(255)',
   char: 'char(1)',
   nchar: 'nchar(1)',
   binary: 'binary(255)',

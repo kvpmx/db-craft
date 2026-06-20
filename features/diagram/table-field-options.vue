@@ -5,6 +5,7 @@
   const props = defineProps<{
     tableId: string;
     field: TableField<T>;
+    readonly?: boolean;
   }>();
 
   const { t } = useI18n();
@@ -13,7 +14,7 @@
 </script>
 
 <template>
-  <DropdownMenu v-if="field">
+  <DropdownMenu v-if="field && !props.readonly">
     <DropdownMenuTrigger as-child>
       <Button variant="outline" size="sm" class="h-7 w-7 px-1.5" :title="t('MORE_OPTIONS')">
         <Icon name="lucide:settings-2" size="0.75rem" class="h-3 w-3" />

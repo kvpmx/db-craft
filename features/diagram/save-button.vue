@@ -20,15 +20,16 @@
 
   // Update the thumbnail
   const { fitView, vueFlowRef } = useCanvas();
+  const fitViewParams = useDiagramFitViewParams();
 
   const { mutateAsync: save, isPending } = useMutation({
     mutationFn: async () => {
       if (currentProject.saved) return;
 
-      fitView();
+      void fitView(fitViewParams.value);
       await sleep(0);
 
-      await projectsApi.updateThumbnail(currentProject.state?.id, vueFlowRef.value);
+      await projectsApi.updateThumbnail(currentProject.state, vueFlowRef.value);
       await currentProject.saveConfigToDatabase();
     },
   });
@@ -45,7 +46,7 @@
             'flex gap-2 border-[1px] font-medium',
             !currentProject.saved && 'border-yellow-600',
           ]"
-          :disabled="isPending"
+          :disabled="isPending || !currentProject.canEdit"
           @click="save"
         >
           <template v-if="isPending">

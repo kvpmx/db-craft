@@ -46,7 +46,7 @@
     <div class="flex max-h-[calc(100vh-58px)] flex-1">
       <DiagramSidebar :pending="status === 'pending'" />
       <main class="w-full flex-1 bg-neutral-100/10">
-        <DiagramCanvas />
+        <DiagramCanvas :readonly="!currentProject.canEdit" />
       </main>
     </div>
   </div>

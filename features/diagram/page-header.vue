@@ -36,10 +36,12 @@
       <div
         v-if="currentProject.state"
         :class="[
-          'absolute left-[50%] hidden w-fit translate-x-[-50%] cursor-pointer select-none items-center gap-2 rounded-lg p-1 text-sm md:flex',
-          !editMode && 'hover:border-2 hover:border-blue-700/50 hover:bg-blue-200/50',
+          'absolute left-[50%] hidden w-fit translate-x-[-50%] select-none items-center gap-2 rounded-lg p-1 text-sm md:flex',
+          currentProject.canEdit &&
+            !editMode &&
+            'cursor-pointer hover:border-2 hover:border-blue-700/50 hover:bg-blue-200/50',
         ]"
-        @dblclick="editMode = true"
+        @dblclick="currentProject.canEdit && (editMode = true)"
       >
         <Icon :name="databaseIcon" size="1.25rem" class="h-5 w-5" />
 
@@ -74,7 +76,8 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <DiagramAiGeneration />
+        <DiagramVersionHistorySheet v-if="currentProject.canEdit" />
+        <DiagramAiGeneration v-if="currentProject.canEdit" />
         <DiagramSaveButton />
         <UserButton />
       </div>

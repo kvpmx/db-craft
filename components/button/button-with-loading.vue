@@ -8,6 +8,7 @@
 
   interface ButtonWithLoadingProps extends PrimitiveProps {
     loading: boolean;
+    disabled?: boolean;
     variant?: ButtonVariants['variant'];
     size?: ButtonVariants['size'];
     class?: HTMLAttributes['class'];
@@ -23,7 +24,7 @@
     :as="as"
     :as-child="asChild"
     :class="cn(buttonVariants({ variant, size }), props.class, 'select-none')"
-    :disabled="props.loading"
+    :disabled="props.loading || props.disabled"
   >
     <Icon
       v-if="props.loading"

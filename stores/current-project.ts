@@ -1,20 +1,35 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useRefHistory } from '@vueuse/core';
+import { cloneDeep } from 'es-toolkit';
 import { ProjectsController } from '@/lib/controllers';
+import { DEFAULT_NOTE_HEIGHT, DEFAULT_NOTE_WIDTH, STICKY_NOTE_COLORS } from '@/lib/constants/note';
+import {
+  DEFAULT_TABLE_GROUP_HEIGHT,
+  DEFAULT_TABLE_GROUP_WIDTH,
+  TABLE_GROUP_COLORS,
+} from '@/lib/constants/table-group';
 
 import type { Simplify } from 'type-fest';
 import type { Tables } from '@/types/database';
-import type { DiagramConfig, Table } from '@/types/diagram';
+import type { DiagramConfig, Note, Position, Table, TableGroup } from '@/types/diagram';
 
 export const useCurrentProject = defineStore('current-project', () => {
   const state = ref<Tables<'projects'> | null>(null);
   const saved = ref(true);
+  const canEdit = ref(true);
 
   const projectsApi = useApiController(ProjectsController);
   const changesHistory = useRefHistory(state, { deep: true, capacity: 20 });
 
+  const updateCanEdit = async () => {
+    if (!state.value) return;
+    canEdit.value = await projectsApi.canEdit(state.value);
+  };
+
   const fetch = async (id: number) => {
     try {
       state.value = await projectsApi.getById(id);
+      if (state.value) await updateCanEdit();
       return true;
     } catch {
       return false;
@@ -66,6 +81,79 @@ export const useCurrentProject = defineStore('current-project', () => {
     });
   };
 
+  const addNote = (position?: Position) => {
+    if (!state.value || !canEdit.value) return;
+
+    if (!state.value.schema.notes) {
+      state.value.schema.notes = [];
+    }
+
+    state.value.schema.notes.push({
+      id: uuidv4(),
+      content: '',
+      position: position ?? { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
+      color: chooseRandom(STICKY_NOTE_COLORS),
+      width: DEFAULT_NOTE_WIDTH,
+      height: DEFAULT_NOTE_HEIGHT,
+      rotation: getRandomNumber(-2, 2),
+    });
+  };
+
+  const updateNoteData = (id: string, payload: Partial<Note>) => {
+    if (!state.value?.schema.notes) return;
+
+    const note = state.value.schema.notes.find((note) => note.id === id);
+    if (!note) return;
+
+    for (const [key, value] of Object.entries(payload)) {
+      type Key = Simplify<keyof Note>;
+      (note[key as Key] as Note[Key]) = value;
+    }
+  };
+
+  const deleteNote = (id: string) => {
+    if (!state.value?.schema.notes) return;
+    state.value.schema.notes = state.value.schema.notes.filter((note) => note.id !== id);
+  };
+
+  const addTableGroup = (position?: Position) => {
+    if (!state.value || !canEdit.value) return;
+
+    if (!state.value.schema.tableGroups) {
+      state.value.schema.tableGroups = [];
+    }
+
+    const count = state.value.schema.tableGroups.length;
+
+    state.value.schema.tableGroups.push({
+      id: uuidv4(),
+      name: `Group ${count + 1}`,
+      position: position ?? { x: getRandomNumber(-300, 300), y: getRandomNumber(-300, 300) },
+      color: chooseRandom(TABLE_GROUP_COLORS),
+      width: DEFAULT_TABLE_GROUP_WIDTH,
+      height: DEFAULT_TABLE_GROUP_HEIGHT,
+    });
+  };
+
+  const updateTableGroupData = (id: string, payload: Partial<TableGroup>) => {
+    if (!state.value?.schema.tableGroups) return;
+
+    const group = state.value.schema.tableGroups.find((group) => group.id === id);
+    if (!group) return;
+
+    for (const [key, value] of Object.entries(payload)) {
+      type Key = Simplify<keyof TableGroup>;
+      (group[key as Key] as TableGroup[Key]) = value;
+    }
+  };
+
+  const deleteTableGroup = (id: string) => {
+    if (!state.value?.schema.tableGroups) return;
+    state.value.schema.tableGroups = state.value.schema.tableGroups.filter(
+      (group) => group.id !== id
+    );
+  };
+
   const deleteField = async (tableId: string, fieldId: string) => {
     if (!state.value) return;
 
@@ -87,6 +175,7 @@ export const useCurrentProject = defineStore('current-project', () => {
   const reset = () => {
     state.value = null;
     saved.value = true;
+    canEdit.value = true;
     changesHistory.clear();
   };
 
@@ -105,6 +194,13 @@ export const useCurrentProject = defineStore('current-project', () => {
     saved.value = true;
   };
 
+  const restoreSchema = (schema: DiagramConfig) => {
+    if (!state.value) return;
+
+    state.value.schema = cloneDeep(schema);
+    changesHistory.clear();
+  };
+
   watch(
     state,
     (currentValue, previousValue) => {
@@ -117,14 +213,22 @@ export const useCurrentProject = defineStore('current-project', () => {
   return {
     state,
     saved,
+    canEdit,
     fetch,
     fetchPublic,
     updateDiagramConfig,
     updateTableData,
+    addNote,
+    updateNoteData,
+    deleteNote,
+    addTableGroup,
+    updateTableGroupData,
+    deleteTableGroup,
     deleteTable,
     deleteField,
     reset,
     changesHistory,
     saveConfigToDatabase,
+    restoreSchema,
   };
 });

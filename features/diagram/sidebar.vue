@@ -6,9 +6,7 @@
 
   import type { DatabaseType } from '@/lib/constants/diagram';
 
-  const props = defineProps<{
-    pending: boolean;
-  }>();
+  defineProps<{ pending: boolean }>();
 
   const { t } = useI18n();
   const currentProject = useCurrentProject();
@@ -34,7 +32,7 @@
 
   // Add a new table
   const addTable = () => {
-    if (!currentProject.state) return;
+    if (!currentProject.canEdit || !currentProject.state) return;
     const count = currentProject.state.schema.tables.length;
 
     currentProject.state.schema.tables.push({
@@ -70,7 +68,13 @@
   >
     <div class="flex items-center justify-between gap-4 border-b px-3 py-2">
       <h2 class="text-md font-semibold">{{ t('TABLES') }}</h2>
-      <Button class="justify-start" variant="secondary" size="xs" @click="addTable">
+      <Button
+        v-if="currentProject.canEdit"
+        class="justify-start"
+        variant="secondary"
+        size="xs"
+        @click="addTable"
+      >
         <Icon name="lucide:table-2" size="1rem" class="mr-2 h-4 w-4" />
         {{ t('NEW_TABLE') }}
       </Button>

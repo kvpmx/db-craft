@@ -1,6 +1,9 @@
+import { MariaDBGenerator } from './mariadb';
 import { MySQLGenerator } from './mysql';
+import { OracleGenerator } from './oracle';
 import { PostgreSQLGenerator } from './postgresql';
 import { SQLServerGenerator } from './sqlserver';
+import { SQLiteGenerator } from './sqlite';
 import { DatabaseType } from '../constants/diagram';
 
 import type { BaseSQLGenerator } from './base';
@@ -10,6 +13,9 @@ const GENERATORS_MAP = {
   [DatabaseType.MySQL]: MySQLGenerator,
   [DatabaseType.PostgreSQL]: PostgreSQLGenerator,
   [DatabaseType.SQLServer]: SQLServerGenerator,
+  [DatabaseType.SQLite]: SQLiteGenerator,
+  [DatabaseType.MariaDB]: MariaDBGenerator,
+  [DatabaseType.Oracle]: OracleGenerator,
 };
 
 const createGenerator = (dbType: DatabaseType, config: DiagramConfig): BaseSQLGenerator | never => {

@@ -17,6 +17,9 @@ logs
 .DS_Store
 .fleet
 .idea
+.yarn
+*.tsbuildinfo
+supabase/.temp
 
 # Local env files
 .env

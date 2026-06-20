@@ -52,7 +52,7 @@
 
   // Add a new field
   const addField = () => {
-    if (!currentProject.state) return;
+    if (!currentProject.canEdit || !currentProject.state) return;
 
     currentProject.updateTableData(props.table.id, {
       fields: [
@@ -108,10 +108,16 @@
       <div
         v-for="column in fields"
         :key="column.id"
-        class="column-item transition-color flex items-center justify-between gap-2 p-3 py-1 pl-1"
+        :class="
+          cn(
+            'column-item transition-color flex items-center justify-between gap-2 p-3 py-1',
+            currentProject.canEdit && 'pl-1'
+          )
+        "
         :data-dragging="isDragging"
       >
         <Icon
+          v-if="currentProject.canEdit"
           name="clarity:drag-handle-line"
           size="1.5rem"
           class="sortable-handle h-6 w-6 flex-shrink-0 cursor-move"
@@ -121,13 +127,18 @@
           :name="`${table.name}:${column.name}`"
           autocomplete="off"
           class="h-7 flex-1 p-1.5 text-xs"
+          :disabled="!currentProject.canEdit"
         />
 
-        <DiagramFieldTypeSelector v-model="column.type" />
-        <DiagramTableFieldOptions :table-id="table.id" :field="column" />
+        <DiagramFieldTypeSelector v-model="column.type" :disabled="!currentProject.canEdit" />
+        <DiagramTableFieldOptions
+          :table-id="table.id"
+          :field="column"
+          :readonly="!currentProject.canEdit"
+        />
       </div>
 
-      <div class="collapsible-footer">
+      <div v-if="currentProject.canEdit" class="collapsible-footer">
         <Separator class="my-2" />
         <div class="flex items-center justify-between px-2">
           <DiagramColorPicker v-model="color" />

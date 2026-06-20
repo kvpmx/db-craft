@@ -38,6 +38,12 @@ export default defineNuxtConfig({
         display: 'swap',
         subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
       },
+      {
+        name: 'Caveat',
+        provider: 'google',
+        display: 'swap',
+        weights: [400, 500],
+      },
     ],
   },
   veeValidate: {
@@ -65,6 +71,7 @@ export default defineNuxtConfig({
     locales: [
       { code: 'en', name: 'ENGLISH', file: 'en.json' },
       { code: 'uk', name: 'UKRAINIAN', file: 'uk.json' },
+      { code: 'pl', name: 'POLISH', file: 'pl.json' },
     ],
     experimental: {
       localeDetector: 'locale-detector.ts',

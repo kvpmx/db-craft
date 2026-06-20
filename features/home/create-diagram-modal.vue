@@ -7,8 +7,14 @@
 
   import type { TablesInsert } from '@/types/database';
 
+  const props = defineProps<{
+    teamId?: string;
+  }>();
+
   const { t } = useI18n();
   const projectsApi = useApiController(ProjectsController);
+
+  const isTeamContext = computed(() => Boolean(props.teamId));
 
   const validationSchema = toTypedSchema(
     z.object({
@@ -16,7 +22,7 @@
         .string({ required_error: t('NAME_REQUIRED') })
         .nonempty({ message: t('NAME_REQUIRED') }),
 
-      visibility: z.nativeEnum(DiagramVisibility).default(DiagramVisibility.Public),
+      visibility: z.nativeEnum(DiagramVisibility).default(DiagramVisibility.Private),
       type: z.nativeEnum(DatabaseType).default(DatabaseType.MySQL),
     })
   );
@@ -24,13 +30,20 @@
   const dialogOpened = ref(false);
   const { handleSubmit } = useForm({ validationSchema });
 
+  const queryClient = useQueryClient();
+
   const { mutateAsync: createProject, isPending } = useMutation({
-    mutationKey: ['createProject'],
+    mutationKey: ['createProject', props.teamId],
     mutationFn: async (data: Omit<TablesInsert<'projects'>, 'author'>) => {
-      return await projectsApi.create(data);
+      return await projectsApi.create({
+        ...data,
+        team_id: props.teamId ?? null,
+        visibility: isTeamContext.value ? DiagramVisibility.Private : data.visibility,
+      });
     },
     onSuccess: (createdProject) => {
       dialogOpened.value = false;
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
       if (createdProject?.id) navigateTo(routes.diagram(createdProject.id));
     },
   });
@@ -77,7 +90,12 @@
           </FormField>
 
           <!-- Diagram visibility -->
-          <FormField v-slot="{ componentField }" type="radio" name="visibility">
+          <FormField
+            v-if="!isTeamContext"
+            v-slot="{ componentField }"
+            type="radio"
+            name="visibility"
+          >
             <FormItem>
               <FormLabel>{{ t('DIAGRAM_VISIBILITY') }}</FormLabel>
 

@@ -51,6 +51,7 @@
     ></div>
 
     <Icon
+      v-if="currentProject.canEdit"
       name="lucide:pencil"
       size="0.75rem"
       class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"
@@ -59,6 +60,7 @@
     />
 
     <Icon
+      v-if="currentProject.canEdit"
       name="lucide:trash-2"
       size="0.75rem"
       class="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100"

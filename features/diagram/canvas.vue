@@ -1,9 +1,15 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
-  import { useMagicKeys } from '@vueuse/core';
+  import { onClickOutside, useEventListener, useMagicKeys } from '@vueuse/core';
   import { getConnectedEdges, VueFlow } from '@vue-flow/core';
   import { Background } from '@vue-flow/background';
-  import { Controls } from '@vue-flow/controls';
+  import { ControlButton, Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
+  import { DEFAULT_RELATION_CARDINALITY } from '@/lib/constants/diagram';
+  import { DEFAULT_NOTE_HEIGHT, DEFAULT_NOTE_WIDTH } from '@/lib/constants/note';
+  import {
+    DEFAULT_TABLE_GROUP_HEIGHT,
+    DEFAULT_TABLE_GROUP_WIDTH,
+  } from '@/lib/constants/table-group';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { HandlePlacement } from '@/types/diagram';
@@ -12,6 +18,7 @@
     Edge,
     ValidConnectionFunc,
     NodeDragEvent,
+    NodeMouseEvent,
     Connection,
     GraphEdge,
   } from '@vue-flow/core';
@@ -20,20 +27,55 @@
     readonly: false,
   });
 
+  const GROUP_Z_INDEX = 0;
+  const EDGE_Z_INDEX = 5;
+  const TABLE_Z_INDEX = 10;
+  const NOTE_Z_INDEX = 15;
+
+  const { t } = useI18n();
   const currentProject = useCurrentProject();
 
-  // Convert tables to nodes
+  // Convert table groups, tables, and notes to nodes
   const nodes = ref<Node[]>([]);
 
   watchEffect(() => {
     if (!currentProject.state?.schema) return;
 
-    nodes.value = currentProject.state.schema.tables.map((table) => ({
+    const groupNodes = (currentProject.state.schema.tableGroups ?? []).map((group) => ({
+      id: group.id,
+      type: 'group',
+      position: group.position,
+      data: group,
+      connectable: false,
+      zIndex: group.zIndex ?? GROUP_Z_INDEX,
+      style: {
+        width: `${group.width ?? DEFAULT_TABLE_GROUP_WIDTH}px`,
+        height: `${group.height ?? DEFAULT_TABLE_GROUP_HEIGHT}px`,
+      },
+    }));
+
+    const tableNodes = currentProject.state.schema.tables.map((table) => ({
       id: table.id,
       type: 'table',
       position: table.position,
       data: table,
+      zIndex: table.zIndex ?? TABLE_Z_INDEX,
     }));
+
+    const noteNodes = (currentProject.state.schema.notes ?? []).map((note) => ({
+      id: note.id,
+      type: 'note',
+      position: note.position,
+      data: note,
+      connectable: false,
+      zIndex: note.zIndex ?? NOTE_Z_INDEX,
+      style: {
+        width: `${note.width ?? DEFAULT_NOTE_WIDTH}px`,
+        height: `${note.height ?? DEFAULT_NOTE_HEIGHT}px`,
+      },
+    }));
+
+    nodes.value = [...groupNodes, ...tableNodes, ...noteNodes];
   });
 
   // Convert relations to edges
@@ -48,14 +90,31 @@
       target: rel.target,
       sourceHandle: `${rel.source_handle_placement}:${rel.source}:${rel.source_field}`,
       targetHandle: `${rel.target_handle_placement}:${rel.target}:${rel.target_field}`,
-      style: { strokeWidth: 3 },
-      type: 'smoothstep',
-      pathOptions: { borderRadius: 20 },
+      type: 'relation',
+      zIndex: EDGE_Z_INDEX,
+      data: {
+        ...DEFAULT_RELATION_CARDINALITY,
+        ...rel.cardinality,
+        readonly: props.readonly,
+      },
     }));
   });
 
-  // Handle table node events
   const updateNodePosition = (event: NodeDragEvent) => {
+    if (event.node.type === 'note') {
+      currentProject.updateNoteData(event.node.id, {
+        position: event.node.position,
+      });
+      return;
+    }
+
+    if (event.node.type === 'group') {
+      currentProject.updateTableGroupData(event.node.id, {
+        position: event.node.position,
+      });
+      return;
+    }
+
     currentProject.updateTableData(event.node.id, {
       position: event.node.position,
     });
@@ -69,15 +128,26 @@
     nextTick(() => updateHandlePlacement(relation.source));
   };
 
-  const { getSelectedEdges, setInteractive } = useCanvas();
+  const { fitView, getSelectedEdges, getSelectedNodes, setInteractive } = useCanvas();
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
+
+  const fitViewParams = useDiagramFitViewParams();
+  const initialViewFitted = ref(false);
+
+  const fitInitialView = async () => {
+    if (initialViewFitted.value || !nodes.value.length) return;
+
+    initialViewFitted.value = true;
+    await nextTick();
+    fitView(fitViewParams.value);
+  };
 
   // Set interactive to false when the canvas is readonly
   watchEffect(() => {
     setInteractive(!props.readonly);
   });
 
-  // Remove selected edges using the 'delete' key
+  // Remove selected edges and notes using the 'delete' key
   watch(deleteKey, () => {
     if (props.readonly) return;
 
@@ -85,6 +155,16 @@
       if (!currentProject.state?.schema) return;
       const idx = currentProject.state.schema.relations.findIndex((rel) => rel.id === edge.id);
       currentProject.state.schema.relations.splice(idx, 1);
+    });
+
+    getSelectedNodes.value.forEach((node) => {
+      if (node.type === 'note') {
+        currentProject.deleteNote(node.id);
+      }
+
+      if (node.type === 'group') {
+        currentProject.deleteTableGroup(node.id);
+      }
     });
   });
 
@@ -154,7 +234,7 @@
 
   // Handle drag events
   const onNodeDrag = (event: NodeDragEvent) => {
-    if (props.readonly) return;
+    if (props.readonly || event.node.type !== 'table') return;
     updateHandlePlacement(event.node.id);
     updateConnectedEdges(event, true);
   };
@@ -162,8 +242,78 @@
   const onNodeDragStop = (event: NodeDragEvent) => {
     if (props.readonly) return;
     updateNodePosition(event);
-    updateConnectedEdges(event, false);
+
+    if (event.node.type === 'table') {
+      updateConnectedEdges(event, false);
+    }
   };
+
+  // Right-click context menu for node stacking (z-index)
+  const contextMenu = ref<{ visible: boolean; x: number; y: number; node: Node | null }>({
+    visible: false,
+    x: 0,
+    y: 0,
+    node: null,
+  });
+  const contextMenuRef = ref<HTMLDivElement | null>(null);
+
+  const closeContextMenu = () => {
+    contextMenu.value.visible = false;
+    contextMenu.value.node = null;
+  };
+
+  const onNodeContextMenu = ({ event, node }: NodeMouseEvent) => {
+    if (props.readonly || !currentProject.canEdit) return;
+
+    const mouseEvent = event as MouseEvent;
+    mouseEvent.preventDefault();
+
+    // Keep the menu within the viewport
+    const menuWidth = 200;
+    const menuHeight = 96;
+    const x = Math.min(mouseEvent.clientX, window.innerWidth - menuWidth);
+    const y = Math.min(mouseEvent.clientY, window.innerHeight - menuHeight);
+
+    contextMenu.value = { visible: true, x, y, node };
+  };
+
+  const getNodeZIndexes = () => {
+    const schema = currentProject.state?.schema;
+    if (!schema) return [];
+
+    return [
+      ...(schema.tableGroups ?? []).map((group) => group.zIndex ?? GROUP_Z_INDEX),
+      ...schema.tables.map((table) => table.zIndex ?? TABLE_Z_INDEX),
+      ...(schema.notes ?? []).map((note) => note.zIndex ?? NOTE_Z_INDEX),
+    ];
+  };
+
+  const setNodeZIndex = (node: Node, zIndex: number) => {
+    if (node.type === 'note') {
+      currentProject.updateNoteData(node.id, { zIndex });
+    } else if (node.type === 'group') {
+      currentProject.updateTableGroupData(node.id, { zIndex });
+    } else {
+      currentProject.updateTableData(node.id, { zIndex });
+    }
+  };
+
+  const bringToFront = () => {
+    const node = contextMenu.value.node;
+    if (node) setNodeZIndex(node, Math.max(0, ...getNodeZIndexes()) + 1);
+    closeContextMenu();
+  };
+
+  const sendToBack = () => {
+    const node = contextMenu.value.node;
+    if (node) setNodeZIndex(node, Math.min(0, ...getNodeZIndexes()) - 1);
+    closeContextMenu();
+  };
+
+  onClickOutside(contextMenuRef, closeContextMenu);
+  useEventListener(window, 'keydown', (event: KeyboardEvent) => {
+    if (event.key === 'Escape') closeContextMenu();
+  });
 </script>
 
 <template>
@@ -175,20 +325,96 @@
       style="height: 100%; width: 100%"
       :min-zoom="0.1"
       :delete-key-code="null"
-      :fit-view-on-init="true"
+      :fit-view-on-init="false"
+      :elevate-nodes-on-select="false"
       :is-valid-connection="validateConnection"
       @node-drag-stop="onNodeDragStop"
       @connect="createNewConnection"
       @node-drag="onNodeDrag"
+      @node-context-menu="onNodeContextMenu"
+      @move-start="closeContextMenu"
+      @nodes-initialized="fitInitialView"
     >
       <template #node-table="tableNodeProps">
         <DiagramTableNode v-bind="tableNodeProps" />
       </template>
 
+      <template #node-group="groupNodeProps">
+        <DiagramGroupNode v-bind="groupNodeProps" />
+      </template>
+
+      <template #node-note="noteNodeProps">
+        <DiagramNoteNode v-bind="noteNodeProps" />
+      </template>
+
+      <template #edge-relation="relationEdgeProps">
+        <DiagramRelationEdge v-bind="relationEdgeProps" />
+      </template>
+
       <Background />
-      <Controls :show-interactive="!readonly" />
+      <Controls
+        position="bottom-left"
+        :show-interactive="!readonly"
+        :fit-view-params="fitViewParams"
+      >
+        <template #icon-zoom-in>
+          <Icon name="lucide:plus" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-zoom-out>
+          <Icon name="lucide:minus" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-fit-view>
+          <Icon name="lucide:maximize" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-unlock>
+          <Icon name="lucide:unlock" size="1rem" class="h-4 w-4" />
+        </template>
+        <template #icon-lock>
+          <Icon name="lucide:lock" size="1rem" class="h-4 w-4" />
+        </template>
+        <ControlButton
+          v-if="!readonly"
+          class="vue-flow__controls-add-group"
+          :title="t('NEW_TABLE_GROUP')"
+          @click="currentProject.addTableGroup()"
+        >
+          <Icon name="lucide:group" size="1rem" class="h-4 w-4" />
+        </ControlButton>
+        <ControlButton
+          v-if="!readonly"
+          class="vue-flow__controls-add-note"
+          :title="t('NEW_NOTE')"
+          @click="currentProject.addNote()"
+        >
+          <Icon name="lucide:sticky-note" size="1rem" class="h-4 w-4" />
+        </ControlButton>
+      </Controls>
       <MiniMap :pannable="true" :zoomable="true" :width="150" :height="100" />
     </VueFlow>
+
+    <div
+      v-if="contextMenu.visible"
+      ref="contextMenuRef"
+      class="fixed z-50 min-w-44 overflow-hidden rounded-md border border-slate-200 bg-white p-1 text-slate-950 shadow-md"
+      :style="{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }"
+    >
+      <button
+        type="button"
+        class="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-slate-100 hover:text-slate-900"
+        @click="bringToFront"
+      >
+        <Icon name="lucide:bring-to-front" size="1rem" class="h-4 w-4" />
+        {{ t('BRING_TO_FRONT') }}
+      </button>
+      <button
+        type="button"
+        class="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-slate-100 hover:text-slate-900"
+        @click="sendToBack"
+      >
+        <Icon name="lucide:send-to-back" size="1rem" class="h-4 w-4" />
+        {{ t('SEND_TO_BACK') }}
+      </button>
+    </div>
   </ClientOnly>
 </template>
 
@@ -200,4 +426,57 @@
   /* Additional component styles */
   @import '@vue-flow/controls/dist/style.css';
   @import '@vue-flow/minimap/dist/style.css';
+</style>
+
+<style>
+  .vue-flow__panel {
+    margin-bottom: 1.25rem;
+    background: rgb(255 255 255 / 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgb(229 231 235);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.08),
+      0 2px 4px -2px rgb(0 0 0 / 0.06);
+  }
+
+  .vue-flow__panel.vue-flow__controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.375rem;
+  }
+
+  .vue-flow__panel .vue-flow__controls-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: none;
+    border-bottom: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: rgb(55 65 81);
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .vue-flow__panel .vue-flow__controls-button:hover:not(:disabled) {
+    background: rgb(243 244 246);
+  }
+
+  .vue-flow__panel .vue-flow__controls-button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .vue-flow__panel .vue-flow__controls-button svg {
+    width: auto;
+    max-width: none;
+    max-height: none;
+  }
 </style>
