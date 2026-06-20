@@ -123,12 +123,20 @@
   const createNewConnection = (connection: Connection) => {
     const relation = createRelation(connection);
     if (!currentProject.state?.schema || !relation) return;
-    currentProject.state.schema.relations.push(relation);
+    currentProject.addRelation(relation);
 
     nextTick(() => updateHandlePlacement(relation.source));
   };
 
-  const { fitView, getSelectedEdges, getSelectedNodes, setInteractive } = useCanvas();
+  const {
+    fitView,
+    getSelectedEdges,
+    getSelectedNodes,
+    setInteractive,
+    addSelectedEdges,
+    findEdge,
+  } = useCanvas();
+
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
 
   const fitViewParams = useDiagramFitViewParams();
@@ -152,9 +160,7 @@
     if (props.readonly) return;
 
     getSelectedEdges.value.forEach((edge) => {
-      if (!currentProject.state?.schema) return;
-      const idx = currentProject.state.schema.relations.findIndex((rel) => rel.id === edge.id);
-      currentProject.state.schema.relations.splice(idx, 1);
+      currentProject.deleteRelation(edge.id);
     });
 
     getSelectedNodes.value.forEach((node) => {
@@ -314,6 +320,20 @@
   useEventListener(window, 'keydown', (event: KeyboardEvent) => {
     if (event.key === 'Escape') closeContextMenu();
   });
+
+  const selectedRelation = useSelectedRelation();
+
+  watch(
+    () => [selectedRelation.id, selectedRelation.flag],
+    () => {
+      if (!selectedRelation.id) return;
+
+      const edge = findEdge(selectedRelation.id);
+      if (edge) {
+        addSelectedEdges([edge]);
+      }
+    }
+  );
 </script>
 
 <template>

@@ -42,6 +42,7 @@ export const TableSchema = z.object({
 
 export const TableRelationSchema = z.object({
   id: z.string(),
+  name: z.string().optional().describe('Constraint name used in SQL generation'),
   source: z.string().describe('Source table ID'),
   target: z.string().describe('Target table ID'),
   source_field: z.string().describe('Source field ID'),

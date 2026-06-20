@@ -74,6 +74,7 @@ export interface RelationCardinality {
 
 export interface TableRelation {
   id: string;
+  name?: string;
   source: string;
   target: string;
   source_field: string;

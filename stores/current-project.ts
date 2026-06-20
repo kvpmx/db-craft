@@ -11,7 +11,14 @@ import {
 
 import type { Simplify } from 'type-fest';
 import type { Tables } from '@/types/database';
-import type { DiagramConfig, Note, Position, Table, TableGroup } from '@/types/diagram';
+import type {
+  DiagramConfig,
+  Note,
+  Position,
+  Table,
+  TableGroup,
+  TableRelation,
+} from '@/types/diagram';
 
 export const useCurrentProject = defineStore('current-project', () => {
   const state = ref<Tables<'projects'> | null>(null);
@@ -172,6 +179,31 @@ export const useCurrentProject = defineStore('current-project', () => {
     });
   };
 
+  const addRelation = (relation: TableRelation) => {
+    if (!state.value || !canEdit.value) return;
+    state.value.schema.relations.push(relation);
+  };
+
+  const updateRelation = (id: string, payload: Partial<TableRelation>) => {
+    if (!state.value) return;
+
+    const relation = state.value.schema.relations.find((relation) => relation.id === id);
+    if (!relation) return;
+
+    for (const [key, value] of Object.entries(payload)) {
+      type Key = Simplify<keyof TableRelation>;
+      (relation[key as Key] as TableRelation[Key]) = value;
+    }
+  };
+
+  const deleteRelation = (id: string) => {
+    if (!state.value) return;
+
+    state.value.schema.relations = state.value.schema.relations.filter((relation) => {
+      return relation.id !== id;
+    });
+  };
+
   const reset = () => {
     state.value = null;
     saved.value = true;
@@ -226,6 +258,9 @@ export const useCurrentProject = defineStore('current-project', () => {
     deleteTableGroup,
     deleteTable,
     deleteField,
+    addRelation,
+    updateRelation,
+    deleteRelation,
     reset,
     changesHistory,
     saveConfigToDatabase,
