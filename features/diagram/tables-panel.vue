@@ -3,6 +3,7 @@
   import { useSortable } from '@vueuse/integrations/useSortable';
   import { DEFAULT_COLORS } from '@/lib/constants/colors';
   import { PRIMARY_KEY_DEFAULT_TYPES } from '@/lib/constants/diagram';
+  import { SIDEBAR_PANEL_HEADER_CLASS } from '@/features/diagram/sidebar-tabs';
 
   import type { DatabaseType } from '@/lib/constants/diagram';
 
@@ -57,7 +58,7 @@
 
 <template>
   <div class="flex min-h-0 flex-1 flex-col">
-    <div class="flex items-center justify-between gap-4 border-b px-3 py-2">
+    <div :class="SIDEBAR_PANEL_HEADER_CLASS">
       <h2 class="text-md font-semibold">{{ t('TABLES') }}</h2>
       <Button
         v-if="currentProject.canEdit"

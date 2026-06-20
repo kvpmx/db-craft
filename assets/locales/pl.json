@@ -38,6 +38,7 @@
   "PASSWORD_MIN_LENGTH": "Hasło musi mieć co najmniej 8 znaków",
   "TABLES": "Tabele",
   "RELATIONS": "Relacje",
+  "AI": "AI",
   "NEW_TABLE": "Nowa tabela",
   "NEW_RELATION": "Nowa relacja",
   "EDIT_RELATION": "Edytuj relację",

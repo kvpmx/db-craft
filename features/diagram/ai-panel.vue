@@ -1,8 +1,12 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { toast } from 'vue-sonner';
+  import { SIDEBAR_PANEL_HEADER_CLASS } from '@/features/diagram/sidebar-tabs';
+
   import type { NuxtError } from 'nuxt/app';
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { DiagramConfig } from '@/types/diagram';
+
+  defineProps<{ pending: boolean }>();
 
   const { t } = useI18n();
 
@@ -33,30 +37,28 @@
 </script>
 
 <template>
-  <Popover>
-    <PopoverTrigger as-child>
-      <Button variant="secondary" size="sm">
-        <Icon name="hugeicons:ai-magic" size="1.25rem" class="h-5 w-5" />
-      </Button>
-    </PopoverTrigger>
+  <div class="flex min-h-0 flex-1 flex-col">
+    <div :class="SIDEBAR_PANEL_HEADER_CLASS">
+      <h2 class="text-md font-semibold">{{ t('GENERATE_WITH_AI') }}</h2>
+    </div>
 
-    <PopoverContent class="w-96 space-y-3" @open-auto-focus.prevent>
-      <h4 class="text-md font-semibold">{{ t('GENERATE_WITH_AI') }}</h4>
+    <div class="flex flex-1 flex-col gap-3 p-3">
       <Textarea
         v-model:model-value="prompt"
-        class="h-40 resize-none"
+        class="min-h-40 flex-1 resize-none"
         :placeholder="t('DESCRIBE_YOUR_DIAGRAM')"
+        :disabled="pending"
       />
 
       <ButtonWithLoading
         :loading="isPending"
         type="submit"
         class="w-full"
-        :disabled="!prompt.trim()"
+        :disabled="!prompt.trim() || pending"
         @click="generateDiagram"
       >
         {{ t('GENERATE') }}
       </ButtonWithLoading>
-    </PopoverContent>
-  </Popover>
+    </div>
+  </div>
 </template>

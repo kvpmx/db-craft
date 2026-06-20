@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import {
     DIAGRAM_SIDEBAR_TABS,
+    SIDEBAR_TOOLBAR_ITEM_HEIGHT_CLASS,
     SIDEBAR_TOOLBAR_WIDTH,
     SIDEBAR_WIDTH,
   } from '@/features/diagram/sidebar-tabs';
@@ -10,14 +11,23 @@
   defineProps<{ pending: boolean }>();
 
   const { t } = useI18n();
+  const currentProject = useCurrentProject();
 
   const sidebarHidden = ref(false);
   const activeTab = ref<DiagramSidebarTab>(DIAGRAM_SIDEBAR_TABS[0].id);
 
+  const visibleTabs = computed(() => {
+    return DIAGRAM_SIDEBAR_TABS.filter((tab) => !tab.requiresEdit || currentProject.canEdit);
+  });
+
   const activeTabConfig = computed(() => {
-    return (
-      DIAGRAM_SIDEBAR_TABS.find((tab) => tab.id === activeTab.value) ?? DIAGRAM_SIDEBAR_TABS[0]
-    );
+    return visibleTabs.value.find((tab) => tab.id === activeTab.value) ?? visibleTabs.value[0];
+  });
+
+  watchEffect(() => {
+    if (!visibleTabs.value.some((tab) => tab.id === activeTab.value)) {
+      activeTab.value = visibleTabs.value[0]?.id ?? DIAGRAM_SIDEBAR_TABS[0].id;
+    }
   });
 
   const sidebarOffset = computed(() => {
@@ -36,12 +46,13 @@
       :aria-label="t('DIAGRAM_SIDEBAR')"
     >
       <button
-        v-for="tab in DIAGRAM_SIDEBAR_TABS"
+        v-for="tab in visibleTabs"
         :key="tab.id"
         type="button"
         :class="
           cn(
-            'flex h-[calc(2.75rem+1px)] w-full items-center justify-center border-b border-slate-200 transition-colors',
+            'flex w-full items-center justify-center border-b border-slate-200 transition-colors',
+            SIDEBAR_TOOLBAR_ITEM_HEIGHT_CLASS,
             activeTab === tab.id
               ? 'bg-white text-slate-900'
               : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'

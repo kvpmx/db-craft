@@ -38,6 +38,7 @@
   "PASSWORD_MIN_LENGTH": "Пароль має містити не менше 8 символів",
   "TABLES": "Таблиці",
   "RELATIONS": "Зв'язки",
+  "AI": "ШІ",
   "NEW_TABLE": "Нова таблиця",
   "NEW_RELATION": "Новий зв'язок",
   "EDIT_RELATION": "Редагувати зв'язок",

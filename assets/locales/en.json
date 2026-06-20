@@ -38,6 +38,7 @@
   "PASSWORD_MIN_LENGTH": "Password must be at least 8 characters",
   "TABLES": "Tables",
   "RELATIONS": "Relations",
+  "AI": "AI",
   "NEW_TABLE": "New table",
   "NEW_RELATION": "New relation",
   "EDIT_RELATION": "Edit relation",

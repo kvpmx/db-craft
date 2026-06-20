@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { getRelationDisplayName, getRelationEndpointLabel } from '@/utils/relation';
+  import { SIDEBAR_PANEL_HEADER_CLASS } from '@/features/diagram/sidebar-tabs';
   import {
     DEFAULT_RELATION_CARDINALITY,
     RELATION_CARDINALITY_OPTIONS,
@@ -85,7 +86,7 @@
 
 <template>
   <div class="flex min-h-0 flex-1 flex-col">
-    <div class="flex items-center justify-between gap-4 border-b px-3 py-2">
+    <div :class="SIDEBAR_PANEL_HEADER_CLASS">
       <h2 class="text-md font-semibold">{{ t('RELATIONS') }}</h2>
       <Button
         v-if="currentProject.canEdit"
