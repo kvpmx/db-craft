@@ -211,5 +211,13 @@
   "SCHEMA_VERSION_ROLLED_BACK": "Schemat przywrócony",
   "UNKNOWN_USER": "Nieznany użytkownik",
   "BRING_TO_FRONT": "Przenieś na wierzch",
-  "SEND_TO_BACK": "Przenieś na spód"
+  "SEND_TO_BACK": "Przenieś na spód",
+  "COLLABORATION_LIVE": "Wspólna edycja · zmiany zapisują się automatycznie",
+  "COLLABORATION_CONNECTING": "Łączenie z zespołem…",
+  "COLLABORATION_OFFLINE": "Ponowne łączenie · pozostaw kartę otwartą, aby zsynchronizować zmiany",
+  "COLLABORATION_ERROR": "Nie udało się zsynchronizować · ponawianie, pozostaw kartę otwartą",
+  "COLLABORATION_PEOPLE": "Osoby na tym diagramie",
+  "COLLABORATION_SAVED": "Zapisano",
+  "COLLABORATION_SAVING": "Zapisywanie…",
+  "COLLABORATION_RETRY": "Ponów"
 }

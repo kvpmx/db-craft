@@ -15,6 +15,15 @@
   const editingTableName = ref(false);
   const newTableName = ref(props.table.name);
 
+  watch(
+    () => props.table.name,
+    (value) => {
+      if (!editingTableName.value) {
+        newTableName.value = value;
+      }
+    }
+  );
+
   const saveNewTableName = () => {
     editingTableName.value = false;
 

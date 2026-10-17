@@ -9,7 +9,7 @@
   const titleValue = ref('');
 
   watchEffect(() => {
-    if (!currentProject.state) return;
+    if (!currentProject.state || editMode.value) return;
     titleValue.value = currentProject.state.name;
   });
 
@@ -76,6 +76,7 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <DiagramCollaborators />
         <DiagramVersionHistorySheet v-if="currentProject.canEdit" />
         <DiagramSaveButton />
         <UserButton />

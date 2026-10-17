@@ -1,3 +1,4 @@
+import type { DocumentSnapshot, DocumentSaveResult, SharedDiagram } from './collaboration';
 import type { DiagramConfig } from './diagram';
 import type { ProfileSettings, DiagramSettings } from './user-settings';
 
@@ -254,6 +255,16 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      open_diagram_document: { Args: { p_project_id: number }; Returns: DocumentSnapshot };
+      save_diagram_document: {
+        Args: {
+          p_project_id: number;
+          p_revision: number;
+          p_state: string;
+          p_diagram: SharedDiagram;
+        };
+        Returns: DocumentSaveResult;
+      };
       accept_team_invite: { Args: { p_token: string }; Returns: string };
       accept_team_invite_by_code: { Args: { p_code: string }; Returns: string };
       auth_user_email: { Args: never; Returns: string };

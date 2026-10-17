@@ -18,6 +18,7 @@
     Edge,
     ValidConnectionFunc,
     NodeDragEvent,
+    NodeChange,
     NodeMouseEvent,
     Connection,
     GraphEdge,
@@ -44,7 +45,7 @@
     const groupNodes = (currentProject.state.schema.tableGroups ?? []).map((group) => ({
       id: group.id,
       type: 'group',
-      position: group.position,
+      position: { ...group.position },
       data: group,
       connectable: false,
       zIndex: group.zIndex ?? GROUP_Z_INDEX,
@@ -57,7 +58,7 @@
     const tableNodes = currentProject.state.schema.tables.map((table) => ({
       id: table.id,
       type: 'table',
-      position: table.position,
+      position: { ...table.position },
       data: table,
       zIndex: table.zIndex ?? TABLE_Z_INDEX,
     }));
@@ -65,7 +66,7 @@
     const noteNodes = (currentProject.state.schema.notes ?? []).map((note) => ({
       id: note.id,
       type: 'note',
-      position: note.position,
+      position: { ...note.position },
       data: note,
       connectable: false,
       zIndex: note.zIndex ?? NOTE_Z_INDEX,
@@ -101,23 +102,27 @@
   });
 
   const updateNodePosition = (event: NodeDragEvent) => {
-    if (event.node.type === 'note') {
-      currentProject.updateNoteData(event.node.id, {
-        position: event.node.position,
-      });
-      return;
+    for (const node of event.nodes) {
+      const position = { x: node.position.x, y: node.position.y };
+      if (node.type === 'note') currentProject.updateNoteData(node.id, { position });
+      else if (node.type === 'group') currentProject.updateTableGroupData(node.id, { position });
+      else currentProject.updateTableData(node.id, { position });
     }
+  };
 
-    if (event.node.type === 'group') {
-      currentProject.updateTableGroupData(event.node.id, {
-        position: event.node.position,
-      });
-      return;
+  // Vue Flow also moves nodes with the keyboard, without emitting drag events.
+  const onNodesChange = (changes: NodeChange[]) => {
+    if (props.readonly) return;
+    for (const change of changes) {
+      if (change.type !== 'position' || !change.position || change.dragging) continue;
+      const node = nodes.value.find((node) => node.id === change.id);
+      if (!node) continue;
+      const position = { ...change.position };
+      if (node.data.position.x === position.x && node.data.position.y === position.y) continue;
+      if (node.type === 'note') currentProject.updateNoteData(node.id, { position });
+      else if (node.type === 'group') currentProject.updateTableGroupData(node.id, { position });
+      else currentProject.updateTableData(node.id, { position });
     }
-
-    currentProject.updateTableData(event.node.id, {
-      position: event.node.position,
-    });
   };
 
   const createNewConnection = (connection: Connection) => {
@@ -135,6 +140,8 @@
     setInteractive,
     addSelectedEdges,
     findEdge,
+    screenToFlowCoordinate,
+    viewport,
   } = useCanvas();
 
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
@@ -174,28 +181,38 @@
     });
   });
 
-  watch(ctrl_z, (pressed) => {
-    if (props.readonly) return;
+  const isEditingText = () => {
+    const element = document.activeElement;
+    return (
+      element instanceof HTMLElement &&
+      (element.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName))
+    );
+  };
 
-    // The first value is the default value (null), and the second value is the value
-    // retrieved from the database. We can't remove these two values, so we set a condition
-    // that checks if the history length is greater than 2.
-    if (
-      pressed &&
-      currentProject.changesHistory.canUndo &&
-      currentProject.changesHistory.history.length > 2
-    ) {
-      currentProject.changesHistory.undo();
-    }
+  watch(ctrl_z, (pressed) => {
+    if (pressed && !props.readonly && !isEditingText()) currentProject.undo();
   });
 
   watch(ctrl_y, (pressed) => {
-    if (props.readonly) return;
-
-    if (pressed && currentProject.changesHistory.canRedo) {
-      currentProject.changesHistory.redo();
-    }
+    if (pressed && !props.readonly && !isEditingText()) currentProject.redo();
   });
+
+  let pointerPosition: { x: number; y: number } | null = null;
+  const publishCursor = () => {
+    if (pointerPosition && currentProject.isCollaborative) {
+      currentProject.updateCursor(screenToFlowCoordinate(pointerPosition));
+    }
+  };
+  const updateCursor = (event: PointerEvent) => {
+    pointerPosition = { x: event.clientX, y: event.clientY };
+    publishCursor();
+  };
+  const clearCursor = () => {
+    pointerPosition = null;
+    currentProject.updateCursor(null);
+  };
+  watch(viewport, publishCursor, { deep: true });
+  useEventListener(window, 'blur', clearCursor);
 
   // Do not allow to connect two field in the same table
   const validateConnection: ValidConnectionFunc = (connection) => {
@@ -240,7 +257,9 @@
 
   // Handle drag events
   const onNodeDrag = (event: NodeDragEvent) => {
-    if (props.readonly || event.node.type !== 'table') return;
+    if (props.readonly) return;
+    if (currentProject.isCollaborative) updateNodePosition(event);
+    if (event.node.type !== 'table') return;
     updateHandlePlacement(event.node.id);
     updateConnectedEdges(event, true);
   };
@@ -348,6 +367,9 @@
       :fit-view-on-init="false"
       :elevate-nodes-on-select="false"
       :is-valid-connection="validateConnection"
+      @pointermove="updateCursor"
+      @pointerleave="clearCursor"
+      @nodes-change="onNodesChange"
       @node-drag-stop="onNodeDragStop"
       @connect="createNewConnection"
       @node-drag="onNodeDrag"
@@ -371,6 +393,7 @@
         <DiagramRelationEdge v-bind="relationEdgeProps" />
       </template>
 
+      <DiagramCollaborationCursors v-if="currentProject.isCollaborative" />
       <Background />
       <Controls
         position="bottom-left"

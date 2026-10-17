@@ -191,6 +191,7 @@ export class ProjectsController extends ApiController {
       canvasHeight: ratio * width,
       filter: (node) => {
         return !(
+          node?.classList?.contains('diagram-collaboration-cursors') ||
           node?.classList?.contains('vue-flow__minimap') ||
           node?.classList?.contains('vue-flow__controls') ||
           node?.classList?.contains('vue-flow__background')

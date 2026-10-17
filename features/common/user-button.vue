@@ -22,7 +22,7 @@
         class="rounded-full border-2 border-slate-200 bg-slate-100"
       >
         <Avatar>
-          <AvatarImage :src="user.user_metadata.avatar_url" :alt="username" />
+          <AvatarImage :src="user?.user_metadata.avatar_url" :alt="username" />
           <AvatarFallback class="flex items-center justify-center">
             <Icon name="lucide:user" size="1.5rem" class="h-6 w-6 text-slate-400" />
           </AvatarFallback>
@@ -31,7 +31,7 @@
     </DropdownMenuTrigger>
 
     <DropdownMenuContent>
-      <DropdownMenuLabel>{{ username ?? user.user_metadata.email }}</DropdownMenuLabel>
+      <DropdownMenuLabel>{{ username ?? user?.user_metadata.email }}</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuItem as-child>
         <NuxtLink :to="routes.settings()">{{ t('SETTINGS') }}</NuxtLink>

@@ -11,6 +11,8 @@ architects to visualize and design their database schemas.
 - **Export Options**: Export diagrams as SQL or PNG for easy integration and sharing.
 - **Integration**: Connect with databases like PostgreSQL and MySQL for schema import/export.
 - **Responsive Design**: Optimized for desktop and mobile for seamless designing on the go.
+- **Live Team Editing**: Edit team diagrams together with shared cursors, avatars, conflict merging,
+  and automatic saving.
 
 ## Getting Started
 

@@ -43,11 +43,13 @@
   });
 
   // Change table color
-  const color = ref<string>(props.table.color ?? DEFAULT_COLORS[0]);
-
-  watch(color, () => {
-    if (!color.value) return;
-    currentProject.updateTableData(props.table.id, { color: color.value });
+  const color = computed({
+    get: () => props.table.color ?? DEFAULT_COLORS[0],
+    set: (value: string) => {
+      if (currentProject.canEdit && value) {
+        currentProject.updateTableData(props.table.id, { color: value });
+      }
+    },
   });
 
   // Add a new field

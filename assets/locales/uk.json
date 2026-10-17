@@ -211,5 +211,13 @@
   "SCHEMA_VERSION_ROLLED_BACK": "Схему відновлено",
   "UNKNOWN_USER": "Невідомий користувач",
   "BRING_TO_FRONT": "На передній план",
-  "SEND_TO_BACK": "На задній план"
+  "SEND_TO_BACK": "На задній план",
+  "COLLABORATION_LIVE": "Спільне редагування · зміни зберігаються автоматично",
+  "COLLABORATION_CONNECTING": "Підключення до команди…",
+  "COLLABORATION_OFFLINE": "Відновлення з’єднання · залиште вкладку відкритою для синхронізації",
+  "COLLABORATION_ERROR": "Не вдалося синхронізувати · повторна спроба, залиште вкладку відкритою",
+  "COLLABORATION_PEOPLE": "Учасники на цій діаграмі",
+  "COLLABORATION_SAVED": "Збережено",
+  "COLLABORATION_SAVING": "Збереження…",
+  "COLLABORATION_RETRY": "Повторити"
 }

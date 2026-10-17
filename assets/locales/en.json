@@ -211,5 +211,13 @@
   "SCHEMA_VERSION_ROLLED_BACK": "Schema restored",
   "UNKNOWN_USER": "Unknown user",
   "BRING_TO_FRONT": "Bring to front",
-  "SEND_TO_BACK": "Send to back"
+  "SEND_TO_BACK": "Send to back",
+  "COLLABORATION_LIVE": "Live collaboration · changes save automatically",
+  "COLLABORATION_CONNECTING": "Connecting to your team…",
+  "COLLABORATION_OFFLINE": "Reconnecting · keep this tab open to sync your changes",
+  "COLLABORATION_ERROR": "Unable to sync · retrying, keep this tab open",
+  "COLLABORATION_PEOPLE": "People on this diagram",
+  "COLLABORATION_SAVED": "Saved",
+  "COLLABORATION_SAVING": "Saving…",
+  "COLLABORATION_RETRY": "Retry sync"
 }

@@ -97,6 +97,11 @@
       TABLE_GROUP_MAX_HEIGHT,
       Math.max(TABLE_GROUP_MIN_HEIGHT, resizeStart.height + deltaY)
     );
+    if (currentProject.isCollaborative)
+      currentProject.updateTableGroupData(props.id, {
+        width: localWidth.value,
+        height: localHeight.value,
+      });
   };
 
   const stopResize = () => {
