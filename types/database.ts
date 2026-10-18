@@ -1,3 +1,4 @@
+import type { StoredAiChatMessage, ProposalStates } from './ai-chat';
 import type { DocumentSnapshot, DocumentSaveResult, SharedDiagram } from './collaboration';
 import type { DiagramConfig } from './diagram';
 import type { ProfileSettings, DiagramSettings } from './user-settings';
@@ -12,6 +13,44 @@ export type Database = {
   };
   public: {
     Tables: {
+      diagram_ai_chats: {
+        Row: {
+          created_at: string;
+          id: string;
+          messages: StoredAiChatMessage[];
+          project_id: number;
+          proposal_states: ProposalStates;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          messages?: StoredAiChatMessage[];
+          project_id: number;
+          proposal_states?: ProposalStates;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          messages?: StoredAiChatMessage[];
+          project_id?: number;
+          proposal_states?: ProposalStates;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'diagram_ai_chats_project_id_fkey';
+            columns: ['project_id'];
+            isOneToOne: false;
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       projects: {
         Row: {
           author: string;

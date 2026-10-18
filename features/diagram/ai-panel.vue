@@ -1,64 +1,118 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
-  import { toast } from 'vue-sonner';
-  import { SIDEBAR_PANEL_HEADER_CLASS } from '@/features/diagram/sidebar-tabs';
+  import DiagramAiChatMessages from '@/features/diagram/ai-chat-messages.vue';
 
-  import type { NuxtError } from 'nuxt/app';
+  import { SIDEBAR_PANEL_HEADER_CLASS } from '@/features/diagram/sidebar-tabs';
+  import { useDiagramAiChat } from '@/composables/diagram-ai-chat';
+
   import type { DatabaseType } from '@/lib/constants/diagram';
-  import type { DiagramConfig } from '@/types/diagram';
 
   defineProps<{ pending: boolean }>();
 
   const { t } = useI18n();
 
-  const prompt = ref('');
-  const currentProject = useCurrentProject();
+  const {
+    ready,
+    messages,
+    input,
+    submitMessage,
+    isLoading,
+    stop,
+    clearChat,
+    applyProposal,
+    discardProposal,
+    appliedProposals,
+    dismissedProposals,
+  } = useDiagramAiChat();
 
-  const { mutateAsync: generateDiagram, isPending } = useMutation({
-    mutationKey: ['generateDiagram'],
-    mutationFn: async () => {
-      const result = await $fetch<DiagramConfig<T>>('/api/generate-diagram', {
-        method: 'POST',
-        body: { prompt: prompt.value, type: currentProject.state?.type },
-      });
+  const onInputKeydown = (event: KeyboardEvent) => {
+    if (event.key !== 'Enter' || event.shiftKey) return;
 
-      if (!result) return;
+    event.preventDefault();
+    submitMessage();
+  };
 
-      currentProject.updateDiagramConfig({
-        tables: result.tables,
-        relations: result.relations,
-      });
-    },
-    onError: (err: NuxtError) => {
-      toast.error(
-        import.meta.dev && err.statusMessage ? err.statusMessage : t('SOMETHING_WENT_WRONG')
-      );
-    },
-  });
+  const onSuggest = (prompt: string) => {
+    input.value = prompt;
+  };
 </script>
 
 <template>
-  <div class="flex min-h-0 flex-1 flex-col">
+  <div class="flex min-h-0 flex-1 flex-col bg-slate-50/60">
     <div :class="SIDEBAR_PANEL_HEADER_CLASS">
-      <h2 class="text-md font-semibold">{{ t('GENERATE_WITH_AI') }}</h2>
+      <div class="flex min-w-0 items-center gap-2">
+        <div
+          class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-violet-100 text-violet-700"
+        >
+          <Icon name="hugeicons:ai-magic" size="0.875rem" class="h-3.5 w-3.5" />
+        </div>
+        <h2 class="text-md truncate font-semibold">{{ t('AI') }}</h2>
+      </div>
+
+      <Button
+        v-if="ready && messages.length"
+        variant="ghost"
+        size="xs"
+        class="shrink-0 text-slate-500"
+        :disabled="pending || !!isLoading"
+        @click="clearChat"
+      >
+        {{ t('AI_CLEAR_CHAT') }}
+      </Button>
     </div>
 
-    <div class="flex flex-1 flex-col gap-3 p-3">
-      <Textarea
-        v-model:model-value="prompt"
-        class="min-h-40 flex-1 resize-none"
-        :placeholder="t('DESCRIBE_YOUR_DIAGRAM')"
-        :disabled="pending"
+    <div v-if="!ready" class="flex flex-1 items-center justify-center p-3 text-sm text-slate-500">
+      {{ t('DEFAULT_LOADING_MESSAGE') }}
+    </div>
+
+    <template v-else>
+      <DiagramAiChatMessages
+        :messages="messages"
+        :is-loading="!!isLoading"
+        :applied-proposals="appliedProposals"
+        :dismissed-proposals="dismissedProposals"
+        @apply="applyProposal"
+        @discard="discardProposal"
+        @suggest="onSuggest"
       />
 
-      <ButtonWithLoading
-        :loading="isPending"
-        type="submit"
-        class="w-full"
-        :disabled="!prompt.trim() || pending"
-        @click="generateDiagram"
-      >
-        {{ t('GENERATE') }}
-      </ButtonWithLoading>
-    </div>
+      <form class="shrink-0 border-t border-slate-200 bg-white p-3" @submit="submitMessage">
+        <div class="relative">
+          <Textarea
+            v-model:model-value="input"
+            class="max-h-32 min-h-11 w-full min-w-0 resize-none py-2.5 pb-9 pr-10"
+            rows="2"
+            :placeholder="t('AI_CHAT_PLACEHOLDER')"
+            :disabled="pending || !!isLoading"
+            @keydown="onInputKeydown"
+          />
+
+          <Button
+            v-if="isLoading"
+            type="button"
+            variant="outline"
+            size="sm"
+            class="absolute bottom-2 right-2 h-8 shrink-0 px-2.5"
+            @click="stop"
+          >
+            {{ t('AI_STOP') }}
+          </Button>
+
+          <ButtonWithLoading
+            v-else
+            class="absolute bottom-2 right-2 h-8 w-8 shrink-0 p-0"
+            :loading="false"
+            type="submit"
+            size="sm"
+            :disabled="!input.trim() || pending"
+          >
+            <Icon name="lucide:send" size="0.875rem" class="h-3.5 w-3.5" />
+          </ButtonWithLoading>
+        </div>
+
+        <p class="mt-2 text-[10px] text-slate-400">
+          {{ t('AI_INPUT_HINT') }}
+        </p>
+      </form>
+    </template>
   </div>
 </template>

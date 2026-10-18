@@ -36,7 +36,7 @@ export const DIAGRAM_SIDEBAR_TABS: readonly DiagramSidebarTabConfig[] = [
   },
 ];
 
-export const SIDEBAR_WIDTH = 400;
+export const SIDEBAR_WIDTH = 450;
 export const SIDEBAR_TOOLBAR_WIDTH = 44;
 export const SIDEBAR_TOOLBAR_ITEM_HEIGHT_CLASS = 'h-[calc(2.75rem+1px)]';
 export const SIDEBAR_PANEL_HEADER_CLASS = `flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 px-3 ${SIDEBAR_TOOLBAR_ITEM_HEIGHT_CLASS}`;

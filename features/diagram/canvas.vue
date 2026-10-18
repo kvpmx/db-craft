@@ -149,6 +149,11 @@
   const fitViewParams = useDiagramFitViewParams();
   const initialViewFitted = ref(false);
 
+  watch(
+    () => currentProject.state?.id,
+    () => (initialViewFitted.value = false)
+  );
+
   const fitInitialView = async () => {
     if (initialViewFitted.value || !nodes.value.length) return;
 
