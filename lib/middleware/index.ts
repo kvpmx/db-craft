@@ -1,9 +1,7 @@
 import type { RouteLocationNormalized } from 'vue-router';
 
 export type MiddlewareResult =
-  | undefined
-  | ReturnType<typeof navigateTo>
-  | ReturnType<typeof createError>;
+  undefined | ReturnType<typeof navigateTo> | ReturnType<typeof createError>;
 
 export type MiddlewareHandler = (to: RouteLocationNormalized) => Promise<MiddlewareResult>;
 

@@ -36,6 +36,9 @@
       <DropdownMenuItem as-child>
         <NuxtLink :to="routes.settings()">{{ t('SETTINGS') }}</NuxtLink>
       </DropdownMenuItem>
+      <DropdownMenuItem as-child>
+        <NuxtLink :to="routes.tutorial()">{{ t('TUTORIAL') }}</NuxtLink>
+      </DropdownMenuItem>
       <DropdownMenuItem class="text-red-600" @click="onSignOut">
         {{ t('SIGN_OUT') }}
       </DropdownMenuItem>

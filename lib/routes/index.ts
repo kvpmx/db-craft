@@ -1,6 +1,7 @@
 export const routes = {
   home: () => '/',
   settings: () => '/settings',
+  tutorial: (slug?: string) => (slug ? `/tutorial/${slug}` : '/tutorial'),
   login: () => '/login',
   register: () => '/register',
   diagram: (id: number) => `/diagram/${id}`,

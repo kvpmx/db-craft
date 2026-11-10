@@ -26,8 +26,7 @@
 
     <pre
       class="mb-3 whitespace-pre-wrap rounded-lg border border-amber-100 bg-white/70 p-2.5 font-sans text-xs leading-5 text-amber-950"
-      >{{ proposal.summary }}</pre
-    >
+      >{{ proposal.summary }}</pre>
 
     <div v-if="applied" class="flex items-center gap-1.5 text-xs font-medium text-green-700">
       <Icon name="lucide:check-circle-2" size="0.875rem" class="h-3.5 w-3.5" />

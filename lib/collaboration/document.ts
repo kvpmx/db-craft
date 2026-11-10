@@ -172,13 +172,10 @@ function readEntities(entries: DocumentEntry[], root: DiagramMap, path: string[]
 export function readDiagram(doc: Y.Doc): SharedDiagram {
   const root = doc.getMap<Scalar | Y.Text>('diagram');
   // Decode each property once, rather than reparsing every key for every entity.
-  const entries = Array.from(
-    root,
-    ([key, value]): DocumentEntry => ({
-      path: JSON.parse(key) as string[],
-      value: value instanceof Y.Text ? value.toString() : value,
-    })
-  );
+  const entries = Array.from(root, ([key, value]): DocumentEntry => ({
+    path: JSON.parse(key) as string[],
+    value: value instanceof Y.Text ? value.toString() : value,
+  }));
   const schema = Object.fromEntries(
     COLLECTIONS.map((collection) => [
       collection,

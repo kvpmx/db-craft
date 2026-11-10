@@ -11,6 +11,7 @@
     <nav class="flex flex-col gap-6 p-4 pt-6" :aria-label="t('NAVIGATION')">
       <div class="space-y-0.5">
         <SidebarNavItem :to="routes.home()" icon="lucide:folder" :label="t('PROJECTS')" />
+        <SidebarNavItem :to="routes.tutorial()" icon="lucide:book-open" :label="t('TUTORIAL')" />
         <SidebarNavItem :to="routes.joinTeam()" icon="lucide:ticket" :label="t('JOIN_TEAM')" />
       </div>
 
