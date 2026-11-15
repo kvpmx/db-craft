@@ -3,7 +3,7 @@
   import TutorialMedia from './media.vue';
   import TutorialTable from './table.vue';
 
-  defineProps<{ article: Collections['tutorial'] }>();
+  defineProps<{ article: Collections['tutorial'] | Collections['tutorial_uk'] }>();
 
   const components = { 'tutorial-media': TutorialMedia, 'table': TutorialTable };
 </script>

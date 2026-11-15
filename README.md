@@ -59,9 +59,10 @@ Before you begin, ensure you have the following installed:
 ## Tutorial documentation
 
 The public `/tutorial` page uses Nuxt Content for searchable, sectioned Markdown guides with
-screenshots and captioned videos in English. The `tutorial` collection is defined in
-`content.config.ts`. Edit the articles in `content/tutorial/`; see
-[the authoring guide](content/TUTORIAL.md) for media conventions, coverage, and validation.
+screenshots and captioned videos. The tutorial is Ukrainian when the interface language is
+Ukrainian, and English otherwise. Collections are defined in `content.config.ts`. Edit the articles
+in `content/tutorial/`; see [the authoring guide](content/TUTORIAL.md) for media conventions,
+coverage, and validation.
 
 ## License
 

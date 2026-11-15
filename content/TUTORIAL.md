@@ -16,7 +16,9 @@ Rebuild/redeploy the app to publish edits; content reloads during development. C
 
 Use a numbered filename such as `15.new-feature.md`. The number and dot follow Nuxt Content ordering
 conventions; the rest becomes the stable URL `/tutorial/new-feature`. Keep existing slugs stable for
-inbound links.
+inbound links. Add the same filename under `content/tutorial/uk/` with a Ukrainian translation. Keep
+the slug, `section`, and `icon` identical in both files. Section keys stay in English in
+frontmatter.
 
 ```markdown
 ---
@@ -49,8 +51,15 @@ and GFM tables are supported. Keep instructions tied to the actual UI labels.
 
 ## Language
 
-The tutorial is English-only, whatever the app's interface language. Section names and page controls
-live in `lib/tutorial/messages.ts`.
+English articles live in `content/tutorial/*.md` (`tutorial` collection). Ukrainian articles live in
+`content/tutorial/uk/*.md` (`tutorial_uk` collection) and use the same `/tutorial/...` paths. The
+page loads the Ukrainian collection when the interface language is Ukrainian, and the English
+collection for every other language, including Polish. Visible section names and page controls live
+in `lib/tutorial/messages.json`.
+
+Translate button and menu names in the Ukrainian articles to match `assets/locales/uk.json`.
+Screenshots and recordings still show the English interface. For each `example.webm`, keep
+`example.vtt` as the English captions and add `example.uk.vtt` as the Ukrainian captions.
 
 ## Screenshots and recordings
 
@@ -77,12 +86,12 @@ For a video, use the same component with a WebM or MP4 source:
 **Text walkthrough:** describe every action shown, so the guide works without playing the video.
 ```
 
-For each `example.webm`, add `example.png` as its poster and `example.vtt` as English WebVTT
-captions. Native controls allow pause, seek, volume, captions, and fullscreen; videos never
-autoplay, and their data is not preloaded. Always provide a written walkthrough, meaningful
-captions, and a poster. Keep recordings short and use sample data. `features/tutorial/table.vue`
-keeps Markdown tables scrollable and keyboard accessible through `ContentRenderer`'s component
-mapping.
+For each `example.webm`, add `example.png` as its poster, `example.vtt` as English WebVTT captions,
+and `example.uk.vtt` as Ukrainian captions. Native controls allow pause, seek, volume, captions, and
+fullscreen; videos never autoplay, and their data is not preloaded. Always provide a written
+walkthrough, meaningful captions, and a poster. Keep recordings short and use sample data.
+`features/tutorial/table.vue` keeps Markdown tables scrollable and keyboard accessible through
+`ContentRenderer`'s component mapping.
 
 The committed screenshots and recordings use the actual app components with fictional shop schema
 data in the English interface. `scripts/tutorial-capture.vue` is the reusable capture fixture. To
@@ -127,4 +136,5 @@ and an entry in the relevant article or a new article.
 Run `yarn typecheck`, `yarn lint`, and `yarn build` for application checks. Check `/tutorial` and a
 direct article URL while signed out, search by a term only found in article body text, follow
 outline and previous/next links, verify unknown slugs return 404, and test mobile navigation and
-video playback. Verify the tutorial stays in English for every interface language.
+video playback. Verify the tutorial is Ukrainian when the interface language is Ukrainian, and
+English for English and Polish.

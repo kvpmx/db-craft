@@ -1,5 +1,8 @@
 <script setup lang="ts">
-  import { tutorialMessages as copy } from '@/lib/tutorial/messages';
+  import { resolveTutorialLocale, tutorialMessages } from '@/lib/tutorial/messages';
+
+  const { locale } = useI18n();
+  const copy = computed(() => tutorialMessages[resolveTutorialLocale(locale.value)]);
 </script>
 
 <template>

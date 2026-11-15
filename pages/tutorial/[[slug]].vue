@@ -1,39 +1,65 @@
 <script setup lang="ts">
   import { routes } from '@/lib/routes';
   import { TUTORIAL_SECTIONS } from '@/lib/tutorial/constants';
-  import { tutorialMessages as copy } from '@/lib/tutorial/messages';
+  import { resolveTutorialLocale, tutorialMessages } from '@/lib/tutorial/messages';
 
   definePageMeta({ key: (route) => route.path });
 
   const route = useRoute();
   const user = useSupabaseUser();
+  const { locale } = useI18n();
+  const tutorialLocale = computed(() => resolveTutorialLocale(locale.value));
+  const copy = computed(() => tutorialMessages[tutorialLocale.value]);
   const query = ref('');
   const menuOpen = ref(false);
   const slug = String(route.params.slug ?? '');
   const articlePath = routes.tutorial(slug);
 
+  const loadNavigation = () => {
+    const articles =
+      resolveTutorialLocale(locale.value) === 'uk'
+        ? queryCollection('tutorial_uk')
+            .order('stem', 'ASC')
+            .select('path', 'title', 'description', 'section', 'icon')
+            .all()
+        : queryCollection('tutorial')
+            .order('stem', 'ASC')
+            .select('path', 'title', 'description', 'section', 'icon')
+            .all();
+
+    return articles;
+  };
+
+  const loadSearchSections = () => {
+    return resolveTutorialLocale(locale.value) === 'uk'
+      ? queryCollectionSearchSections('tutorial_uk')
+      : queryCollectionSearchSections('tutorial');
+  };
+
+  const loadArticle = () => {
+    return resolveTutorialLocale(locale.value) === 'uk'
+      ? queryCollection('tutorial_uk').path(articlePath).first()
+      : queryCollection('tutorial').path(articlePath).first();
+  };
+
   const [
     { data: tutorialArticles, error: catalogError },
     { data: searchSections, error: searchError },
   ] = await Promise.all([
-    useAsyncData(
-      'tutorial-navigation',
-      () => {
-        return queryCollection('tutorial')
-          .order('stem', 'ASC')
-          .select('path', 'title', 'description', 'section', 'icon')
-          .all();
-      },
-      { default: () => [] }
-    ),
-    useAsyncData('tutorial-search', () => queryCollectionSearchSections('tutorial'), {
+    useAsyncData(`tutorial-navigation:${tutorialLocale.value}`, loadNavigation, {
       default: () => [],
+      watch: [tutorialLocale],
+    }),
+    useAsyncData(`tutorial-search:${tutorialLocale.value}`, loadSearchSections, {
+      default: () => [],
+      watch: [tutorialLocale],
     }),
   ]);
 
   const { data: article, error: articleError } = await useAsyncData(
-    `tutorial-article:${articlePath}`,
-    () => queryCollection('tutorial').path(articlePath).first()
+    `tutorial-article:${tutorialLocale.value}:${articlePath}`,
+    loadArticle,
+    { watch: [tutorialLocale] }
   );
 
   if (catalogError.value || searchError.value || articleError.value) {
@@ -41,7 +67,7 @@
   }
 
   if (slug && !article.value) {
-    throw createError({ statusCode: 404, statusMessage: copy.notFound });
+    throw createError({ statusCode: 404, statusMessage: copy.value.notFound });
   }
 
   const articleIndex = computed(() => {
@@ -84,7 +110,7 @@
 
     return tutorialArticles.value.filter((item) => {
       const text = normalizeSearch(
-        `${item.title} ${item.description} ${copy.sections[item.section]} ${searchText.value.get(item.path) ?? ''}`
+        `${item.title} ${item.description} ${copy.value.sections[item.section]} ${searchText.value.get(item.path) ?? ''}`
       );
 
       return terms.every((term) => text.includes(term));
@@ -92,13 +118,13 @@
   });
 
   useSeoMeta({
-    title: () => `${article.value?.title ?? copy.tutorial} · DB Craft`,
-    description: () => article.value?.description ?? copy.seoDescription,
+    title: () => `${article.value?.title ?? copy.value.tutorial} · DB Craft`,
+    description: () => article.value?.description ?? copy.value.seoDescription,
   });
 </script>
 
 <template>
-  <div lang="en" class="min-h-screen bg-white text-slate-900">
+  <div :lang="tutorialLocale" class="min-h-screen bg-white text-slate-900">
     <a
       href="#tutorial-content"
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-white focus:p-3 focus:ring-2"
@@ -262,7 +288,7 @@
                 </nav>
               </details>
               <p class="mb-6 text-xs leading-6 text-slate-500">{{ copy.mediaNote }}</p>
-              <TutorialArticleBody :key="article.path" :article="article" />
+              <TutorialArticleBody :key="`${tutorialLocale}:${article.path}`" :article="article" />
               <nav
                 class="mt-12 grid grid-cols-1 gap-4 border-t border-slate-200 pt-7 sm:grid-cols-2"
                 :aria-label="copy.pagination"
