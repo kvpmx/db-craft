@@ -1,6 +1,7 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { onClickOutside, useEventListener, useMagicKeys } from '@vueuse/core';
   import { getConnectedEdges, VueFlow } from '@vue-flow/core';
+  import { toast } from 'vue-sonner';
   import { Background } from '@vue-flow/background';
   import { ControlButton, Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
@@ -128,6 +129,21 @@
   const createNewConnection = (connection: Connection) => {
     const relation = createRelation(connection);
     if (!currentProject.state?.schema || !relation) return;
+
+    const tables = currentProject.state.schema.tables;
+
+    if (
+      !relationFieldTypesMatch(
+        tables,
+        relation.source,
+        relation.source_field,
+        relation.target,
+        relation.target_field
+      )
+    ) {
+      return;
+    }
+
     currentProject.addRelation(relation);
 
     nextTick(() => updateHandlePlacement(relation.source));
@@ -142,6 +158,10 @@
     findEdge,
     screenToFlowCoordinate,
     viewport,
+    connectionStartHandle,
+    connectionEndHandle,
+    connectionClickStartHandle,
+    connectionRadius,
   } = useCanvas();
 
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
@@ -219,9 +239,108 @@
   watch(viewport, publishCursor, { deep: true });
   useEventListener(window, 'blur', clearCursor);
 
-  // Do not allow to connect two field in the same table
+  const connectionFieldTypesMatch = (connection: Connection) => {
+    if (
+      !connection.source ||
+      !connection.target ||
+      !connection.sourceHandle ||
+      !connection.targetHandle
+    ) {
+      return true;
+    }
+
+    const [, sourceField] = parseConnectionData(connection.sourceHandle);
+    const [, targetField] = parseConnectionData(connection.targetHandle);
+    if (!sourceField || !targetField) return true;
+
+    return relationFieldTypesMatch(
+      currentProject.state?.schema.tables ?? [],
+      connection.source,
+      sourceField,
+      connection.target,
+      targetField
+    );
+  };
+
+  // Reject connections inside one table and between fields of different types.
   const validateConnection: ValidConnectionFunc = (connection) => {
-    return connection.source !== connection.target;
+    return connection.source !== connection.target && connectionFieldTypesMatch(connection);
+  };
+
+  const pointerFromEvent = (event: MouseEvent | TouchEvent) => {
+    const point = 'changedTouches' in event ? event.changedTouches[0] : event;
+    if (!point) return null;
+    return { x: point.clientX, y: point.clientY };
+  };
+
+  const isPointerOnHandle = (handle: Element, point: { x: number; y: number }) => {
+    const rect = handle.getBoundingClientRect();
+
+    const dx =
+      point.x < rect.left ? rect.left - point.x : point.x > rect.right ? point.x - rect.right : 0;
+
+    const dy =
+      point.y < rect.top ? rect.top - point.y : point.y > rect.bottom ? point.y - rect.bottom : 0;
+
+    const radius = connectionRadius.value;
+    return dx * dx + dy * dy <= radius * radius;
+  };
+
+  let mismatchNotifiedAt = 0;
+
+  const reportRelationTypeMismatch = (event?: MouseEvent | TouchEvent) => {
+    if (!event) return;
+
+    const point = pointerFromEvent(event);
+    const start = connectionStartHandle.value ?? connectionClickStartHandle.value;
+
+    if (!point || !start?.nodeId || !start.handleId) return;
+
+    const end = connectionEndHandle.value;
+    const clickedHandle =
+      event.target instanceof Element ? event.target.closest('.vue-flow__handle') : null;
+
+    const endNodeId = end?.nodeId || clickedHandle?.getAttribute('data-nodeid');
+    const endHandleId = end?.handleId || clickedHandle?.getAttribute('data-handleid');
+
+    if (!endNodeId || !endHandleId || start.nodeId === endNodeId) return;
+
+    const handle = document.querySelector(
+      `.vue-flow__handle[data-nodeid="${CSS.escape(endNodeId)}"][data-handleid="${CSS.escape(endHandleId)}"]`
+    );
+
+    if (!(handle instanceof Element) || !isPointerOnHandle(handle, point)) return;
+
+    const fromTarget = start.type === 'target';
+    const sourceTableId = fromTarget ? endNodeId : start.nodeId;
+    const sourceHandleId = fromTarget ? endHandleId : start.handleId;
+
+    const targetTableId = fromTarget ? start.nodeId : endNodeId;
+    const targetHandleId = fromTarget ? start.handleId : endHandleId;
+
+    const [, sourceFieldId] = parseConnectionData(sourceHandleId);
+    const [, targetFieldId] = parseConnectionData(targetHandleId);
+
+    if (!sourceFieldId || !targetFieldId) return;
+
+    const tables = currentProject.state?.schema.tables ?? [];
+
+    if (
+      relationFieldTypesMatch(tables, sourceTableId, sourceFieldId, targetTableId, targetFieldId)
+    ) {
+      return;
+    }
+
+    const now = Date.now();
+    if (now - mismatchNotifiedAt < 300) return;
+    mismatchNotifiedAt = now;
+
+    toast.error(
+      t('RELATION_FIELD_TYPE_MISMATCH', {
+        sourceType: getRelationFieldType(tables, sourceTableId, sourceFieldId),
+        targetType: getRelationFieldType(tables, targetTableId, targetFieldId),
+      })
+    );
   };
 
   // Change handle placement based on the position of the nodes
@@ -377,6 +496,8 @@
       @nodes-change="onNodesChange"
       @node-drag-stop="onNodeDragStop"
       @connect="createNewConnection"
+      @connect-end="reportRelationTypeMismatch"
+      @click-connect-end="reportRelationTypeMismatch"
       @node-drag="onNodeDrag"
       @node-context-menu="onNodeContextMenu"
       @move-start="closeContextMenu"

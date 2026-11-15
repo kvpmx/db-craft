@@ -3,7 +3,12 @@
   import { v4 as uuidv4 } from 'uuid';
   import { toTypedSchema } from '@vee-validate/zod';
   import { RelationEndpointCardinalitySchema } from '@/lib/constants/schema';
-  import { getDefaultRelationName, getHandlePlacement } from '@/utils/relation';
+  import {
+    getDefaultRelationName,
+    getHandlePlacement,
+    getRelationFieldType,
+    relationFieldTypesMatch,
+  } from '@/utils/relation';
   import {
     DEFAULT_RELATION_CARDINALITY,
     RELATION_CARDINALITY_OPTIONS,
@@ -45,6 +50,32 @@
       .refine((data) => data.source !== data.target, {
         message: t('RELATION_SAME_TABLE'),
         path: ['target'],
+      })
+      .superRefine((data, ctx) => {
+        if (props.relation) return;
+
+        const tablesList = tables.value;
+
+        if (
+          relationFieldTypesMatch(
+            tablesList,
+            data.source,
+            data.sourceField,
+            data.target,
+            data.targetField
+          )
+        ) {
+          return;
+        }
+
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t('RELATION_FIELD_TYPE_MISMATCH', {
+            sourceType: getRelationFieldType(tablesList, data.source, data.sourceField),
+            targetType: getRelationFieldType(tablesList, data.target, data.targetField),
+          }),
+          path: ['targetField'],
+        });
       })
   );
 

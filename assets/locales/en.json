@@ -58,6 +58,7 @@
   "NO_RELATIONS_FOUND": "No relations found",
   "NO_RELATIONS_MATCH": "No relations match your search",
   "RELATION_SAME_TABLE": "Source and target table must be different",
+  "RELATION_FIELD_TYPE_MISMATCH": "Source and target fields must have the same data type ({sourceType} and {targetType})",
   "DIAGRAM_SIDEBAR": "Diagram sidebar",
   "ADD": "Add",
   "EDIT": "Edit",

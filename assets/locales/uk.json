@@ -58,6 +58,7 @@
   "NO_RELATIONS_FOUND": "Зв'язків не знайдено",
   "NO_RELATIONS_MATCH": "Жоден зв'язок не відповідає пошуку",
   "RELATION_SAME_TABLE": "Вихідна та цільова таблиці мають бути різними",
+  "RELATION_FIELD_TYPE_MISMATCH": "Вихідне та цільове поля мають бути одного типу ({sourceType} і {targetType})",
   "DIAGRAM_SIDEBAR": "Бічна панель діаграми",
   "ADD": "Додати",
   "EDIT": "Редагувати",

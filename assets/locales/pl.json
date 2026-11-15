@@ -58,6 +58,7 @@
   "NO_RELATIONS_FOUND": "Nie znaleziono relacji",
   "NO_RELATIONS_MATCH": "Brak relacji pasujących do wyszukiwania",
   "RELATION_SAME_TABLE": "Tabela źródłowa i docelowa muszą być różne",
+  "RELATION_FIELD_TYPE_MISMATCH": "Pole źródłowe i docelowe muszą mieć ten sam typ danych ({sourceType} i {targetType})",
   "DIAGRAM_SIDEBAR": "Panel boczny diagramu",
   "ADD": "Dodaj",
   "EDIT": "Edytuj",

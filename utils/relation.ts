@@ -1,3 +1,5 @@
+import { normalizeType } from '@/utils/sql';
+
 import type { HandlePlacement, Position, Table, TableRelation } from '@/types/diagram';
 
 export const sanitizeConstraintNamePart = (value: string) => {
@@ -12,10 +14,31 @@ export const sanitizeConstraintName = (value: string) => {
   return sanitizeConstraintNamePart(value) || 'fk_relation';
 };
 
-export const getRelationFieldName = (tables: Table[], tableId: string, fieldId: string) => {
+const getRelationField = (tables: Table[], tableId: string, fieldId: string) => {
   const table = tables.find((table) => table.id === tableId);
-  const field = table?.fields.find((field) => field.id === fieldId);
-  return field?.name;
+  return table?.fields.find((field) => field.id === fieldId);
+};
+
+export const getRelationFieldName = (tables: Table[], tableId: string, fieldId: string) => {
+  return getRelationField(tables, tableId, fieldId)?.name;
+};
+
+export const getRelationFieldType = (tables: Table[], tableId: string, fieldId: string) => {
+  return getRelationField(tables, tableId, fieldId)?.type;
+};
+
+export const relationFieldTypesMatch = (
+  tables: Table[],
+  sourceTableId: string,
+  sourceFieldId: string,
+  targetTableId: string,
+  targetFieldId: string
+) => {
+  const sourceType = getRelationFieldType(tables, sourceTableId, sourceFieldId);
+  const targetType = getRelationFieldType(tables, targetTableId, targetFieldId);
+  if (!sourceType || !targetType) return true;
+
+  return normalizeType(sourceType) === normalizeType(targetType);
 };
 
 export const getRelationTableName = (tables: Table[], tableId: string) => {
