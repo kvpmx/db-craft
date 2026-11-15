@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import { generateObject } from 'ai';
 import { RelationEndpointCardinalitySchema } from '@/lib/constants/schema';
-import { DEFAULT_RELATION_CARDINALITY, DEFAULT_TYPE_NORMALIZATIONS } from '@/lib/constants/diagram';
+import { DEFAULT_RELATION_CARDINALITY } from '@/lib/constants/diagram';
+import { parseFieldType } from '@/lib/diagram/type-migration';
 import { DEFAULT_COLORS } from '@/lib/constants/colors';
 import { groq, SCHEMA_MODEL } from '@/lib/ai/groq';
 import { getGenerationSystemPrompt } from '@/lib/ai/prompts';
@@ -54,10 +55,11 @@ const findNamed = <T extends { name: string }>(items: T[], name: string) => {
 };
 
 const normalizeFieldType = (type: string) => {
-  const trimmed = type.trim();
-  const normalized = DEFAULT_TYPE_NORMALIZATIONS[trimmed.toLowerCase()];
+  const { base, params } = parseFieldType(type);
 
-  return normalized ?? trimmed;
+  // Keep arguments an external generator already produced so SQL export can print
+  // them. Do not invent defaults such as varchar(255); the SQL generator does that.
+  return base ? `${base}${params}` : 'varchar';
 };
 
 const gridPosition = (index: number, origin = TABLE_LAYOUT_ORIGIN) => {
@@ -78,7 +80,7 @@ export const toLogicalSchema = (schema: DiagramConfig): AiGeneratedDiagram => {
       name: table.name,
       fields: table.fields.map((field) => ({
         name: field.name,
-        type: field.type,
+        type: parseFieldType(field.type).base,
         primary_key: Boolean(field.primary_key),
         nullable: Boolean(field.nullable),
         unique: Boolean(field.unique),
@@ -136,7 +138,7 @@ export const hydrateLogicalSchema = (logical: AiGeneratedDiagram): DiagramConfig
       fields.push({
         id: uuidv4(),
         name: fieldName,
-        type: normalizeFieldType(generatedField.type) || 'varchar(255)',
+        type: normalizeFieldType(generatedField.type),
         primary_key: generatedField.primary_key,
         nullable: generatedField.primary_key ? false : generatedField.nullable,
         unique: generatedField.unique,
@@ -237,7 +239,7 @@ export const CompactGeneratedTableSchema = z.object({
   columns: z
     .array(z.string())
     .describe(
-      'Columns as name:type or name:type:flags. Flags: pk, unique, nullable, ai. Example: id:int:pk,ai'
+      'Columns as name:type or name:type:flags. Type is a base name with no length or precision, such as varchar or decimal. Flags: pk, unique, nullable, ai. Example: id:int:pk,ai'
     ),
 });
 
@@ -248,7 +250,7 @@ export const parseCompactColumn = (spec: string) => {
     .filter(Boolean);
 
   const name = parts[0] ?? '';
-  const type = parts[1] ?? 'varchar(255)';
+  const type = parts[1] ?? 'varchar';
   const flags = new Set(
     parts
       .slice(2)

@@ -1,5 +1,6 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { DATABASE_FIELD_TYPES } from '@/lib/constants/diagram';
+  import { parseFieldType } from '@/lib/diagram/type-migration';
 
   import type { ColumnType } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
@@ -15,6 +16,16 @@
   const fieldTypes = computed(() =>
     currentProject.state ? DATABASE_FIELD_TYPES[currentProject.state.type] : []
   );
+
+  const baseType = computed(() => parseFieldType(value.value).base);
+
+  const selectType = (next: string) => {
+    if (parseFieldType(value.value).base !== next) {
+      value.value = next as ColumnType<T>;
+    }
+
+    open.value = false;
+  };
 </script>
 
 <template>
@@ -28,7 +39,7 @@
         :disabled="props.disabled"
         class="w-[120px] justify-between text-xs"
       >
-        <span class="truncate">{{ value }}</span>
+        <span class="truncate">{{ baseType }}</span>
         <Icon
           name="lucide:chevrons-up-down"
           size="0.75rem"
@@ -50,10 +61,7 @@
               class="w-full px-1.5 py-1 text-xs"
               @select="
                 (ev: CustomEvent) => {
-                  if (typeof ev.detail.value === 'string') {
-                    value = ev.detail.value;
-                  }
-                  open = false;
+                  if (typeof ev.detail.value === 'string') selectType(ev.detail.value);
                 }
               "
             >
@@ -61,7 +69,7 @@
               <Icon
                 name="lucide:check"
                 size="0.75rem"
-                :class="cn('ml-auto h-3 w-3', value === type ? 'opacity-100' : 'opacity-0')"
+                :class="cn('ml-auto h-3 w-3', baseType === type ? 'opacity-100' : 'opacity-0')"
               />
             </CommandItem>
           </CommandGroup>

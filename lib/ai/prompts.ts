@@ -14,6 +14,7 @@ export const getChatSystemPrompt = (type: DatabaseType | undefined = DatabaseTyp
     - Use proposeSchemaUpdate when the user wants to create, change, or replace the schema.
       Pass every table in \`tables\` and every FK in \`relations\` in that one call.
       Table columns use compact specs like \`id:int:pk,ai\`, \`email:varchar:unique\`, \`phone:varchar:nullable\`.
+      Column types are base names with no length, precision, or scale. Use varchar or decimal, not varchar(255) or decimal(10,2). DB Craft does not support type parameters; they appear only in exported SQL.
       Relations use \`bookings.customer_id -> customers.id\`.
       After it returns, explain only what the tool accepted and stop calling tools.
     - If the diagram has no tables, or the user asks to generate a schema from scratch, use mode "replace".
@@ -51,6 +52,7 @@ export const getGenerationSystemPrompt = (type: DatabaseType | undefined = Datab
     Return a JSON object with required keys: tables, relations.
     Each table: name, fields.
     Each field: name, type, primary_key, nullable, unique, auto_increment. Every boolean is required.
+    type is a base type name with no length, precision, or scale. Write varchar or decimal, not varchar(255) or decimal(10,2). DB Craft does not support type parameters; SQL export adds them.
     Each relation: name, source_table, source_field, target_table, target_field, source_cardinality, target_cardinality.
     Use an empty string for relation name when there is no constraint name.
     Cardinality values: zero-or-one, many, one, one-and-only-one, zero-or-many, one-or-many.

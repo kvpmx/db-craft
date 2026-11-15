@@ -1,3 +1,4 @@
+import { parseFieldType } from '@/lib/diagram/type-migration';
 import { normalizeType } from '@/utils/sql';
 
 import type { HandlePlacement, Position, Table, TableRelation } from '@/types/diagram';
@@ -38,7 +39,10 @@ export const relationFieldTypesMatch = (
   const targetType = getRelationFieldType(tables, targetTableId, targetFieldId);
   if (!sourceType || !targetType) return true;
 
-  return normalizeType(sourceType) === normalizeType(targetType);
+  const sourceBase = normalizeType(parseFieldType(sourceType).base);
+  const targetBase = normalizeType(parseFieldType(targetType).base);
+
+  return sourceBase === targetBase;
 };
 
 export const getRelationTableName = (tables: Table[], tableId: string) => {

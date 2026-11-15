@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import { DATABASE_FIELD_TYPES, DATABASES } from '@/lib/constants/diagram';
 
+  import { parseFieldType } from '@/lib/diagram/type-migration';
+
   import type { DatabaseType } from '@/lib/constants/diagram';
   import type { TypeMapping, TypeMismatch } from '@/lib/diagram/type-migration';
 
@@ -18,29 +20,27 @@
 
   const { t } = useI18n();
 
+  const baseType = (type: string) => parseFieldType(type).base;
+
   const mapping = ref<TypeMapping>(
     Object.fromEntries(
-      props.mismatches.map(({ sourceType, suggestion }) => [
-        sourceType,
-        props.initialMapping?.[sourceType] ?? suggestion ?? '',
-      ])
+      props.mismatches.map(({ sourceType, suggestion }) => {
+        const initial = props.initialMapping?.[sourceType];
+
+        return [sourceType, initial ? baseType(initial) : suggestion ? baseType(suggestion) : ''];
+      })
     )
   );
 
   const sourceDatabase = computed(() => DATABASES.find((db) => db.value === props.source));
   const targetDatabase = computed(() => DATABASES.find((db) => db.value === props.target));
 
-  const getOptions = (mismatch: TypeMismatch) => {
-    const types: readonly string[] = DATABASE_FIELD_TYPES[props.target];
-    const extra = [mismatch.suggestion, mapping.value[mismatch.sourceType]].filter(
-      (type): type is string => !!type && !types.includes(type)
-    );
-
-    return [...new Set([...extra, ...types])];
-  };
+  const getOptions = () => DATABASE_FIELD_TYPES[props.target];
 
   const isSuggested = (mismatch: TypeMismatch) => {
-    return !!mismatch.suggestion && mapping.value[mismatch.sourceType] === mismatch.suggestion;
+    return (
+      !!mismatch.suggestion && mapping.value[mismatch.sourceType] === baseType(mismatch.suggestion)
+    );
   };
 
   const mappedCount = computed(() => {
@@ -54,7 +54,20 @@
   };
 
   const confirm = () => {
-    if (isComplete.value) emit('confirm', { ...mapping.value });
+    if (!isComplete.value) return;
+
+    // Accepting a suggestion keeps arguments the migration generated, such as
+    // decimal(19,4). Those stay on the field for SQL export and are not editable here.
+    const resolved = Object.fromEntries(
+      props.mismatches.map(({ sourceType, suggestion }) => {
+        const selected = mapping.value[sourceType] ?? '';
+        const type = suggestion && selected === baseType(suggestion) ? suggestion : selected;
+
+        return [sourceType, type];
+      })
+    );
+
+    emit('confirm', resolved);
   };
 </script>
 
@@ -115,7 +128,7 @@
           </SelectTrigger>
           <SelectContent class="max-h-72">
             <SelectItem
-              v-for="type in getOptions(mismatch)"
+              v-for="type in getOptions()"
               :key="type"
               :value="type"
               :class="cn('font-mono', type === mismatch.suggestion && 'text-emerald-700')"

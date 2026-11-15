@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DiagramConfigSchema } from '@/lib/constants/schema';
 import { normalizeDiagramConfig } from '@/lib/diagram/normalize-config';
+import { parseFieldType } from '@/lib/diagram/type-migration';
 import {
   generateLogicalSchema,
   hydrateLogicalSchema,
@@ -34,7 +35,7 @@ export const buildSchemaSummary = (schema: DiagramConfig, focus: SchemaSummaryFo
         fields: table.fields.map((field) => ({
           id: field.id,
           name: field.name,
-          type: field.type,
+          type: parseFieldType(field.type).base,
           primary_key: field.primary_key ?? false,
           nullable: field.nullable ?? false,
           unique: field.unique ?? false,
@@ -71,7 +72,7 @@ export const buildSchemaSummary = (schema: DiagramConfig, focus: SchemaSummaryFo
       fieldCount: table.fields.length,
       fields: table.fields.map((field) => ({
         name: field.name,
-        type: field.type,
+        type: parseFieldType(field.type).base,
         primary_key: field.primary_key ?? false,
       })),
     })),
@@ -90,7 +91,7 @@ type NamedEntity = { id: string; name: string };
 const fieldSignature = (field: TableField) =>
   JSON.stringify({
     name: field.name,
-    type: field.type,
+    type: parseFieldType(field.type).base,
     primary_key: field.primary_key ?? false,
     nullable: field.nullable ?? false,
     unique: field.unique ?? false,
@@ -415,7 +416,7 @@ export const createSchemaProposalFromLogical = ({
 
   const proposedSchema = normalizeSchema(hydrateLogicalSchema(logical));
 
-  let validated = DiagramConfigSchema.parse({
+  let validated: DiagramConfig = DiagramConfigSchema.parse({
     ...proposedSchema,
     notes: resolvedMode === 'replace' ? [] : (normalizedCurrent.notes ?? []),
     tableGroups: resolvedMode === 'replace' ? [] : (normalizedCurrent.tableGroups ?? []),
