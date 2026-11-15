@@ -25,7 +25,7 @@
   "DEFAULT_SUCCESS_MESSAGE": "Sukces!",
   "DEFAULT_LOADING_MESSAGE": "Ładowanie...",
   "NEW_DIAGRAM_MODAL_TITLE": "Nowy diagram bazy danych",
-  "NEW_DIAGRAM_MODAL_DESCRIPTION": "Skonfiguruj nowy diagram bazy danych. Typ bazy danych nie może zostać zmieniony po utworzeniu diagramu.",
+  "NEW_DIAGRAM_MODAL_DESCRIPTION": "Skonfiguruj nowy diagram bazy danych. Te ustawienia możesz później zmienić w menu projektu.",
   "DIAGRAM_NAME": "Nazwa diagramu",
   "NAME_REQUIRED": "Nazwa jest wymagana",
   "DIAGRAM_VISIBILITY": "Widoczność diagramu",
@@ -238,5 +238,18 @@
   "COLLABORATION_PEOPLE": "Osoby na tym diagramie",
   "COLLABORATION_SAVED": "Zapisano",
   "COLLABORATION_SAVING": "Zapisywanie…",
-  "COLLABORATION_RETRY": "Ponów"
+  "COLLABORATION_RETRY": "Ponów",
+  "EDIT_PROJECT_MODAL_TITLE": "Edytuj diagram",
+  "EDIT_PROJECT_MODAL_DESCRIPTION": "Zaktualizuj dane diagramu. Po zmianie typu bazy danych typy pól nieobsługiwane przez nową bazę zostaną przekonwertowane.",
+  "SAVE_CHANGES": "Zapisz zmiany",
+  "PROJECT_UPDATED": "Projekt został zaktualizowany",
+  "TYPE_MIGRATION_TITLE": "Mapowanie typów pól",
+  "TYPE_MIGRATION_DESCRIPTION": "Niektóre typy pól użyte w tym diagramie nie są dostępne w {database}. Wybierz zamiennik dla każdego z nich. Typy dopasowane automatycznie są wyróżnione na zielono.",
+  "TYPE_MIGRATION_PROGRESS": "Zmapowano: {mapped} z {total}",
+  "TYPE_MIGRATION_SELECT_TYPE": "Wybierz typ",
+  "TYPE_MIGRATION_APPLY": "Zastosuj",
+  "TYPE_MIGRATION_SUMMARY": "Typy pól do konwersji na {database}: {count}",
+  "TYPE_MIGRATION_COMPATIBLE": "Wszystkie typy pól są zgodne z {database}",
+  "TYPE_MIGRATION_REVIEW": "Przejrzyj",
+  "BACK": "Wstecz"
 }

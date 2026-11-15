@@ -25,7 +25,7 @@
   "DEFAULT_SUCCESS_MESSAGE": "Success!",
   "DEFAULT_LOADING_MESSAGE": "Loading...",
   "NEW_DIAGRAM_MODAL_TITLE": "New database diagram",
-  "NEW_DIAGRAM_MODAL_DESCRIPTION": "Configure your new database diagram. The database type cannot be changed once the diagram has been created.",
+  "NEW_DIAGRAM_MODAL_DESCRIPTION": "Configure your new database diagram. You can change these settings later from the project menu.",
   "DIAGRAM_NAME": "Diagram name",
   "NAME_REQUIRED": "Name is required",
   "DIAGRAM_VISIBILITY": "Diagram visibility",
@@ -238,5 +238,18 @@
   "COLLABORATION_PEOPLE": "People on this diagram",
   "COLLABORATION_SAVED": "Saved",
   "COLLABORATION_SAVING": "Saving…",
-  "COLLABORATION_RETRY": "Retry sync"
+  "COLLABORATION_RETRY": "Retry sync",
+  "EDIT_PROJECT_MODAL_TITLE": "Edit diagram",
+  "EDIT_PROJECT_MODAL_DESCRIPTION": "Update the diagram details. When you change the database type, field types the new database does not support are converted.",
+  "SAVE_CHANGES": "Save changes",
+  "PROJECT_UPDATED": "Project has been updated",
+  "TYPE_MIGRATION_TITLE": "Map field types",
+  "TYPE_MIGRATION_DESCRIPTION": "Some field types used in this diagram are not available in {database}. Choose a replacement for each of them. Types mapped automatically are highlighted in green.",
+  "TYPE_MIGRATION_PROGRESS": "Mapped: {mapped} of {total}",
+  "TYPE_MIGRATION_SELECT_TYPE": "Select type",
+  "TYPE_MIGRATION_APPLY": "Apply mapping",
+  "TYPE_MIGRATION_SUMMARY": "Field types to convert to {database}: {count}",
+  "TYPE_MIGRATION_COMPATIBLE": "All field types are compatible with {database}",
+  "TYPE_MIGRATION_REVIEW": "Review mapping",
+  "BACK": "Back"
 }

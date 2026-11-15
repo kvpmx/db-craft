@@ -25,7 +25,7 @@
   "DEFAULT_SUCCESS_MESSAGE": "Успіх!",
   "DEFAULT_LOADING_MESSAGE": "Завантаження...",
   "NEW_DIAGRAM_MODAL_TITLE": "Нова діаграма",
-  "NEW_DIAGRAM_MODAL_DESCRIPTION": "Налаштуйте нову діаграму бази даних. Тип бази даних не можна змінити після того, як діаграма буде створена.",
+  "NEW_DIAGRAM_MODAL_DESCRIPTION": "Налаштуйте нову діаграму бази даних. Ці налаштування можна змінити пізніше в меню проєкту.",
   "DIAGRAM_NAME": "Назва діаграми",
   "NAME_REQUIRED": "Необхідно вказати назву",
   "DIAGRAM_VISIBILITY": "Видимість діаграми",
@@ -238,5 +238,18 @@
   "COLLABORATION_PEOPLE": "Учасники на цій діаграмі",
   "COLLABORATION_SAVED": "Збережено",
   "COLLABORATION_SAVING": "Збереження…",
-  "COLLABORATION_RETRY": "Повторити"
+  "COLLABORATION_RETRY": "Повторити",
+  "EDIT_PROJECT_MODAL_TITLE": "Редагування діаграми",
+  "EDIT_PROJECT_MODAL_DESCRIPTION": "Оновіть дані діаграми. Якщо змінити тип бази даних, типи полів, які нова база даних не підтримує, буде конвертовано.",
+  "SAVE_CHANGES": "Зберегти зміни",
+  "PROJECT_UPDATED": "Проєкт успішно оновлено",
+  "TYPE_MIGRATION_TITLE": "Відповідність типів полів",
+  "TYPE_MIGRATION_DESCRIPTION": "Деякі типи полів цієї діаграми недоступні в {database}. Оберіть заміну для кожного з них. Автоматично підібрані типи виділено зеленим.",
+  "TYPE_MIGRATION_PROGRESS": "Зіставлено: {mapped} з {total}",
+  "TYPE_MIGRATION_SELECT_TYPE": "Оберіть тип",
+  "TYPE_MIGRATION_APPLY": "Застосувати",
+  "TYPE_MIGRATION_SUMMARY": "Типів полів для конвертації в {database}: {count}",
+  "TYPE_MIGRATION_COMPATIBLE": "Усі типи полів сумісні з {database}",
+  "TYPE_MIGRATION_REVIEW": "Переглянути",
+  "BACK": "Назад"
 }
