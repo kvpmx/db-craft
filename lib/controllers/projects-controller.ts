@@ -140,16 +140,31 @@ export class ProjectsController extends ApiController {
   }
 
   async duplicate(project: TablesInsert<'projects'>) {
-    await this.supabase
+    const { data: copy } = await this.supabase
       .from('projects')
       .insert({
         ...project,
         id: undefined,
         created_at: undefined,
         last_modified_at: undefined,
+        share_id: undefined,
         name: `${project.name} (Copy)`,
       })
+      .select()
+      .limit(1)
+      .single()
       .throwOnError();
+
+    if (copy && project.id != null && project.author) {
+      await this.copyThumbnail(
+        {
+          id: project.id,
+          team_id: project.team_id ?? null,
+          author: project.author,
+        },
+        copy
+      );
+    }
   }
 
   async update(id: number, payload: TablesUpdate<'projects'>) {
@@ -235,6 +250,34 @@ export class ProjectsController extends ApiController {
 
   private getLegacyThumbnailPath(project: Pick<Tables<'projects'>, 'id' | 'author'>) {
     return `${project.author}/${project.id}.png`;
+  }
+
+  private async copyThumbnail(
+    source: Pick<Tables<'projects'>, 'id' | 'team_id' | 'author'>,
+    target: Pick<Tables<'projects'>, 'id' | 'team_id' | 'author'>
+  ) {
+    const sourcePaths = [this.getThumbnailPath(source)];
+
+    if (source.team_id) {
+      sourcePaths.push(this.getLegacyThumbnailPath(source));
+    }
+
+    for (const path of sourcePaths) {
+      const { data, error } = await this.supabase.storage.from('thumbnails').download(path);
+
+      if (error || !data) continue;
+
+      const { error: uploadError } = await this.supabase.storage
+        .from('thumbnails')
+        .upload(this.getThumbnailPath(target), data, {
+          contentType: 'image/png',
+          cacheControl: '3600',
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+      return;
+    }
   }
 
   async getThumbnailUrl(
