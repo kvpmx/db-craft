@@ -60,12 +60,7 @@ export interface TableField<T extends DatabaseType | unknown = unknown> {
 export type HandlePlacement = 'left' | 'right';
 
 export type RelationEndpointCardinality =
-  | 'zero-or-one'
-  | 'many'
-  | 'one'
-  | 'one-and-only-one'
-  | 'zero-or-many'
-  | 'one-or-many';
+  'zero-or-one' | 'many' | 'one' | 'one-and-only-one' | 'zero-or-many' | 'one-or-many';
 
 export interface RelationCardinality {
   source: RelationEndpointCardinality;
@@ -74,6 +69,7 @@ export interface RelationCardinality {
 
 export interface TableRelation {
   id: string;
+  name?: string;
   source: string;
   target: string;
   source_field: string;

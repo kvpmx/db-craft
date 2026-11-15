@@ -29,7 +29,9 @@
 
   const { data: authorDisplayNames } = useQuery({
     queryKey: computed(() => ['schema-version-authors', versionAuthorIds.value]),
-    queryFn: () => schemaVersionsApi.getAuthorDisplayNames(versionAuthorIds.value),
+    queryFn: () => {
+      return schemaVersionsApi.getAuthorDisplayNames(projectId.value!, versionAuthorIds.value);
+    },
     enabled: computed(() => versionAuthorIds.value.length > 0 && open.value),
   });
 

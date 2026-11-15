@@ -1,4 +1,5 @@
 import { normalizeType } from '@/utils/sql';
+import { getDefaultRelationName, sanitizeConstraintName } from '@/utils/relation';
 import type { DiagramConfig, TableField, TableRelation } from '@/types/diagram';
 
 export abstract class BaseSQLGenerator {
@@ -13,6 +14,13 @@ export abstract class BaseSQLGenerator {
     config.tables.forEach((table) => {
       this.tablesMap[table.id] = table.fields;
     });
+  }
+
+  protected getRelationConstraintName(relation: TableRelation): string {
+    const customName = relation.name?.trim();
+    if (customName) return sanitizeConstraintName(customName);
+
+    return getDefaultRelationName(relation, this.config.tables);
   }
 
   protected abstract sqlTable(tableName: string, fields: TableField[]): string;

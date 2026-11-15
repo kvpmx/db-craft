@@ -2,6 +2,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-10-25',
   devtools: { enabled: process.env.NODE_ENV === 'development' },
   modules: [
+    '@nuxt/content',
     '@nuxt/fonts',
     '@nuxt/eslint',
     '@nuxt/icon',
@@ -16,6 +17,13 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'nuxt-monaco-editor',
   ],
+  content: {
+    build: {
+      markdown: {
+        toc: { depth: 3 },
+      },
+    },
+  },
   components: [
     { path: '@/features', pathPrefix: true },
     { path: '@/features/common', pathPrefix: false },
@@ -60,7 +68,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: ['/register', '/diagram/share/**'],
+      exclude: ['/register', '/diagram/share/**', '/tutorial', '/tutorial/**'],
     },
   },
   i18n: {

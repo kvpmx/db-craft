@@ -7,6 +7,12 @@
   const currentProject = useCurrentProject();
   const projectsApi = useApiController(ProjectsController);
 
+  const saveLabel = computed(() => {
+    if (!currentProject.isCollaborative) return t('SAVE');
+    if (currentProject.collaborationStatus === 'error') return t('COLLABORATION_RETRY');
+    return t(currentProject.saved ? 'COLLABORATION_SAVED' : 'COLLABORATION_SAVING');
+  });
+
   // Time of the last modification
   const timeAgo = computed(() => {
     if (!currentProject.state) return null;
@@ -25,6 +31,11 @@
   const { mutateAsync: save, isPending } = useMutation({
     mutationFn: async () => {
       if (currentProject.saved) return;
+
+      if (currentProject.isCollaborative) {
+        await currentProject.saveConfigToDatabase();
+        return;
+      }
 
       void fitView(fitViewParams.value);
       await sleep(0);
@@ -63,7 +74,7 @@
               :class="['h-4 w-4', currentProject.saved ? 'text-gray-600' : 'text-yellow-600']"
             />
           </template>
-          {{ t('SAVE') }}
+          {{ saveLabel }}
         </Button>
       </TooltipTrigger>
 

@@ -9,7 +9,7 @@
   const titleValue = ref('');
 
   watchEffect(() => {
-    if (!currentProject.state) return;
+    if (!currentProject.state || editMode.value) return;
     titleValue.value = currentProject.state.name;
   });
 
@@ -76,8 +76,18 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <NuxtLink
+          :to="routes.tutorial('editor-and-canvas')"
+          target="_blank"
+          rel="noopener"
+          :title="t('TUTORIAL')"
+          :aria-label="t('TUTORIAL')"
+          class="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100"
+        >
+          <Icon name="lucide:book-open" class="h-4 w-4" />
+        </NuxtLink>
+        <DiagramCollaborators />
         <DiagramVersionHistorySheet v-if="currentProject.canEdit" />
-        <DiagramAiGeneration v-if="currentProject.canEdit" />
         <DiagramSaveButton />
         <UserButton />
       </div>

@@ -1,6 +1,19 @@
+import * as Y from 'yjs';
 import { toBlob } from 'html-to-image';
 import { ApiController } from './api-controller';
+import {
+  createDiagramDocument,
+  decodeUpdate,
+  encodeUpdate,
+  readDiagram,
+  REMOTE_ORIGIN,
+  writeDiagram,
+} from '@/lib/collaboration/document';
 import type { Tables, TablesInsert, TablesUpdate } from '@/types/database';
+import type { DiagramConfig } from '@/types/diagram';
+import type { SharedDiagram } from '@/types/collaboration';
+
+const SHARED_DIAGRAM_SAVE_ATTEMPTS = 3;
 
 export class ProjectsController extends ApiController {
   async getAll() {
@@ -127,20 +140,107 @@ export class ProjectsController extends ApiController {
   }
 
   async duplicate(project: TablesInsert<'projects'>) {
-    await this.supabase
+    const { data: copy } = await this.supabase
       .from('projects')
       .insert({
         ...project,
         id: undefined,
         created_at: undefined,
         last_modified_at: undefined,
+        share_id: undefined,
         name: `${project.name} (Copy)`,
       })
+      .select()
+      .limit(1)
+      .single()
       .throwOnError();
+
+    if (copy && project.id != null && project.author) {
+      await this.copyThumbnail(
+        {
+          id: project.id,
+          team_id: project.team_id ?? null,
+          author: project.author,
+        },
+        copy
+      );
+    }
   }
 
   async update(id: number, payload: TablesUpdate<'projects'>) {
     await this.supabase.from('projects').update(payload).eq('id', id).throwOnError();
+  }
+
+  async updateDetails(
+    project: Pick<Tables<'projects'>, 'id' | 'team_id'>,
+    details: Pick<Tables<'projects'>, 'name' | 'visibility' | 'type'>,
+    migrateSchema?: (schema: DiagramConfig) => DiagramConfig
+  ) {
+    const { type, ...shared } = details;
+
+    if (!project.team_id) {
+      const payload: TablesUpdate<'projects'> = {
+        ...shared,
+        type,
+        last_modified_at: new Date().toISOString(),
+      };
+
+      if (migrateSchema) {
+        const current = await this.getById(project.id);
+        if (!current) throw new Error('Project not found');
+        payload.schema = migrateSchema(current.schema);
+      }
+
+      await this.update(project.id, payload);
+      return;
+    }
+
+    // Team diagrams are served from the collaborative document, so name,
+    // visibility and schema must be merged into it rather than into the row.
+    await this.updateSharedDiagram(project.id, (diagram) => ({
+      ...diagram,
+      ...shared,
+      schema: migrateSchema ? migrateSchema(diagram.schema) : diagram.schema,
+    }));
+    await this.update(project.id, { type });
+  }
+
+  private async updateSharedDiagram(
+    projectId: number,
+    change: (diagram: SharedDiagram) => SharedDiagram
+  ) {
+    for (let attempt = 0; attempt < SHARED_DIAGRAM_SAVE_ATTEMPTS; attempt++) {
+      const { data: snapshot } = await this.supabase
+        .rpc('open_diagram_document', { p_project_id: projectId })
+        .throwOnError();
+
+      if (!snapshot) throw new Error('Missing diagram document');
+
+      const doc = createDiagramDocument(snapshot.baseline);
+
+      try {
+        if (snapshot.state) Y.applyUpdate(doc, decodeUpdate(snapshot.state), REMOTE_ORIGIN);
+
+        const before = readDiagram(doc);
+        writeDiagram(doc, before, change(before));
+
+        const { data: result } = await this.supabase
+          .rpc('save_diagram_document', {
+            p_project_id: projectId,
+            p_revision: snapshot.revision,
+            p_state: encodeUpdate(Y.encodeStateAsUpdate(doc)),
+            p_diagram: readDiagram(doc),
+          })
+          .throwOnError();
+
+        if (!result) throw new Error('Missing diagram save result');
+        if (result.accepted) return;
+      } finally {
+        doc.destroy();
+      }
+    }
+
+    throw new Error('Diagram save contention');
   }
 
   getThumbnailPath(project: Pick<Tables<'projects'>, 'id' | 'team_id' | 'author'>) {
@@ -150,6 +250,34 @@ export class ProjectsController extends ApiController {
 
   private getLegacyThumbnailPath(project: Pick<Tables<'projects'>, 'id' | 'author'>) {
     return `${project.author}/${project.id}.png`;
+  }
+
+  private async copyThumbnail(
+    source: Pick<Tables<'projects'>, 'id' | 'team_id' | 'author'>,
+    target: Pick<Tables<'projects'>, 'id' | 'team_id' | 'author'>
+  ) {
+    const sourcePaths = [this.getThumbnailPath(source)];
+
+    if (source.team_id) {
+      sourcePaths.push(this.getLegacyThumbnailPath(source));
+    }
+
+    for (const path of sourcePaths) {
+      const { data, error } = await this.supabase.storage.from('thumbnails').download(path);
+
+      if (error || !data) continue;
+
+      const { error: uploadError } = await this.supabase.storage
+        .from('thumbnails')
+        .upload(this.getThumbnailPath(target), data, {
+          contentType: 'image/png',
+          cacheControl: '3600',
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+      return;
+    }
   }
 
   async getThumbnailUrl(
@@ -191,6 +319,7 @@ export class ProjectsController extends ApiController {
       canvasHeight: ratio * width,
       filter: (node) => {
         return !(
+          node?.classList?.contains('diagram-collaboration-cursors') ||
           node?.classList?.contains('vue-flow__minimap') ||
           node?.classList?.contains('vue-flow__controls') ||
           node?.classList?.contains('vue-flow__background')

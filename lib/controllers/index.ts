@@ -1,4 +1,5 @@
 export { ApiController } from './api-controller';
+export { DiagramAiChatsController } from './diagram-ai-chats-controller';
 export { ProjectsController } from './projects-controller';
 export { SchemaVersionsController } from './schema-versions-controller';
 export { TeamInvitesController } from './team-invites-controller';

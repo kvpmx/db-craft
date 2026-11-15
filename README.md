@@ -11,6 +11,8 @@ architects to visualize and design their database schemas.
 - **Export Options**: Export diagrams as SQL or PNG for easy integration and sharing.
 - **Integration**: Connect with databases like PostgreSQL and MySQL for schema import/export.
 - **Responsive Design**: Optimized for desktop and mobile for seamless designing on the go.
+- **Live Team Editing**: Edit team diagrams together with shared cursors, avatars, conflict merging,
+  and automatic saving.
 
 ## Getting Started
 
@@ -18,7 +20,7 @@ architects to visualize and design their database schemas.
 
 Before you begin, ensure you have the following installed:
 
-- Node.js (>= 18.x)
+- Node.js 20.19+ or 22.12+ (Node 24 LTS recommended)
 - yarn
 
 ### Installation
@@ -53,6 +55,14 @@ Before you begin, ensure you have the following installed:
    ```
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the app.
+
+## Tutorial documentation
+
+The public `/tutorial` page uses Nuxt Content for searchable, sectioned Markdown guides with
+screenshots and captioned videos. The tutorial is Ukrainian when the interface language is
+Ukrainian, and English otherwise. Collections are defined in `content.config.ts`. Edit the articles
+in `content/tutorial/`; see [the authoring guide](content/TUTORIAL.md) for media conventions,
+coverage, and validation.
 
 ## License
 

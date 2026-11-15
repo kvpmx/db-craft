@@ -2,6 +2,8 @@
   import { Position, Handle } from '@vue-flow/core';
   import { onClickOutside } from '@vueuse/core';
 
+  import { parseFieldType } from '@/lib/diagram/type-migration';
+
   import type { NodeProps } from '@vue-flow/core';
   import type { Table } from '@/types/diagram';
   import type { DatabaseType } from '@/lib/constants/diagram';
@@ -81,7 +83,9 @@
             class="h-2.5 w-2.5 flex-shrink-0 text-yellow-600"
           />
 
-          <span class="text-gray-500">{{ field.type + (field.nullable ? '?' : '') }}</span>
+          <span class="text-gray-500">{{
+            parseFieldType(field.type).base + (field.nullable ? '?' : '')
+          }}</span>
         </div>
       </div>
       <Handle

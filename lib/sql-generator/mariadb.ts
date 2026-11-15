@@ -32,7 +32,7 @@ export class MariaDBGenerator extends BaseSQLGenerator {
 
     return dedent`
       ALTER TABLE \`${sourceTable}\`
-      ADD CONSTRAINT \`fk_${sourceTable}_${targetTable}_${sourceField}\`
+      ADD CONSTRAINT \`${this.getRelationConstraintName(relation)}\`
       FOREIGN KEY (\`${sourceField}\`) REFERENCES \`${targetTable}\` (\`${targetField}\`)
       ON DELETE CASCADE
       ON UPDATE RESTRICT;

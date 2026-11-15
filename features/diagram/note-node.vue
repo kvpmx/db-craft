@@ -94,10 +94,18 @@
       NOTE_MAX_WIDTH,
       Math.max(NOTE_MIN_WIDTH, resizeStart.width + deltaX)
     );
+
     localHeight.value = Math.min(
       NOTE_MAX_HEIGHT,
       Math.max(NOTE_MIN_HEIGHT, resizeStart.height + deltaY)
     );
+
+    if (currentProject.isCollaborative) {
+      currentProject.updateNoteData(props.id, {
+        width: localWidth.value,
+        height: localHeight.value,
+      });
+    }
   };
 
   const stopResize = () => {

@@ -1,6 +1,7 @@
 <script lang="ts" generic="T extends DatabaseType" setup>
   import { onClickOutside, useEventListener, useMagicKeys } from '@vueuse/core';
   import { getConnectedEdges, VueFlow } from '@vue-flow/core';
+  import { toast } from 'vue-sonner';
   import { Background } from '@vue-flow/background';
   import { ControlButton, Controls } from '@vue-flow/controls';
   import { MiniMap } from '@vue-flow/minimap';
@@ -18,6 +19,7 @@
     Edge,
     ValidConnectionFunc,
     NodeDragEvent,
+    NodeChange,
     NodeMouseEvent,
     Connection,
     GraphEdge,
@@ -44,7 +46,7 @@
     const groupNodes = (currentProject.state.schema.tableGroups ?? []).map((group) => ({
       id: group.id,
       type: 'group',
-      position: group.position,
+      position: { ...group.position },
       data: group,
       connectable: false,
       zIndex: group.zIndex ?? GROUP_Z_INDEX,
@@ -57,7 +59,7 @@
     const tableNodes = currentProject.state.schema.tables.map((table) => ({
       id: table.id,
       type: 'table',
-      position: table.position,
+      position: { ...table.position },
       data: table,
       zIndex: table.zIndex ?? TABLE_Z_INDEX,
     }));
@@ -65,7 +67,7 @@
     const noteNodes = (currentProject.state.schema.notes ?? []).map((note) => ({
       id: note.id,
       type: 'note',
-      position: note.position,
+      position: { ...note.position },
       data: note,
       connectable: false,
       zIndex: note.zIndex ?? NOTE_Z_INDEX,
@@ -101,38 +103,76 @@
   });
 
   const updateNodePosition = (event: NodeDragEvent) => {
-    if (event.node.type === 'note') {
-      currentProject.updateNoteData(event.node.id, {
-        position: event.node.position,
-      });
-      return;
+    for (const node of event.nodes) {
+      const position = { x: node.position.x, y: node.position.y };
+      if (node.type === 'note') currentProject.updateNoteData(node.id, { position });
+      else if (node.type === 'group') currentProject.updateTableGroupData(node.id, { position });
+      else currentProject.updateTableData(node.id, { position });
     }
+  };
 
-    if (event.node.type === 'group') {
-      currentProject.updateTableGroupData(event.node.id, {
-        position: event.node.position,
-      });
-      return;
+  // Vue Flow also moves nodes with the keyboard, without emitting drag events.
+  const onNodesChange = (changes: NodeChange[]) => {
+    if (props.readonly) return;
+    for (const change of changes) {
+      if (change.type !== 'position' || !change.position || change.dragging) continue;
+      const node = nodes.value.find((node) => node.id === change.id);
+      if (!node) continue;
+      const position = { ...change.position };
+      if (node.data.position.x === position.x && node.data.position.y === position.y) continue;
+      if (node.type === 'note') currentProject.updateNoteData(node.id, { position });
+      else if (node.type === 'group') currentProject.updateTableGroupData(node.id, { position });
+      else currentProject.updateTableData(node.id, { position });
     }
-
-    currentProject.updateTableData(event.node.id, {
-      position: event.node.position,
-    });
   };
 
   const createNewConnection = (connection: Connection) => {
     const relation = createRelation(connection);
     if (!currentProject.state?.schema || !relation) return;
-    currentProject.state.schema.relations.push(relation);
+
+    const tables = currentProject.state.schema.tables;
+
+    if (
+      !relationFieldTypesMatch(
+        tables,
+        relation.source,
+        relation.source_field,
+        relation.target,
+        relation.target_field
+      )
+    ) {
+      return;
+    }
+
+    currentProject.addRelation(relation);
 
     nextTick(() => updateHandlePlacement(relation.source));
   };
 
-  const { fitView, getSelectedEdges, getSelectedNodes, setInteractive } = useCanvas();
+  const {
+    fitView,
+    getSelectedEdges,
+    getSelectedNodes,
+    setInteractive,
+    addSelectedEdges,
+    findEdge,
+    screenToFlowCoordinate,
+    viewport,
+    connectionStartHandle,
+    connectionEndHandle,
+    connectionClickStartHandle,
+    connectionRadius,
+  } = useCanvas();
+
   const { delete: deleteKey, ctrl_z, ctrl_y } = useMagicKeys();
 
   const fitViewParams = useDiagramFitViewParams();
   const initialViewFitted = ref(false);
+
+  watch(
+    () => currentProject.state?.id,
+    () => (initialViewFitted.value = false)
+  );
 
   const fitInitialView = async () => {
     if (initialViewFitted.value || !nodes.value.length) return;
@@ -152,9 +192,7 @@
     if (props.readonly) return;
 
     getSelectedEdges.value.forEach((edge) => {
-      if (!currentProject.state?.schema) return;
-      const idx = currentProject.state.schema.relations.findIndex((rel) => rel.id === edge.id);
-      currentProject.state.schema.relations.splice(idx, 1);
+      currentProject.deleteRelation(edge.id);
     });
 
     getSelectedNodes.value.forEach((node) => {
@@ -168,32 +206,141 @@
     });
   });
 
-  watch(ctrl_z, (pressed) => {
-    if (props.readonly) return;
+  const isEditingText = () => {
+    const element = document.activeElement;
+    return (
+      element instanceof HTMLElement &&
+      (element.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName))
+    );
+  };
 
-    // The first value is the default value (null), and the second value is the value
-    // retrieved from the database. We can't remove these two values, so we set a condition
-    // that checks if the history length is greater than 2.
-    if (
-      pressed &&
-      currentProject.changesHistory.canUndo &&
-      currentProject.changesHistory.history.length > 2
-    ) {
-      currentProject.changesHistory.undo();
-    }
+  watch(ctrl_z, (pressed) => {
+    if (pressed && !props.readonly && !isEditingText()) currentProject.undo();
   });
 
   watch(ctrl_y, (pressed) => {
-    if (props.readonly) return;
-
-    if (pressed && currentProject.changesHistory.canRedo) {
-      currentProject.changesHistory.redo();
-    }
+    if (pressed && !props.readonly && !isEditingText()) currentProject.redo();
   });
 
-  // Do not allow to connect two field in the same table
+  let pointerPosition: { x: number; y: number } | null = null;
+  const publishCursor = () => {
+    if (pointerPosition && currentProject.isCollaborative) {
+      currentProject.updateCursor(screenToFlowCoordinate(pointerPosition));
+    }
+  };
+  const updateCursor = (event: PointerEvent) => {
+    pointerPosition = { x: event.clientX, y: event.clientY };
+    publishCursor();
+  };
+  const clearCursor = () => {
+    pointerPosition = null;
+    currentProject.updateCursor(null);
+  };
+  watch(viewport, publishCursor, { deep: true });
+  useEventListener(window, 'blur', clearCursor);
+
+  const connectionFieldTypesMatch = (connection: Connection) => {
+    if (
+      !connection.source ||
+      !connection.target ||
+      !connection.sourceHandle ||
+      !connection.targetHandle
+    ) {
+      return true;
+    }
+
+    const [, sourceField] = parseConnectionData(connection.sourceHandle);
+    const [, targetField] = parseConnectionData(connection.targetHandle);
+    if (!sourceField || !targetField) return true;
+
+    return relationFieldTypesMatch(
+      currentProject.state?.schema.tables ?? [],
+      connection.source,
+      sourceField,
+      connection.target,
+      targetField
+    );
+  };
+
+  // Reject connections inside one table and between fields of different types.
   const validateConnection: ValidConnectionFunc = (connection) => {
-    return connection.source !== connection.target;
+    return connection.source !== connection.target && connectionFieldTypesMatch(connection);
+  };
+
+  const pointerFromEvent = (event: MouseEvent | TouchEvent) => {
+    const point = 'changedTouches' in event ? event.changedTouches[0] : event;
+    if (!point) return null;
+    return { x: point.clientX, y: point.clientY };
+  };
+
+  const isPointerOnHandle = (handle: Element, point: { x: number; y: number }) => {
+    const rect = handle.getBoundingClientRect();
+
+    const dx =
+      point.x < rect.left ? rect.left - point.x : point.x > rect.right ? point.x - rect.right : 0;
+
+    const dy =
+      point.y < rect.top ? rect.top - point.y : point.y > rect.bottom ? point.y - rect.bottom : 0;
+
+    const radius = connectionRadius.value;
+    return dx * dx + dy * dy <= radius * radius;
+  };
+
+  let mismatchNotifiedAt = 0;
+
+  const reportRelationTypeMismatch = (event?: MouseEvent | TouchEvent) => {
+    if (!event) return;
+
+    const point = pointerFromEvent(event);
+    const start = connectionStartHandle.value ?? connectionClickStartHandle.value;
+
+    if (!point || !start?.nodeId || !start.handleId) return;
+
+    const end = connectionEndHandle.value;
+    const clickedHandle =
+      event.target instanceof Element ? event.target.closest('.vue-flow__handle') : null;
+
+    const endNodeId = end?.nodeId || clickedHandle?.getAttribute('data-nodeid');
+    const endHandleId = end?.handleId || clickedHandle?.getAttribute('data-handleid');
+
+    if (!endNodeId || !endHandleId || start.nodeId === endNodeId) return;
+
+    const handle = document.querySelector(
+      `.vue-flow__handle[data-nodeid="${CSS.escape(endNodeId)}"][data-handleid="${CSS.escape(endHandleId)}"]`
+    );
+
+    if (!(handle instanceof Element) || !isPointerOnHandle(handle, point)) return;
+
+    const fromTarget = start.type === 'target';
+    const sourceTableId = fromTarget ? endNodeId : start.nodeId;
+    const sourceHandleId = fromTarget ? endHandleId : start.handleId;
+
+    const targetTableId = fromTarget ? start.nodeId : endNodeId;
+    const targetHandleId = fromTarget ? start.handleId : endHandleId;
+
+    const [, sourceFieldId] = parseConnectionData(sourceHandleId);
+    const [, targetFieldId] = parseConnectionData(targetHandleId);
+
+    if (!sourceFieldId || !targetFieldId) return;
+
+    const tables = currentProject.state?.schema.tables ?? [];
+
+    if (
+      relationFieldTypesMatch(tables, sourceTableId, sourceFieldId, targetTableId, targetFieldId)
+    ) {
+      return;
+    }
+
+    const now = Date.now();
+    if (now - mismatchNotifiedAt < 300) return;
+    mismatchNotifiedAt = now;
+
+    toast.error(
+      t('RELATION_FIELD_TYPE_MISMATCH', {
+        sourceType: getRelationFieldType(tables, sourceTableId, sourceFieldId),
+        targetType: getRelationFieldType(tables, targetTableId, targetFieldId),
+      })
+    );
   };
 
   // Change handle placement based on the position of the nodes
@@ -234,7 +381,9 @@
 
   // Handle drag events
   const onNodeDrag = (event: NodeDragEvent) => {
-    if (props.readonly || event.node.type !== 'table') return;
+    if (props.readonly) return;
+    if (currentProject.isCollaborative) updateNodePosition(event);
+    if (event.node.type !== 'table') return;
     updateHandlePlacement(event.node.id);
     updateConnectedEdges(event, true);
   };
@@ -314,6 +463,20 @@
   useEventListener(window, 'keydown', (event: KeyboardEvent) => {
     if (event.key === 'Escape') closeContextMenu();
   });
+
+  const selectedRelation = useSelectedRelation();
+
+  watch(
+    () => [selectedRelation.id, selectedRelation.flag],
+    () => {
+      if (!selectedRelation.id) return;
+
+      const edge = findEdge(selectedRelation.id);
+      if (edge) {
+        addSelectedEdges([edge]);
+      }
+    }
+  );
 </script>
 
 <template>
@@ -328,8 +491,13 @@
       :fit-view-on-init="false"
       :elevate-nodes-on-select="false"
       :is-valid-connection="validateConnection"
+      @pointermove="updateCursor"
+      @pointerleave="clearCursor"
+      @nodes-change="onNodesChange"
       @node-drag-stop="onNodeDragStop"
       @connect="createNewConnection"
+      @connect-end="reportRelationTypeMismatch"
+      @click-connect-end="reportRelationTypeMismatch"
       @node-drag="onNodeDrag"
       @node-context-menu="onNodeContextMenu"
       @move-start="closeContextMenu"
@@ -351,6 +519,7 @@
         <DiagramRelationEdge v-bind="relationEdgeProps" />
       </template>
 
+      <DiagramCollaborationCursors v-if="currentProject.isCollaborative" />
       <Background />
       <Controls
         position="bottom-left"

@@ -46,9 +46,9 @@
   const showInvitePreview = computed(() =>
     Boolean(
       invitePreview.value?.valid &&
-        invitePreview.value.email_matches &&
-        invitePreview.value.team_name &&
-        invitePreview.value.role
+      invitePreview.value.email_matches &&
+      invitePreview.value.team_name &&
+      invitePreview.value.role
     )
   );
 

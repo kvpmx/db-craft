@@ -24,6 +24,8 @@
 
   const projectsApi = useApiController(ProjectsController);
 
+  const editDialogOpened = ref(false);
+
   const { data: thumbnailUrl } = useQuery({
     queryKey: ['thumbnail', props.project.id, props.project.team_id],
     queryFn: async () => await projectsApi.getThumbnailUrl(props.project),
@@ -92,6 +94,9 @@
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem @click.stop="editDialogOpened = true">
+            {{ t('EDIT') }}
+          </DropdownMenuItem>
           <DropdownMenuItem @click.stop="emit('duplicate', project)">
             {{ t('DUPLICATE') }}
           </DropdownMenuItem>
@@ -101,6 +106,8 @@
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <HomeEditProjectModal v-model:open="editDialogOpened" :project="project" />
     </div>
 
     <div class="pointer-events-none relative z-[1] flex flex-1 flex-col gap-3 p-4 pt-0">
