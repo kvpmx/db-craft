@@ -32,44 +32,66 @@ when the structure is ready you export SQL for your own database tools.
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="public/tutorial/media/relationship-form.png" alt="Edit relation dialog naming fk_orders_customer, with orders.customer_id pointing at customers.id and cardinality set to zero-or-many and one-and-only-one" />
-      <h3>Relationships</h3>
+      <img src="public/images/features/relationships.svg" alt="Two tables joined by a curved link, one end a ring and the other a fork" width="100%" />
+      <br /><strong>Relationships</strong><br />
       Name the foreign key, pick the fields on each side, and set cardinality. The canvas draws the
       link and labels both ends.
     </td>
     <td width="50%" valign="top">
-      <img src="public/tutorial/media/ai-assistant.png" alt="AI sidebar explaining that orders.customer_id references customers.id and proposing a display_name field, with Apply and Discard buttons" />
-      <h3>AI assistant</h3>
+      <img src="public/images/features/ai-assistant.svg" alt="A spark beside a short conversation and a proposal marked with a check" width="100%" />
+      <br /><strong>AI assistant</strong><br />
       Ask about the current schema or describe a change. Suggested edits stay in a review card until
       you apply or discard them.
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="public/tutorial/media/sql-export.png" alt="Export dialog showing PostgreSQL CREATE TABLE statements for customers and orders, plus a foreign key with ON DELETE CASCADE" />
-      <h3>SQL export</h3>
+      <img src="public/images/features/sql-export.svg" alt="A page of colored statement lines with a download button" width="100%" />
+      <br /><strong>SQL export</strong><br />
       Generate <code>CREATE TABLE</code> statements and constraints in the dialect of the database
       you chose for the project. Copy the script or download it as a file.
     </td>
     <td width="50%" valign="top">
-      <img src="public/tutorial/media/version-history.png" alt="Version history sheet listing two snapshots, Customer and order keys reviewed and Initial shop schema, with a rollback button" />
-      <h3>Version history</h3>
+      <img src="public/images/features/version-history.svg" alt="A timeline of three saved versions, the latest one highlighted with a rollback mark" width="100%" />
+      <br /><strong>Version history</strong><br />
       Save a snapshot with a short message, then roll the diagram back to an earlier version when
       you need it.
     </td>
   </tr>
 </table>
 
-<p align="center">
-  <img
-    src="public/tutorial/media/new-project.png"
-    alt="New database diagram dialog with the name Shop schema, private visibility, and PostgreSQL selected among MySQL, SQL Server, SQLite, MariaDB, and Oracle"
-    width="720"
-  />
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <img src="public/images/databases/mysql.svg" width="48" height="48" alt="MySQL" /><br />
+      MySQL
+    </td>
+    <td align="center">
+      <img src="public/images/databases/postgresql.svg" width="48" height="48" alt="PostgreSQL" /><br />
+      PostgreSQL
+    </td>
+    <td align="center">
+      <img src="public/images/databases/sqlserver.svg" width="48" height="48" alt="SQL Server" /><br />
+      SQL Server
+    </td>
+    <td align="center">
+      <img src="public/images/databases/sqlite.svg" width="48" height="48" alt="SQLite" /><br />
+      SQLite
+    </td>
+    <td align="center">
+      <img src="public/images/databases/mariadb.svg" width="48" height="48" alt="MariaDB" /><br />
+      MariaDB
+    </td>
+    <td align="center">
+      <img src="public/images/databases/oracle.svg" width="48" height="48" alt="Oracle" /><br />
+      Oracle
+    </td>
+  </tr>
+</table>
 
-- **Six databases.** MySQL, PostgreSQL, SQL Server, SQLite, MariaDB, and Oracle. The type you pick
-  sets the field list and the SQL that export produces. It stays fixed after the project is created.
+The database you pick sets the field list and the SQL that export produces. It stays fixed after the
+project is created.
+
 - **Notes and groups.** Color a region of the canvas and leave a note next to the tables it
   explains.
 - **Sharing.** A public diagram gets a read-only link. A private diagram stays in your account.
