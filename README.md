@@ -32,13 +32,13 @@ when the structure is ready you export SQL for your own database tools.
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="public/images/features/relationships.svg" alt="Two tables joined by a curved link, one end a ring and the other a fork" width="100%" />
+      <img src="public/images/features/relationships.svg" alt="Two tables joined by a foreign key line with crow's foot ends" width="100%" />
       <br /><strong>Relationships</strong><br />
       Name the foreign key, pick the fields on each side, and set cardinality. The canvas draws the
       link and labels both ends.
     </td>
     <td width="50%" valign="top">
-      <img src="public/images/features/ai-assistant.svg" alt="A spark beside a short conversation and a proposal marked with a check" width="100%" />
+      <img src="public/images/features/ai-assistant.svg" alt="A chat panel with a question, an answer, and a proposed change with apply and discard buttons" width="100%" />
       <br /><strong>AI assistant</strong><br />
       Ask about the current schema or describe a change. Suggested edits stay in a review card until
       you apply or discard them.
@@ -46,13 +46,13 @@ when the structure is ready you export SQL for your own database tools.
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="public/images/features/sql-export.svg" alt="A page of colored statement lines with a download button" width="100%" />
+      <img src="public/images/features/sql-export.svg" alt="A code window of highlighted SQL lines with a download button" width="100%" />
       <br /><strong>SQL export</strong><br />
       Generate <code>CREATE TABLE</code> statements and constraints in the dialect of the database
       you chose for the project. Copy the script or download it as a file.
     </td>
     <td width="50%" valign="top">
-      <img src="public/images/features/version-history.svg" alt="A timeline of three saved versions, the latest one highlighted with a rollback mark" width="100%" />
+      <img src="public/images/features/version-history.svg" alt="A timeline of three saved versions, with an earlier one selected for rollback" width="100%" />
       <br /><strong>Version history</strong><br />
       Save a snapshot with a short message, then roll the diagram back to an earlier version when
       you need it.
